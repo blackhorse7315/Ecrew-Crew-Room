@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crew Room - App Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, addDoc, getDocs, onSnapshot, query, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'crew-room-default';
+
+        let currentUser = null;
+        let currentFolderId = 'root';
+        let navigationHistory = ['root'];
+        let menus = [];
+
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth Error:", error);
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) loadMenus();
+        });
+
+        const loadMenus = () => {
+            const menuRef = collection(db, 'artifacts', appId, 'public', 'data', 'menus');
+            onSnapshot(menuRef, (snapshot) => {
+                menus = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderDashboard();
+            }, (error) => {
+                console.error("Firestore Error:", error);
+            });
+        };
+
+        window.saveMenu = async (event) => {
+            event.preventDefault();
+            if (!currentUser) return;
+
+            const form = event.target;
+            const isSubMenu = form.isSubMenu.checked;
+            
+            const menuData = {
+                name: form.menuName.value,
+                imageUrl: form.imageUrl.value || 'https://via.placeholder.com/150?text=App',
+                url: form.targetUrl.value || '',
+                // Jika "Sub Menu" dicentang, maka ini adalah Aplikasi (bukan folder)
+                // Jika TIDAK dicentang, maka ini adalah Main Menu (Folder)
+                isFolder: !isSubMenu, 
+                parentId: isSubMenu ? form.parentId.value : 'root',
+                createdAt: new Date().getTime()
+            };
+
+            try {
+                const menuRef = collection(db, 'artifacts', appId, 'public', 'data', 'menus');
+                await addDoc(menuRef, menuData);
+                closeModal();
+                form.reset();
+                window.toggleFields(); // Reset visibility fields
+            } catch (e) {
+                console.error("Gagal menyimpan:", e);
+            }
+        };
+
+        window.deleteMenu = async (id) => {
+            if (!confirm('Hapus menu ini? Semua isi di dalamnya akan ikut terhapus.')) return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'menus', id));
+                const children = menus.filter(m => m.parentId === id);
+                for (const child of children) {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'menus', child.id));
+                }
+            } catch (e) {
+                console.error("Gagal menghapus:", e);
+            }
+        };
+
+        window.navigateTo = (id) => {
+            navigationHistory.push(id);
+            currentFolderId = id;
+            renderDashboard();
+        };
+
+        window.goBack = () => {
+            if (navigationHistory.length > 1) {
+                navigationHistory.pop();
+                currentFolderId = navigationHistory[navigationHistory.length - 1];
+                renderDashboard();
+            }
+        };
+
+        const renderDashboard = () => {
+            const container = document.getElementById('dashboard-grid');
+            const breadcrumb = document.getElementById('breadcrumb');
+            const backBtn = document.getElementById('back-btn');
+
+            let folderName = "Beranda";
+            if (currentFolderId !== 'root') {
+                const currentFolder = menus.find(m => m.id === currentFolderId);
+                folderName = currentFolder ? currentFolder.name : "Sub Menu";
+                backBtn.classList.remove('hidden');
+            } else {
+                backBtn.classList.add('hidden');
+            }
+            breadcrumb.textContent = folderName;
+
+            const filteredMenus = menus.filter(m => m.parentId === currentFolderId);
+            
+            if (filteredMenus.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-20 text-gray-400">
+                        <i data-lucide="layout-grid" class="w-16 h-16 mb-4 opacity-20"></i>
+                        <p>Belum ada aplikasi di dalam menu ini.</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = filteredMenus.map(menu => `
+                    <div class="group relative bg-white dark:bg-gray-800 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-5 border border-slate-100 dark:border-gray-700 flex flex-col items-center text-center">
+                        <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="deleteMenu('${menu.id}')" class="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        
+                        <div onclick="${menu.isFolder ? `MapsTo('${menu.id}')` : `window.open('${menu.url}', '_blank')`}" class="cursor-pointer w-full">
+                            <div class="w-24 h-24 mx-auto mb-4 rounded-[2rem] overflow-hidden shadow-inner bg-slate-50 dark:bg-gray-900 flex items-center justify-center border-4 border-transparent group-hover:border-blue-100 transition-all">
+                                ${menu.isFolder ? 
+                                    `<div class="text-blue-500 relative flex items-center justify-center">
+                                        <i data-lucide="folder" class="w-14 h-14 fill-current opacity-20"></i>
+                                        <i data-lucide="folder" class="w-12 h-12 absolute"></i>
+                                    </div>` : 
+                                    `<img src="${menu.imageUrl}" alt="${menu.name}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150?text=App'">`
+                                }
+                            </div>
+                            <h3 class="font-bold text-slate-800 dark:text-white truncate w-full px-2 text-lg">${menu.name}</h3>
+                            <span class="inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mt-2 ${menu.isFolder ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}">
+                                ${menu.isFolder ? 'Main Menu' : 'Application'}
+                            </span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            lucide.createIcons();
+        };
+
+        window.openModal = () => {
+            const select = document.getElementById('parentId');
+            select.innerHTML = '<option value="root">Beranda (Root)</option>';
+            
+            const folders = menus.filter(m => m.isFolder);
+            folders.forEach(f => {
+                const option = document.createElement('option');
+                option.value = f.id;
+                option.textContent = f.name;
+                select.appendChild(option);
+            });
+
+            document.getElementById('addModal').classList.remove('hidden');
+            window.toggleFields();
+        };
+
+        window.closeModal = () => document.getElementById('addModal').classList.add('hidden');
+        
+        window.toggleFields = () => {
+            const isSubMenu = document.getElementById('isSubMenu').checked;
+            const parentSection = document.getElementById('parent-section');
+            const appDetails = document.getElementById('app-details');
+            
+            if (isSubMenu) {
+                parentSection.classList.remove('hidden');
+                appDetails.classList.remove('hidden');
+            } else {
+                parentSection.classList.add('hidden');
+                appDetails.classList.add('hidden');
+            }
+        };
+
+        window.onload = initAuth;
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#F1F5F9] dark:bg-gray-900 min-h-screen text-slate-900 dark:text-slate-100">
+
+    <nav class="bg-white/80 dark:bg-gray-800/80 border-b border-slate-200 dark:border-gray-700 sticky top-0 z-30 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="bg-blue-600 p-2.5 rounded-2xl text-white shadow-xl shadow-blue-500/20">
+                    <i data-lucide="layout-grid" class="w-7 h-7"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight">Crew Room</h1>
+                    <p class="text-[10px] text-blue-600 font-black uppercase tracking-[0.2em] leading-none">Management Center</p>
+                </div>
+            </div>
+            <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all active:scale-95 font-bold shadow-lg shadow-blue-500/20">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+                <span>Tambah Baru</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-10">
+        <div class="mb-12 flex items-center gap-6">
+            <button id="back-btn" onclick="goBack()" class="hidden p-4 bg-white dark:bg-gray-800 hover:bg-slate-50 dark:hover:bg-gray-700 rounded-[1.25rem] shadow-sm transition-all border border-slate-100 dark:border-gray-700 group">
+                <i data-lucide="chevron-left" class="w-6 h-6 group-hover:-translate-x-1 transition-transform"></i>
+            </button>
+            <div>
+                <h2 id="breadcrumb" class="text-4xl font-black text-slate-900 dark:text-white capitalize leading-tight">Beranda</h2>
+                <div class="flex items-center gap-2 mt-1">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <p class="text-sm text-slate-500 font-medium italic">Crew Room siap digunakan.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboard-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-8">
+            <div class="col-span-full flex justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-50 border-t-blue-600"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Form -->
+    <div id="addModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-lg flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-[3rem] w-full max-w-lg p-10 shadow-2xl border border-white/20">
+            <div class="flex justify-between items-start mb-10">
+                <div>
+                    <h3 class="text-3xl font-black dark:text-white leading-tight">Tambah Menu</h3>
+                    <p class="text-slate-500 mt-1 font-medium">Buat Main Menu atau Sub Menu aplikasi.</p>
+                </div>
+                <button onclick="closeModal()" class="p-3 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full text-slate-400 transition-colors">
+                    <i data-lucide="x" class="w-7 h-7"></i>
+                </button>
+            </div>
+
+            <form onsubmit="saveMenu(event)" class="space-y-8">
+                <!-- Field Nama -->
+                <div>
+                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-3 px-1">Nama Menu / Aplikasi</label>
+                    <input name="menuName" type="text" required placeholder="Contoh: Flight Release" class="w-full px-6 py-5 rounded-[1.5rem] border-2 border-slate-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-blue-500 outline-none transition-all font-bold text-lg">
+                </div>
+
+                <!-- Checkbox Sub Menu -->
+                <div class="bg-slate-50 dark:bg-blue-900/10 p-6 rounded-[2rem] border-2 border-slate-50 dark:border-blue-900/20">
+                    <div class="flex items-center gap-4">
+                        <div class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="isSubMenu" name="isSubMenu" onchange="toggleFields()" class="w-7 h-7 rounded-lg border-2 border-slate-300 text-blue-600 focus:ring-0">
+                        </div>
+                        <div>
+                            <label for="isSubMenu" class="text-lg font-extrabold text-slate-800 dark:text-blue-200 block">Jadikan sebagai Sub Menu</label>
+                            <p class="text-xs text-slate-500 dark:text-blue-300/60">Aktifkan jika ingin memasukkan menu ini ke dalam Main Menu lain.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Parent (Hanya muncul jika Sub Menu dicentang) -->
+                <div id="parent-section" class="hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                    <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-3 px-1">Pilih Main Menu Induk</label>
+                    <div class="relative">
+                        <select id="parentId" name="parentId" class="w-full px-6 py-5 rounded-[1.5rem] border-2 border-slate-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white outline-none font-bold text-lg appearance-none cursor-pointer">
+                            <option value="root">Beranda (Main Menu)</option>
+                        </select>
+                        <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <i data-lucide="chevron-down" class="w-6 h-6 text-slate-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Aplikasi (URL & Icon - Hanya muncul jika Sub Menu dicentang) -->
+                <div id="app-details" class="hidden space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div>
+                        <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-3 px-1">URL Icon Aplikasi</label>
+                        <input name="imageUrl" type="url" placeholder="https://image-url.com/icon.png" class="w-full px-6 py-5 rounded-[1.5rem] border-2 border-slate-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-blue-500 outline-none transition-all font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-black uppercase tracking-widest text-slate-400 mb-3 px-1">URL Link Tujuan</label>
+                        <input name="targetUrl" type="url" placeholder="https://app-link.com" class="w-full px-6 py-5 rounded-[1.5rem] border-2 border-slate-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-blue-500 outline-none transition-all font-bold">
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit" class="w-full py-6 bg-blue-600 text-white rounded-[1.5rem] font-black text-xl hover:bg-blue-700 transition-all shadow-2xl shadow-blue-500/40 active:scale-[0.98]">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
