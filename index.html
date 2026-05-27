@@ -73,9 +73,10 @@
   <style>body { box-sizing: border-box; }</style>
  </head>
  <body class="h-full">
-  
-  <div id="login-screen" class="h-full w-full flex items-center justify-center p-4">
-   <div class="w-full max-w-md">
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="h-full w-full flex items-center justify-center p-4 overflow-y-auto">
+   <div class="w-full max-w-md my-auto">
     <div class="glow-border rounded-3xl p-8 relative">
      <div class="absolute inset-0 bg-gradient-to-br from-slate-900/80 to-slate-900/60 rounded-3xl -z-10"></div>
      <div class="flex items-center justify-center gap-4 mb-8">
@@ -83,15 +84,50 @@
       </div>
       <h1 class="text-white font-bold text-3xl text-gradient">Ecrew</h1>
      </div>
-     <h2 class="text-white text-center font-semibold text-xl mb-2">Crew Room</h2>
-     <p class="text-slate-400 text-center text-sm mb-8">Access your flight operations portal</p>
-     <form id="login-form" class="space-y-4">
-      <div><label class="text-slate-300 text-sm font-semibold block mb-2">Email / Username</label> <input id="login-user" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="email@ecrew.com atau admin">
-      </div>
-      <div><label class="text-slate-300 text-sm font-semibold block mb-2">Password</label> <input id="login-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="Enter password">
-      </div>
-      <div id="login-error" class="hidden bg-red-500/10 border border-red-500/30 text-red-300 text-sm p-3 rounded-lg"></div><button type="submit" class="w-full premium-gradient text-white font-bold py-3 rounded-xl transition smooth-button shadow-xl shadow-cyan-500/20">Login</button>
-     </form>
+     
+     <!-- Tampilan Form Login -->
+     <div id="view-login">
+       <h2 class="text-white text-center font-semibold text-xl mb-2">Crew Room</h2>
+       <p class="text-slate-400 text-center text-sm mb-8">Access your flight operations portal</p>
+       <form id="login-form" class="space-y-4">
+        <div><label class="text-slate-300 text-sm font-semibold block mb-2">Email / Username</label> <input id="login-user" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="email@ecrew.com atau admin">
+        </div>
+        <div><label class="text-slate-300 text-sm font-semibold block mb-2">Password</label> <input id="login-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="Enter password">
+        </div>
+        <div id="login-error" class="hidden bg-red-500/10 border border-red-500/30 text-red-300 text-sm p-3 rounded-lg"></div><button type="submit" class="w-full premium-gradient text-white font-bold py-3 rounded-xl transition smooth-button shadow-xl shadow-cyan-500/20">Login</button>
+       </form>
+       <div class="mt-6 text-center">
+          <p class="text-slate-400 text-sm">Don't have an account? <button id="btn-go-register" class="text-cyan-400 font-semibold hover:text-cyan-300 transition">Register Here</button></p>
+       </div>
+     </div>
+
+     <!-- Tampilan Form Register -->
+     <div id="view-register" class="hidden">
+        <h2 class="text-white text-center font-bold text-xl mb-2">Welcome To ECrew-Crew Room</h2>
+        <p class="text-slate-400 text-center text-sm mb-6">Create your crew account</p>
+        <form id="register-form" class="space-y-4">
+            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Full Name</label><input id="r-name" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Budi Santoso"></div>
+            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="r-email" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="budi@ecrew.com"></div>
+            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="r-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Create password"></div>
+            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
+                <select id="r-rank" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition">
+                    <option value="Capt">Capt</option>
+                    <option value="FO">FO</option>
+                    <option value="CS">CS</option>
+                    <option value="FOO">FOO</option>
+                    <option value="HLO">HLO</option>
+                    <option value="Flight Support">Flight Support</option>
+                    <option value="-">None</option>
+                </select>
+            </div>
+            <div id="r-form-msg" class="hidden text-center text-sm py-2 px-3 rounded-lg"></div>
+            <button type="submit" id="btn-register-submit" class="w-full premium-gradient text-white font-bold py-3 rounded-xl transition smooth-button shadow-xl shadow-cyan-500/20 mt-2">Register</button>
+        </form>
+        <div class="mt-6 text-center">
+            <p class="text-slate-400 text-sm">Already have an account? <button id="btn-go-login" class="text-cyan-400 font-semibold hover:text-cyan-300 transition">Login Here</button></p>
+        </div>
+     </div>
+
      <div class="text-slate-400 text-xs mt-8 p-4 bg-slate-800/30 rounded-xl text-center border border-slate-700/30">
       <p class="text-slate-300">Powered by <span class="text-cyan-400 font-semibold">SkyOps Solution</span> 2026</p>
      </div>
@@ -130,8 +166,14 @@
    </main>
    
    <div id="submenu-overlay" class="hidden fixed inset-0 z-40 bg-slate-900 flex flex-col">
-    <div class="bg-slate-800/80 border-b border-slate-700 px-6 py-4 flex items-center justify-between sticky top-0">
-     <h2 id="submenu-title" class="text-white font-bold text-xl"></h2><button id="submenu-close" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+    <div class="bg-slate-800/80 border-b border-slate-700 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between sticky top-0 gap-3">
+     <div class="flex items-center gap-3">
+      <button id="submenu-back-btn" class="text-slate-300 hover:text-white flex items-center gap-1 bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1.5 rounded-lg transition"><i data-lucide="arrow-left" class="w-4 h-4"></i><span class="text-sm font-medium">Back</span></button>
+      <button id="submenu-dash-btn" class="text-slate-300 hover:text-cyan-400 flex items-center gap-1 bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1.5 rounded-lg transition"><i data-lucide="layout-grid" class="w-4 h-4"></i><span class="text-sm font-medium">Dashboard</span></button>
+      <div class="h-6 w-px bg-slate-600 mx-1 hidden sm:block"></div>
+      <h2 id="submenu-title" class="text-white font-bold text-xl truncate"></h2>
+     </div>
+     <button id="submenu-close" class="text-slate-400 hover:text-white self-end sm:self-auto"><i data-lucide="x" class="w-6 h-6"></i></button>
     </div>
     <main class="flex-1 overflow-auto px-6 py-8">
      <div id="submenu-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
@@ -150,8 +192,8 @@
       <div><label class="text-slate-300 text-sm font-semibold block mb-2">Image URL</label>
        <div id="img-preview-wrap" class="hidden mb-3">
         <img id="img-preview" class="w-full h-32 object-contain rounded-xl">
-       </div><input id="f-image" type="text" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="https://drive.google.com/file/d/FILE_ID/view">
-       <p class="text-slate-500 text-xs mt-2 font-medium">Google Drive: paste full link from "share" button</p>
+       </div><input id="f-image" type="text" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="https://drive.google.com/file/d/10uZFwtnBY0nXRz1v_6v76LZubOFmc0jY/view?usp=drivesdk">
+       <p class="text-slate-500 text-xs mt-2 font-medium">Google Drive link akan otomatis di-convert menjadi tag &lt;img&gt; saat disimpan</p>
       </div>
       <div><label class="text-slate-300 text-sm font-semibold block mb-2">Link URL</label> <input id="f-url" type="url" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="https://example.com">
       </div>
@@ -294,9 +336,18 @@
     if (!url) return '';
     const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
     if (match && match[1]) {
-      return `https://lh3.googleusercontent.com/d/${match[1]}`;
+      return `<img src="https://lh3.googleusercontent.com/d/${match[1]}" alt="Logo" class="w-full h-full object-cover" />`;
     }
     return url;
+  }
+
+  function getSrcFromImgTag(str) {
+    if (!str) return '';
+    if (str.startsWith('<img')) {
+      const match = str.match(/src=["'](.*?)["']/);
+      return match ? match[1] : '';
+    }
+    return str;
   }
 
   let currentUser = null;
@@ -431,6 +482,81 @@
   (async () => {
     await window.dataSdk.init(dataHandler);
   })();
+
+  // Toggle Antara Layar Login & Register
+  document.getElementById('btn-go-register').onclick = () => {
+    document.getElementById('view-login').classList.add('hidden');
+    document.getElementById('view-register').classList.remove('hidden');
+    document.getElementById('login-error').classList.add('hidden');
+  };
+
+  document.getElementById('btn-go-login').onclick = () => {
+    document.getElementById('view-register').classList.add('hidden');
+    document.getElementById('view-login').classList.remove('hidden');
+    document.getElementById('r-form-msg').classList.add('hidden');
+  };
+
+  // Handler: Register Pengguna Baru dari Luar
+  document.getElementById('register-form').onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-register-submit');
+    const msgEl = document.getElementById('r-form-msg');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-pulse">Registering...</span>';
+
+    const name = document.getElementById('r-name').value.trim();
+    const email = document.getElementById('r-email').value.trim().toLowerCase();
+    const password = document.getElementById('r-pass').value.trim();
+    const rank = document.getElementById('r-rank').value;
+
+    // Cek apakah email sudah dipakai
+    if (allUsers.some(u => u.email === email)) {
+      msgEl.textContent = '❌ Email/Username sudah terdaftar!';
+      msgEl.className = 'text-center text-sm py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
+      msgEl.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Register';
+      return;
+    }
+
+    const secretData = JSON.stringify({ p: password, r: rank });
+
+    const newRawUser = {
+      id: 'user_' + Date.now().toString(36),
+      name: name,
+      image_url: email, 
+      url: secretData,    
+      parent_id: 'SYSTEM_USER_RECORD', 
+      is_submenu: true, 
+      order: 0 // Otomatis sebagai USER
+    };
+
+    const result = await window.dataSdk.create(newRawUser);
+    
+    if (result.isOk) {
+      document.getElementById('register-form').reset();
+      msgEl.textContent = '✅ Registrasi Berhasil! Mengalihkan...';
+      msgEl.className = 'text-center text-sm font-semibold py-3 px-3 rounded-lg mt-2 bg-green-500/20 text-green-300';
+      msgEl.classList.remove('hidden');
+      
+      // Mengalihkan secara otomatis ke halaman login setelah 2 detik
+      setTimeout(() => {
+        msgEl.classList.add('hidden');
+        document.getElementById('view-register').classList.add('hidden');
+        document.getElementById('view-login').classList.remove('hidden');
+        // Isi otomatis email ke form login agar memudahkan user
+        document.getElementById('login-user').value = email; 
+      }, 2000);
+    } else {
+      msgEl.textContent = '❌ Gagal registrasi. Coba lagi.';
+      msgEl.className = 'text-center text-sm py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
+      msgEl.classList.remove('hidden');
+    }
+    
+    btn.disabled = false;
+    btn.textContent = 'Register';
+  };
 
   // Login handler
   document.getElementById('login-form').onsubmit = (e) => {
@@ -707,7 +833,9 @@
         grid.appendChild(card);
       }
       const subCount = allMenus.filter(s => s.parent_id === menu.id && s.is_submenu).length;
-      const imgHtml = menu.image_url ? `<img src="${menu.image_url}" alt="${menu.name}" class="w-full h-full object-cover" onerror="this.style.background='#334155';">` : `<i data-lucide="folder" class="w-10 h-10 text-slate-500"></i>`;
+      
+      const isImgTag = menu.image_url && menu.image_url.includes('<img');
+      const imgHtml = isImgTag ? menu.image_url.replace('object-contain', 'object-cover') : (menu.image_url ? `<img src="${menu.image_url}" alt="${menu.name}" class="w-full h-full object-cover" onerror="this.style.background='#334155';">` : `<i data-lucide="folder" class="w-10 h-10 text-slate-500"></i>`);
       
       let cardHtml;
       if (isAdmin) {
@@ -718,7 +846,6 @@
             </div>
             <div class="p-2 text-center">
               <p class="text-white font-semibold text-xs line-clamp-2">${menu.name}</p>
-              ${subCount > 0 ? `<p class="text-cyan-400 text-xs mt-0.5">${subCount} sub</p>` : ''}
             </div>
           </div>
           <button class="edit-btn absolute top-2 right-2 bg-slate-900/70 rounded-lg p-1.5 opacity-0 group-hover:opacity-100 transition"><i data-lucide="edit" class="w-3.5 h-3.5 text-slate-300"></i></button>
@@ -760,9 +887,12 @@
     const subs = allMenus.filter(s => s.parent_id === parent.id && s.is_submenu);
     grid.innerHTML = subs.map(s => {
       const hasImg = s.image_url && s.image_url.length > 0;
+      const isImgTag = hasImg && s.image_url.includes('<img');
+      const renderImg = isImgTag ? s.image_url.replace('object-contain', 'object-cover') : (hasImg ? `<img src="${s.image_url}" alt="${s.name}" class="w-full h-full object-cover" onerror="this.style.background='#475569';">` : `<i data-lucide="file" class="w-10 h-10 text-slate-400"></i>`);
+      
       return `<div class="menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 cursor-pointer group relative" data-url="${s.url || ''}" data-bid="${s.__backendId}">
         <div class="h-40 bg-slate-700 flex items-center justify-center overflow-hidden">
-          ${hasImg ? `<img src="${s.image_url}" alt="${s.name}" class="w-full h-full object-cover" onerror="this.style.background='#475569';">` : `<i data-lucide="file" class="w-10 h-10 text-slate-400"></i>`}
+          ${renderImg}
         </div>
         <div class="p-4 text-center">
           <p class="text-white font-semibold text-sm truncate">${s.name}</p>
@@ -777,59 +907,65 @@
           if (item) openEdit(item);
           return;
         }
-        if (el.dataset.url) {
-          window.open(el.dataset.url, '_blank', 'noopener,noreferrer');
-        }
-      };
-    });
-    overlay.classList.remove('hidden');
-    lucide.createIcons();
+      if (el.dataset.url) {
+        window.open(el.dataset.url, '_blank', 'noopener,noreferrer');
+      }
+    };
+  });
+  overlay.classList.remove('hidden');
+  lucide.createIcons();
+}
+
+document.getElementById('submenu-close').onclick = () => showDashboard();
+document.getElementById('submenu-back-btn').onclick = () => showDashboard();
+document.getElementById('submenu-dash-btn').onclick = () => showDashboard();
+
+function openModal(edit = null) {
+  editingItem = edit;
+  imageUrl = edit?.image_url || '';
+  document.getElementById('modal-title').textContent = edit ? 'Edit Menu' : 'Add Menu';
+  document.getElementById('f-name').value = edit?.name || '';
+  document.getElementById('f-url').value = edit?.url || '';
+  document.getElementById('f-image').value = edit?.image_url || '';
+  document.getElementById('btn-delete').classList.toggle('hidden', !edit);
+  document.getElementById('btn-duplicate').classList.toggle('hidden', !edit);
+  document.getElementById('form-msg').classList.add('hidden');
+
+  if (imageUrl) {
+    document.getElementById('img-preview').src = getSrcFromImgTag(imageUrl);
+    document.getElementById('img-preview-wrap').classList.remove('hidden');
+  } else {
+    document.getElementById('img-preview-wrap').classList.add('hidden');
   }
 
-  function openModal(edit = null) {
-    editingItem = edit;
-    imageUrl = edit?.image_url || '';
-    document.getElementById('modal-title').textContent = edit ? 'Edit Menu' : 'Add Menu';
-    document.getElementById('f-name').value = edit?.name || '';
-    document.getElementById('f-url').value = edit?.url || '';
-    document.getElementById('f-image').value = edit?.image_url || '';
-    document.getElementById('btn-delete').classList.toggle('hidden', !edit);
-    document.getElementById('btn-duplicate').classList.toggle('hidden', !edit);
-    document.getElementById('form-msg').classList.add('hidden');
-
-    if (imageUrl) {
-      document.getElementById('img-preview').src = imageUrl;
-      document.getElementById('img-preview-wrap').classList.remove('hidden');
-    } else {
-      document.getElementById('img-preview-wrap').classList.add('hidden');
-    }
-
-    const sel = document.getElementById('f-parent');
+  const sel = document.getElementById('f-parent');
     const mains = allMenus.filter(m => !m.is_submenu && (!edit || m.__backendId !== edit.__backendId));
     sel.innerHTML = '<option value="">— None (Main Menu) —</option>' + mains.map(m => `<option value="${m.id}" ${edit?.parent_id === m.id ? 'selected' : ''}>${m.name}</option>`).join('');
 
     document.getElementById('modal').classList.remove('hidden');
+}
+
+function openEdit(item) { openModal(item); }
+
+document.getElementById('btn-add').onclick = () => openModal();
+document.getElementById('modal-close').onclick = () => document.getElementById('modal').classList.add('hidden');
+document.getElementById('modal').onclick = (e) => { if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden'); };
+
+document.getElementById('f-image').onchange = (e) => {
+  const url = e.target.value.trim();
+  if (!url) {
+    document.getElementById('img-preview-wrap').classList.add('hidden');
+    imageUrl = '';
+    return;
   }
+  imageUrl = convertGoogleDriveUrl(url);
+  document.getElementById('f-image').value = imageUrl;
+  
+  document.getElementById('img-preview').src = getSrcFromImgTag(imageUrl);
+  document.getElementById('img-preview-wrap').classList.remove('hidden');
+};
 
-  function openEdit(item) { openModal(item); }
-
-  document.getElementById('btn-add').onclick = () => openModal();
-  document.getElementById('modal-close').onclick = () => document.getElementById('modal').classList.add('hidden');
-  document.getElementById('modal').onclick = (e) => { if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden'); };
-
-  document.getElementById('f-image').onchange = (e) => {
-    const url = e.target.value.trim();
-    if (!url) {
-      document.getElementById('img-preview-wrap').classList.add('hidden');
-      imageUrl = '';
-      return;
-    }
-    imageUrl = url;
-    document.getElementById('img-preview').src = url;
-    document.getElementById('img-preview-wrap').classList.remove('hidden');
-  };
-
-  document.getElementById('menu-form').onsubmit = async (e) => {
+document.getElementById('menu-form').onsubmit = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-submit');
     btn.disabled = true;
