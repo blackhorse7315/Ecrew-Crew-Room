@@ -150,7 +150,9 @@
      <div id="admin-controls" class="hidden flex items-center gap-3">
       <button id="btn-users" class="flex items-center gap-2 bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 font-semibold px-4 py-2.5 rounded-xl transition border border-indigo-500/30 smooth-button"> <i data-lucide="users" class="w-4 h-4"></i> Manage Users </button>
       <button id="btn-add" class="flex items-center gap-2 premium-gradient text-white font-semibold px-5 py-2.5 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20"> <i data-lucide="plus" class="w-4 h-4"></i> Add Menu </button>
-     </div><button id="btn-logout" class="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 font-medium px-4 py-2.5 rounded-xl transition border border-slate-700/30 smooth-button"> <i data-lucide="log-out" class="w-4 h-4"></i> Logout </button>
+     </div>
+     <button id="btn-sync" class="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 text-cyan-400 font-medium px-4 py-2.5 rounded-xl transition border border-slate-700/30 smooth-button" title="Sync Database"> <i data-lucide="refresh-cw" id="sync-icon" class="w-4 h-4"></i> <span class="hidden sm:inline">Sync</span> </button>
+     <button id="btn-logout" class="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 font-medium px-4 py-2.5 rounded-xl transition border border-slate-700/30 smooth-button"> <i data-lucide="log-out" class="w-4 h-4"></i> Logout </button>
     </div>
    </header>
    
@@ -451,37 +453,102 @@
     }
   };
 
-  // MOCK SDK JIKA TIDAK TERSEDIA (Mencegah error 'Cannot read properties of undefined (reading create)')
-  if (!window.dataSdk) {
-    window.dataSdk = {
-      _data: [],
-      init: async (handler) => {
-        window.dataSdk._handler = handler;
-        handler.onDataChanged(window.dataSdk._data);
-      },
-      create: async (record) => {
-        const newRec = { ...record, __backendId: Date.now().toString(36) + Math.random().toString(36).substr(2) };
+  // URL WEB APP GOOGLE APPS SCRIPT ANDA
+  // Ganti string kosong di bawah dengan URL dari deployment Google Apps Script Anda.
+  const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx5tHULYdvZGdUrDPnhSFfR-gSbB0WlB2cDpTmXt7_5mNVYMlSPGsnOwO3xhKsDD4OP/exec"; 
+
+  // SDK DATABASE TERINTEGRASI GOOGLE SHEETS
+  window.dataSdk = {
+    _data: [],
+    init: async (handler) => {
+      window.dataSdk._handler = handler;
+
+     
+
+      await window.dataSdk.sync();
+      // Auto-sync setiap 15 detik (Mendownload data terbaru di balik layar)
+      setInterval(() => window.dataSdk.sync(true), 15000);
+    },
+    sync: async (isAuto = false) => {
+      if (!GAS_WEB_APP_URL) return;
+      
+      const icon = document.getElementById('sync-icon');
+      if (icon) icon.classList.add('animate-spin');
+
+      try {
+        const res = await fetch(GAS_WEB_APP_URL);
+        const data = await res.json();
+        window.dataSdk._data = Array.isArray(data) ? data : [];
+        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
+      } catch (e) {
+        console.error('Sinkronisasi gagal', e);
+      }
+
+      if (icon) icon.classList.remove('animate-spin');
+    },
+    create: async (record) => {
+      const newRec = { ...record, __backendId: Date.now().toString(36) + Math.random().toString(36).substr(2) };
+      if (!GAS_WEB_APP_URL) {
         window.dataSdk._data.push(newRec);
-        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
-        return { isOk: true };
-      },
-      update: async (record) => {
-        const idx = window.dataSdk._data.findIndex(r => r.__backendId === record.__backendId);
-        if (idx !== -1) window.dataSdk._data[idx] = record;
-        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
-        return { isOk: true };
-      },
-      delete: async (record) => {
-        window.dataSdk._data = window.dataSdk._data.filter(r => r.__backendId !== record.__backendId);
+        localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
         if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
         return { isOk: true };
       }
-    };
-  }
+
+      try {
+        await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'create', record: newRec })
+        });
+        await window.dataSdk.sync(true); // Sinkronkan data terbaru sesudah berhasil input
+        return { isOk: true };
+      } catch(e) { return { isOk: false }; }
+    },
+    update: async (record) => {
+      if (!GAS_WEB_APP_URL) {
+        const idx = window.dataSdk._data.findIndex(r => r.__backendId === record.__backendId);
+        if (idx !== -1) window.dataSdk._data[idx] = record;
+        localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
+        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
+        return { isOk: true };
+      }
+
+      try {
+        await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'update', record: record })
+        });
+        await window.dataSdk.sync(true);
+        return { isOk: true };
+      } catch(e) { return { isOk: false }; }
+    },
+    delete: async (record) => {
+      if (!GAS_WEB_APP_URL) {
+        window.dataSdk._data = window.dataSdk._data.filter(r => r.__backendId !== record.__backendId);
+        localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
+        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
+        return { isOk: true };
+      }
+
+      try {
+        await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'delete', record: record })
+        });
+        await window.dataSdk.sync(true);
+        return { isOk: true };
+      } catch(e) { return { isOk: false }; }
+    }
+  };
 
   (async () => {
     await window.dataSdk.init(dataHandler);
   })();
+
+  // Handler Tombol Sync Manual
+  if(document.getElementById('btn-sync')){
+      document.getElementById('btn-sync').onclick = () => window.dataSdk.sync();
+  }
 
   // Toggle Antara Layar Login & Register
   document.getElementById('btn-go-register').onclick = () => {
