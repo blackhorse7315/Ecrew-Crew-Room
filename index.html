@@ -2,13 +2,19 @@
 <html class="h-full">
  <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0e27">
   <title>Ecrew - Crew Room</title>
+  
+  <link rel="icon" href="https://lh3.googleusercontent.com/d/1QjWJQ90JWfn6ZlrXJ7eu--bRbpuVvDT-" type="image/png">
+  <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1QjWJQ90JWfn6ZlrXJ7eu--bRbpuVvDT-">
+  <link id="pwa-manifest" rel="manifest">
+
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <script src="/_sdk/data_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;family=Lora:wght@400;600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Lora:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Poppins', sans-serif; }
     body { background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1629 100%); }
@@ -66,7 +72,8 @@
   </style>
   <style>body { box-sizing: border-box; }</style>
  </head>
- <body class="h-full"><!-- Splash Screen --> <!-- Login Screen -->
+ <body class="h-full">
+  
   <div id="login-screen" class="h-full w-full flex items-center justify-center p-4">
    <div class="w-full max-w-md">
     <div class="glow-border rounded-3xl p-8 relative">
@@ -79,7 +86,7 @@
      <h2 class="text-white text-center font-semibold text-xl mb-2">Crew Room</h2>
      <p class="text-slate-400 text-center text-sm mb-8">Access your flight operations portal</p>
      <form id="login-form" class="space-y-4">
-      <div><label class="text-slate-300 text-sm font-semibold block mb-2">Username</label> <input id="login-user" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="admin or aircrew">
+      <div><label class="text-slate-300 text-sm font-semibold block mb-2">Email / Username</label> <input id="login-user" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="email@ecrew.com atau admin">
       </div>
       <div><label class="text-slate-300 text-sm font-semibold block mb-2">Password</label> <input id="login-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="Enter password">
       </div>
@@ -90,8 +97,9 @@
      </div>
     </div>
    </div>
-  </div><!-- Main App -->
-  <div id="app" class="hidden h-full w-full overflow-auto"><!-- Header -->
+  </div>
+  
+  <div id="app" class="hidden h-full w-full overflow-auto">
    <header class="bg-slate-900/60 backdrop-blur-xl border-b border-slate-700/40 px-6 py-5 sticky top-0 z-30">
     <div class="max-w-7xl mx-auto flex items-center justify-between w-full">
      <div class="flex items-center gap-4 flex-1">
@@ -103,10 +111,13 @@
        <p id="dash-welcome" class="text-slate-400 text-xs font-medium">Welcome back, Captain!</p>
       </div>
      </div>
-     <div id="admin-controls" class="hidden flex items-center gap-3"><button id="btn-add" class="flex items-center gap-2 premium-gradient text-white font-semibold px-5 py-2.5 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20"> <i data-lucide="plus" class="w-4 h-4"></i> Add Menu </button>
+     <div id="admin-controls" class="hidden flex items-center gap-3">
+      <button id="btn-users" class="flex items-center gap-2 bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 font-semibold px-4 py-2.5 rounded-xl transition border border-indigo-500/30 smooth-button"> <i data-lucide="users" class="w-4 h-4"></i> Manage Users </button>
+      <button id="btn-add" class="flex items-center gap-2 premium-gradient text-white font-semibold px-5 py-2.5 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20"> <i data-lucide="plus" class="w-4 h-4"></i> Add Menu </button>
      </div><button id="btn-logout" class="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 font-medium px-4 py-2.5 rounded-xl transition border border-slate-700/30 smooth-button"> <i data-lucide="log-out" class="w-4 h-4"></i> Logout </button>
     </div>
-   </header><!-- Menu Grid -->
+   </header>
+   
    <main class="max-w-7xl mx-auto px-6 py-8">
     <div id="menu-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
     </div>
@@ -116,7 +127,8 @@
      <p class="text-slate-400 text-lg font-semibold">No menus yet</p>
      <p class="text-slate-500 text-sm mt-2">Click "Add Menu" to get started</p>
     </div>
-   </main><!-- Submenu Panel -->
+   </main>
+   
    <div id="submenu-overlay" class="hidden fixed inset-0 z-40 bg-slate-900 flex flex-col">
     <div class="bg-slate-800/80 border-b border-slate-700 px-6 py-4 flex items-center justify-between sticky top-0">
      <h2 id="submenu-title" class="text-white font-bold text-xl"></h2><button id="submenu-close" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
@@ -124,7 +136,9 @@
     <main class="flex-1 overflow-auto px-6 py-8">
      <div id="submenu-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
     </main>
-   </div><!-- Add/Edit Modal -->
+   </div>
+   
+   <!-- Menu Add/Edit Modal -->
    <div id="modal" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
     <div class="bg-slate-900 rounded-3xl w-full max-w-md glow-border slide-up">
      <div class="p-6 border-b border-slate-700/40 flex items-center justify-between">
@@ -149,9 +163,133 @@
      </form>
     </div>
    </div>
+
+   <!-- Manage Users Modal -->
+   <div id="users-modal" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-4xl glow-border slide-up flex flex-col max-h-[90vh]">
+     <div class="p-6 border-b border-slate-700/40 flex items-center justify-between">
+      <h2 class="text-white font-bold text-xl">Manage Users</h2><button id="users-modal-close" class="text-slate-400 hover:text-white transition hover:scale-110"><i data-lucide="x" class="w-5 h-5"></i></button>
+     </div>
+     <div class="flex-1 overflow-auto p-6 flex flex-col md:flex-row gap-8">
+      
+      <!-- Formulir Tambah User Baru -->
+      <div class="w-full md:w-[45%]">
+       <h3 class="text-white font-semibold mb-4 text-lg">Add New User</h3>
+       <form id="user-form" class="space-y-4">
+        <div><label class="text-slate-300 text-xs font-semibold block mb-1">Full Name</label><input id="u-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="Budi Santoso"></div>
+        <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="u-email" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="budi@ecrew.com"></div>
+        <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="u-pass" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="P@ssw0rd123"></div>
+        
+        <div class="flex gap-4">
+          <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
+           <select id="u-rank" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition">
+            <option value="Capt">Capt</option>
+            <option value="FO">FO</option>
+            <option value="CS">CS</option>
+            <option value="FOO">FOO</option>
+            <option value="HLO">HLO</option>
+            <option value="Flight Support">Flight Support</option>
+            <option value="-">None</option>
+           </select>
+          </div>
+          <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Role</label>
+           <select id="u-role" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+           </select>
+          </div>
+        </div>
+
+        <div class="pt-2"><button type="submit" id="btn-user-submit" class="w-full premium-gradient text-white font-semibold py-3 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20 flex justify-center items-center gap-2"><i data-lucide="user-plus" class="w-4 h-4"></i> Add User</button></div>
+        <div id="u-form-msg" class="hidden text-center text-xs py-2 px-3 rounded-lg mt-2"></div>
+       </form>
+      </div>
+
+      <!-- User Directory -->
+      <div class="w-full md:w-[55%] border-t md:border-t-0 md:border-l border-slate-700/50 pt-6 md:pt-0 md:pl-8 flex flex-col">
+       <h3 class="text-white font-semibold mb-4 text-lg flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5 text-cyan-400"></i> User Directory</h3>
+       <div id="users-list" class="flex-1 space-y-3 overflow-y-auto pr-2 max-h-[380px]">
+        </div>
+      </div>
+
+     </div>
+    </div>
+   </div>
+   
+   <!-- Edit User Pop-up Modal -->
+   <div id="edit-user-modal" class="hidden fixed inset-0 z-[60] modal-overlay flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border slide-up border border-cyan-500/30">
+     <div class="p-5 border-b border-slate-700/40 flex items-center justify-between">
+      <h2 class="text-white font-bold text-lg">Edit User</h2><button id="edit-user-modal-close" class="text-slate-400 hover:text-white transition hover:scale-110"><i data-lucide="x" class="w-5 h-5"></i></button>
+     </div>
+     <form id="edit-user-form" class="p-6 space-y-4">
+      <div><label class="text-slate-300 text-xs font-semibold block mb-1">Full Name</label><input id="eu-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition"></div>
+      <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="eu-email" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition"></div>
+      <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="eu-pass" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition"></div>
+      <div class="flex gap-4">
+        <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
+         <select id="eu-rank" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition">
+          <option value="Capt">Capt</option>
+          <option value="FO">FO</option>
+          <option value="CS">CS</option>
+          <option value="FOO">FOO</option>
+          <option value="HLO">HLO</option>
+          <option value="Flight Support">Flight Support</option>
+          <option value="-">None</option>
+         </select>
+        </div>
+        <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Role</label>
+         <select id="eu-role" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+         </select>
+        </div>
+      </div>
+      <div class="pt-3 flex gap-3">
+        <button type="submit" id="btn-eu-submit" class="flex-1 premium-gradient text-white font-semibold py-2.5 rounded-xl transition smooth-button">Update</button>
+      </div>
+      <div id="eu-form-msg" class="hidden text-center text-xs py-2 px-3 rounded-lg mt-2"></div>
+     </form>
+    </div>
+   </div>
+
   </div>
+
   <script>
-  // Image conversion helper
+  // ==========================================
+  // PWA (Progressive Web App) Setup
+  // ==========================================
+  const appLogoUrl = 'https://lh3.googleusercontent.com/d/1QjWJQ90JWfn6ZlrXJ7eu--bRbpuVvDT-';
+  const manifestData = {
+    name: "Ecrew - Crew Room",
+    short_name: "Ecrew",
+    description: "Portal operasi penerbangan Ecrew",
+    start_url: window.location.href,
+    display: "standalone",
+    background_color: "#0a0e27",
+    theme_color: "#0a0e27",
+    icons: [
+      { src: appLogoUrl, sizes: "192x192", type: "image/png", purpose: "any maskable" },
+      { src: appLogoUrl, sizes: "512x512", type: "image/png", purpose: "any maskable" }
+    ]
+  };
+  
+  const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+  document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
+
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+      self.addEventListener('install', (e) => self.skipWaiting());
+      self.addEventListener('activate', (e) => self.clients.claim());
+      self.addEventListener('fetch', (e) => {
+        e.respondWith(fetch(e.request).catch(() => new Response('Sedang offline. Hubungkan ke internet untuk mengakses Ecrew.')));
+      });
+    `;
+    const swBlob = new Blob([swCode], { type: 'application/javascript' });
+    navigator.serviceWorker.register(URL.createObjectURL(swBlob))
+      .catch(err => console.log('PWA Service Worker tidak dapat diinisiasi:', err));
+  }
+
   function convertGoogleDriveUrl(url) {
     if (!url) return '';
     const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
@@ -161,15 +299,17 @@
     return url;
   }
 
-
-  // Auth state
   let currentUser = null;
   let isAdmin = false;
+  
+  let allRawData = []; 
   let allMenus = [];
+  let allUsers = [];
+  
   let editingItem = null;
   let imageUrl = '';
-  let currentView = 'dashboard'; // 'dashboard' or 'submenu'
-
+  let currentView = 'dashboard';
+  let userBeingEdited = null; // Digunakan untuk menyimpan ID user yang sedang di edit
 
   const defaultConfig = {
     dashboard_title: 'Ecrew - Crew Room',
@@ -183,57 +323,114 @@
     font_size: 14
   };
 
-
-  // Element SDK
-  window.elementSdk.init({
-    defaultConfig,
-    onConfigChange: async (config) => {
-      const c = { ...defaultConfig, ...config };
-      if (document.getElementById('dash-title')) {
-        document.getElementById('dash-title').textContent = c.dashboard_title;
-        document.getElementById('dash-welcome').textContent = c.welcome_text;
-        document.getElementById('app').style.background = c.bg_color;
-        document.querySelectorAll('.menu-card').forEach(el => el.style.background = c.card_color);
-        document.body.style.fontFamily = `${c.font_family}, sans-serif`;
-        document.body.style.fontSize = c.font_size + 'px';
+  if (window.elementSdk) {
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => {
+        const c = { ...defaultConfig, ...config };
+        if (document.getElementById('dash-title')) {
+          document.getElementById('dash-title').textContent = c.dashboard_title;
+          document.getElementById('dash-welcome').textContent = c.welcome_text;
+          document.getElementById('app').style.background = c.bg_color;
+          document.querySelectorAll('.menu-card').forEach(el => el.style.background = c.card_color);
+          document.body.style.fontFamily = `${c.font_family}, sans-serif`;
+          document.body.style.fontSize = c.font_size + 'px';
+        }
+      },
+      mapToCapabilities: (config) => {
+        const c = { ...defaultConfig, ...config };
+        const make = (key) => ({
+          get: () => c[key] || defaultConfig[key],
+          set: (v) => { c[key] = v; window.elementSdk.setConfig({ [key]: v }); }
+        });
+        return {
+          recolorables: [make('bg_color'), make('card_color'), make('text_color'), make('accent_color'), make('secondary_color')],
+          borderables: [],
+          fontEditable: make('font_family'),
+          fontSizeable: make('font_size')
+        };
+      },
+      mapToEditPanelValues: (config) => {
+        const c = { ...defaultConfig, ...config };
+        return new Map([
+          ['dashboard_title', c.dashboard_title],
+          ['welcome_text', c.welcome_text]
+        ]);
       }
-    },
-    mapToCapabilities: (config) => {
-      const c = { ...defaultConfig, ...config };
-      const make = (key) => ({
-        get: () => c[key] || defaultConfig[key],
-        set: (v) => { c[key] = v; window.elementSdk.setConfig({ [key]: v }); }
-      });
-      return {
-        recolorables: [make('bg_color'), make('card_color'), make('text_color'), make('accent_color'), make('secondary_color')],
-        borderables: [],
-        fontEditable: make('font_family'),
-        fontSizeable: make('font_size')
-      };
-    },
-    mapToEditPanelValues: (config) => {
-      const c = { ...defaultConfig, ...config };
-      return new Map([
-        ['dashboard_title', c.dashboard_title],
-        ['welcome_text', c.welcome_text]
-      ]);
-    }
-  });
+    });
+  }
 
-
-  // Data SDK
   const dataHandler = {
     onDataChanged(data) {
-      allMenus = data;
+      allRawData = data || [];
+      
+      // MAPPING: Memisahkan User
+      allUsers = allRawData
+        .filter(d => d.parent_id === 'SYSTEM_USER_RECORD')
+        .map(d => {
+          let pass = d.url || '';
+          let rank = '-';
+          
+          // Mengurai JSON yang menyembunyikan Password dan Rank dari kolom URL
+          if (pass.startsWith('{')) {
+            try {
+              const parsed = JSON.parse(pass);
+              pass = parsed.p || '';
+              rank = parsed.r || '-';
+            } catch(e) {}
+          }
+
+          return {
+            __backendId: d.__backendId,
+            id: d.id,
+            name: d.name,
+            email: d.image_url, 
+            password: pass,    
+            rank: rank,
+            role: d.order === 1 ? 'admin' : 'user'
+          };
+        });
+        
+      allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD');
+      
+      if (document.getElementById('users-modal') && !document.getElementById('users-modal').classList.contains('hidden')) {
+        renderUsersList();
+      }
       renderMenus();
     }
   };
 
+  // MOCK SDK JIKA TIDAK TERSEDIA (Mencegah error 'Cannot read properties of undefined (reading create)')
+  if (!window.dataSdk) {
+    window.dataSdk = {
+      _data: [],
+      init: async (handler) => {
+        window.dataSdk._handler = handler;
+        handler.onDataChanged(window.dataSdk._data);
+      },
+      create: async (record) => {
+        const newRec = { ...record, __backendId: Date.now().toString(36) + Math.random().toString(36).substr(2) };
+        window.dataSdk._data.push(newRec);
+        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
+        return { isOk: true };
+      },
+      update: async (record) => {
+        const idx = window.dataSdk._data.findIndex(r => r.__backendId === record.__backendId);
+        if (idx !== -1) window.dataSdk._data[idx] = record;
+        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
+        return { isOk: true };
+      },
+      delete: async (record) => {
+        window.dataSdk._data = window.dataSdk._data.filter(r => r.__backendId !== record.__backendId);
+        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
+        return { isOk: true };
+      }
+    };
+  }
 
   (async () => {
     await window.dataSdk.init(dataHandler);
   })();
-
 
   // Login handler
   document.getElementById('login-form').onsubmit = (e) => {
@@ -242,47 +439,46 @@
     const pass = document.getElementById('login-pass').value.trim();
     const errorEl = document.getElementById('login-error');
 
+    const validMasterAdmin = user === 'admin' && pass === 'ramdan28';
+    const dbUser = allUsers.find(u => u.email.toLowerCase() === user && u.password === pass);
 
-    const validAdmin = user === 'admin' && pass === 'ramdan28';
-    const validUser = user === 'aircrew' && pass === 'flightopstwa';
-
-
-    if (!validAdmin && !validUser) {
-      errorEl.textContent = '❌ Invalid username or password';
+    if (!validMasterAdmin && !dbUser) {
+      errorEl.textContent = '❌ Invalid email/username or password';
       errorEl.classList.remove('hidden');
       return;
     }
 
-
-    currentUser = user;
-    isAdmin = validAdmin;
+    errorEl.classList.add('hidden');
     
-    // Show dashboard directly
+    if (dbUser) {
+      currentUser = dbUser;
+      isAdmin = dbUser.role === 'admin';
+    } else {
+      currentUser = { name: 'Master Admin', role: 'admin', rank: 'Admin' };
+      isAdmin = true;
+    }
+    
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     
-    // Show/hide admin controls
     if (isAdmin) {
       document.getElementById('admin-controls').classList.remove('hidden');
-      document.getElementById('dash-welcome').textContent = '🔐 Admin Panel - Manage all menus';
+      document.getElementById('dash-welcome').textContent = `🔐 Admin Panel - Welcome, ${currentUser.name}`;
     } else {
       document.getElementById('admin-controls').classList.add('hidden');
-      document.getElementById('dash-welcome').textContent = '✈️ Welcome, Aircrew Member!';
+      let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
+      if(currentUser.rank && currentUser.rank !== '-') {
+         titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
+      }
+      document.getElementById('dash-welcome').textContent = titleTxt;
     }
-
 
     renderMenus();
     lucide.createIcons();
   };
 
+  document.getElementById('btn-back').onclick = () => showDashboard();
 
-  // Back button handler
-  document.getElementById('btn-back').onclick = () => {
-    showDashboard();
-  };
-
-
-  // Logout handler
   document.getElementById('btn-logout').onclick = () => {
     currentUser = null;
     isAdmin = false;
@@ -293,8 +489,188 @@
     lucide.createIcons();
   };
 
+  // ==========================================
+  // USERS MANAGEMENT LOGIC
+  // ==========================================
+  document.getElementById('btn-users').onclick = () => {
+    document.getElementById('users-modal').classList.remove('hidden');
+    renderUsersList();
+  };
 
-  // Dashboard view
+  document.getElementById('users-modal-close').onclick = () => {
+    document.getElementById('users-modal').classList.add('hidden');
+  };
+
+  document.getElementById('users-modal').onclick = (e) => {
+    if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden');
+  };
+
+  document.getElementById('edit-user-modal-close').onclick = () => {
+    document.getElementById('edit-user-modal').classList.add('hidden');
+    userBeingEdited = null;
+  };
+
+  function renderUsersList() {
+    const list = document.getElementById('users-list');
+    if (allUsers.length === 0) {
+      list.innerHTML = '<div class="text-center py-10 text-slate-500 text-sm flex flex-col items-center"><i data-lucide="users-2" class="w-10 h-10 mb-2 opacity-30"></i>Belum ada pengguna terdaftar.</div>';
+      lucide.createIcons();
+      return;
+    }
+    
+    list.innerHTML = allUsers.map(u => `
+      <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-3 flex justify-between items-center group hover:bg-slate-800/80 transition">
+        <div class="truncate pr-2">
+          <p class="text-white text-sm font-semibold truncate">${u.name} <span class="text-cyan-400 text-xs ml-1 opacity-80 font-normal border border-cyan-500/30 px-1.5 py-0.5 rounded-md">${u.rank}</span></p>
+          <p class="text-slate-400 text-xs mt-1 truncate">${u.email} &bull; <span class="${u.role === 'admin' ? 'text-indigo-400' : 'text-emerald-400'} font-medium capitalize">${u.role}</span></p>
+        </div>
+        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+          <button type="button" onclick="openEditUser('${u.__backendId}')" class="text-slate-400 hover:text-blue-400 p-2 rounded-lg hover:bg-blue-500/10 transition" title="Edit User"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+          <button type="button" onclick="deleteUserRecord('${u.__backendId}')" class="text-slate-400 hover:text-red-400 p-2 rounded-lg hover:bg-red-500/10 transition" title="Delete User"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+    `).join('');
+    lucide.createIcons();
+  }
+
+  // Open Edit User Pop-up
+  window.openEditUser = (backendId) => {
+    const user = allUsers.find(u => u.__backendId === backendId);
+    if (!user) return;
+    
+    userBeingEdited = backendId;
+    document.getElementById('eu-name').value = user.name;
+    document.getElementById('eu-email').value = user.email;
+    document.getElementById('eu-pass').value = user.password;
+    document.getElementById('eu-rank').value = user.rank || '-';
+    document.getElementById('eu-role').value = user.role;
+    
+    document.getElementById('eu-form-msg').classList.add('hidden');
+    document.getElementById('edit-user-modal').classList.remove('hidden');
+  };
+
+  // Delete User
+  window.deleteUserRecord = async (backendId) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus user ini?')) return;
+    const rawUserToDelete = allRawData.find(d => d.__backendId === backendId);
+    if (rawUserToDelete) {
+      await window.dataSdk.delete(rawUserToDelete);
+    }
+  };
+
+  // Handler: Add User
+  document.getElementById('user-form').onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-user-submit');
+    const msgEl = document.getElementById('u-form-msg');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-pulse">Menyimpan...</span>';
+
+    const name = document.getElementById('u-name').value.trim();
+    const email = document.getElementById('u-email').value.trim().toLowerCase();
+    const password = document.getElementById('u-pass').value.trim();
+    const role = document.getElementById('u-role').value;
+    const rank = document.getElementById('u-rank').value;
+
+    if (allUsers.some(u => u.email === email)) {
+      msgEl.textContent = '❌ Email/Username sudah digunakan!';
+      msgEl.className = 'text-center text-xs py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
+      msgEl.classList.remove('hidden');
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="user-plus" class="w-4 h-4"></i> Add User';
+      lucide.createIcons();
+      return;
+    }
+
+    const secretData = JSON.stringify({ p: password, r: rank });
+
+    const newRawUser = {
+      id: 'user_' + Date.now().toString(36),
+      name: name,
+      image_url: email, 
+      url: secretData,    
+      parent_id: 'SYSTEM_USER_RECORD', 
+      is_submenu: true, 
+      order: role === 'admin' ? 1 : 0 
+    };
+
+    const result = await window.dataSdk.create(newRawUser);
+    
+    if (result.isOk) {
+      document.getElementById('user-form').reset();
+      msgEl.textContent = '✅ User berhasil ditambahkan!';
+      msgEl.className = 'text-center text-xs py-2 px-3 rounded-lg mt-2 bg-green-500/20 text-green-300';
+      msgEl.classList.remove('hidden');
+      setTimeout(() => msgEl.classList.add('hidden'), 3000);
+    } else {
+      msgEl.textContent = '❌ Gagal menambahkan user.';
+      msgEl.className = 'text-center text-xs py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
+      msgEl.classList.remove('hidden');
+    }
+    
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="user-plus" class="w-4 h-4"></i> Add User';
+    lucide.createIcons();
+  };
+
+  // Handler: Edit User Update
+  document.getElementById('edit-user-form').onsubmit = async (e) => {
+    e.preventDefault();
+    if (!userBeingEdited) return;
+
+    const btn = document.getElementById('btn-eu-submit');
+    const msgEl = document.getElementById('eu-form-msg');
+    
+    btn.disabled = true;
+    btn.textContent = 'Updating...';
+
+    const name = document.getElementById('eu-name').value.trim();
+    const email = document.getElementById('eu-email').value.trim().toLowerCase();
+    const password = document.getElementById('eu-pass').value.trim();
+    const role = document.getElementById('eu-role').value;
+    const rank = document.getElementById('eu-rank').value;
+
+    if (allUsers.some(u => u.email === email && u.__backendId !== userBeingEdited)) {
+      msgEl.textContent = '❌ Email/Username sudah digunakan oleh user lain!';
+      msgEl.className = 'text-center text-xs py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
+      msgEl.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Update';
+      return;
+    }
+
+    const secretData = JSON.stringify({ p: password, r: rank });
+    const rawUserToUpdate = allRawData.find(d => d.__backendId === userBeingEdited);
+
+    if (rawUserToUpdate) {
+      const updatedRecord = {
+        ...rawUserToUpdate,
+        name: name,
+        image_url: email,
+        url: secretData,
+        order: role === 'admin' ? 1 : 0
+      };
+
+      const result = await window.dataSdk.update(updatedRecord);
+      
+      if (result.isOk) {
+        document.getElementById('edit-user-modal').classList.add('hidden');
+        userBeingEdited = null;
+      } else {
+        msgEl.textContent = '❌ Gagal memperbarui data user.';
+        msgEl.className = 'text-center text-xs py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
+        msgEl.classList.remove('hidden');
+      }
+    }
+    
+    btn.disabled = false;
+    btn.textContent = 'Update';
+  };
+
+  // ==========================================
+  // DASHBOARD & MENU LOGIC
+  // ==========================================
   function showDashboard() {
     currentView = 'dashboard';
     document.getElementById('btn-back').classList.add('hidden');
@@ -302,13 +678,10 @@
     document.getElementById('submenu-overlay').classList.add('hidden');
   }
 
-
-  // Render main menus
   function renderMenus() {
     const grid = document.getElementById('menu-grid');
     const empty = document.getElementById('empty-state');
     const mainMenus = allMenus.filter(m => !m.is_submenu || !m.parent_id);
-
 
     if (mainMenus.length === 0) {
       grid.innerHTML = '';
@@ -321,7 +694,6 @@
       return;
     }
     empty.classList.add('hidden');
-
 
     const existingIds = new Set();
     mainMenus.forEach((menu, i) => {
@@ -371,17 +743,13 @@
       };
     });
 
-
     [...grid.children].forEach(el => {
       if (!existingIds.has(el.dataset.id)) el.remove();
     });
 
-
     lucide.createIcons();
   }
 
-
-  // Open submenu
   function openSubmenu(parent) {
     currentView = 'submenu';
     const overlay = document.getElementById('submenu-overlay');
@@ -418,10 +786,6 @@
     lucide.createIcons();
   }
 
-
-  document.getElementById('submenu-close').onclick = () => showDashboard();
-
-
   function openModal(edit = null) {
     editingItem = edit;
     imageUrl = edit?.image_url || '';
@@ -433,7 +797,6 @@
     document.getElementById('btn-duplicate').classList.toggle('hidden', !edit);
     document.getElementById('form-msg').classList.add('hidden');
 
-
     if (imageUrl) {
       document.getElementById('img-preview').src = imageUrl;
       document.getElementById('img-preview-wrap').classList.remove('hidden');
@@ -441,23 +804,18 @@
       document.getElementById('img-preview-wrap').classList.add('hidden');
     }
 
-
     const sel = document.getElementById('f-parent');
     const mains = allMenus.filter(m => !m.is_submenu && (!edit || m.__backendId !== edit.__backendId));
     sel.innerHTML = '<option value="">— None (Main Menu) —</option>' + mains.map(m => `<option value="${m.id}" ${edit?.parent_id === m.id ? 'selected' : ''}>${m.name}</option>`).join('');
 
-
     document.getElementById('modal').classList.remove('hidden');
   }
 
-
   function openEdit(item) { openModal(item); }
-
 
   document.getElementById('btn-add').onclick = () => openModal();
   document.getElementById('modal-close').onclick = () => document.getElementById('modal').classList.add('hidden');
   document.getElementById('modal').onclick = (e) => { if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden'); };
-
 
   document.getElementById('f-image').onchange = (e) => {
     const url = e.target.value.trim();
@@ -471,22 +829,18 @@
     document.getElementById('img-preview-wrap').classList.remove('hidden');
   };
 
-
   document.getElementById('menu-form').onsubmit = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-submit');
     btn.disabled = true;
     btn.innerHTML = '<span class="animate-pulse">Saving...</span>';
 
-
     const name = document.getElementById('f-name').value.trim();
     const url = document.getElementById('f-url').value.trim();
     const imgUrl = document.getElementById('f-image').value.trim();
     const parentId = document.getElementById('f-parent').value;
 
-
     const finalImageUrl = convertGoogleDriveUrl(imgUrl);
-
 
     const record = {
       id: editingItem?.id || Date.now().toString(36) + Math.random().toString(36).slice(2,6),
@@ -497,7 +851,6 @@
       parent_id: parentId,
       order: editingItem?.order || allMenus.length
     };
-
 
     let result;
     if (editingItem) {
@@ -513,7 +866,6 @@
       result = await window.dataSdk.create(record);
     }
 
-
     if (result.isOk) {
       document.getElementById('modal').classList.add('hidden');
       document.getElementById('submenu-overlay').classList.add('hidden');
@@ -525,14 +877,11 @@
     lucide.createIcons();
   };
 
-
-  // Duplicate
   document.getElementById('btn-duplicate').onclick = async () => {
     if (!editingItem) return;
     const btn = document.getElementById('btn-duplicate');
     btn.disabled = true;
     btn.innerHTML = '<span class="animate-pulse">...</span>';
-
 
     const newRecord = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
@@ -543,7 +892,6 @@
       parent_id: editingItem.parent_id,
       order: allMenus.length
     };
-
 
     const result = await window.dataSdk.create(newRecord);
     if (result.isOk) {
@@ -557,8 +905,6 @@
     lucide.createIcons();
   };
 
-
-  // Delete
   document.getElementById('btn-delete').onclick = async () => {
     if (!editingItem) return;
     const btn = document.getElementById('btn-delete');
@@ -578,7 +924,6 @@
     lucide.createIcons();
   };
 
-
   function showFormMsg(text, isError) {
     const el = document.getElementById('form-msg');
     el.textContent = text;
@@ -586,8 +931,7 @@
     el.classList.remove('hidden');
   }
 
-
   lucide.createIcons();
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0221b2cdbeb3da1',t:'MTc3OTg1NDM1OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
