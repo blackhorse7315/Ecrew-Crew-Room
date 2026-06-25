@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#0a0e27">
   <title>Ecrew - Crew Room</title>
   
-  <link rel="icon" href="https://lh3.googleusercontent.com/d/1QjWJQ90JWfn6ZlrXJ7eu--bRbpuVvDT-" type="image/png">
-  <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1QjWJQ90JWfn6ZlrXJ7eu--bRbpuVvDT-">
+  <link rel="icon" href="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" type="image/png">
+  <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ">
   <link id="pwa-manifest" rel="manifest">
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -80,7 +80,7 @@
     <div class="glow-border rounded-3xl p-8 relative">
      <div class="absolute inset-0 bg-gradient-to-br from-slate-900/80 to-slate-900/60 rounded-3xl -z-10"></div>
      <div class="flex items-center justify-center gap-4 mb-8">
-      <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/20"><img src="https://lh3.googleusercontent.com/d/1QjWJQ90JWfn6ZlrXJ7eu--bRbpuVvDT-" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl">
+      <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/20"><img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl">
       </div>
       <h1 class="text-white font-bold text-3xl text-gradient">Ecrew</h1>
      </div>
@@ -140,7 +140,7 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between w-full">
      <div class="flex items-center gap-4 flex-1">
       <button id="btn-back" class="hidden text-slate-300 hover:text-white transition hover:scale-110"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
-      <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/20"><img src="https://lh3.googleusercontent.com/d/1QjWJQ90JWfn6ZlrXJ7eu--bRbpuVvDT-" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl">
+      <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/20"><img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl">
       </div>
       <div>
        <h1 id="dash-title" class="text-white font-bold text-lg tracking-tight">Ecrew - Crew Room</h1>
@@ -303,7 +303,7 @@
   // ==========================================
   // PWA (Progressive Web App) Setup
   // ==========================================
-  const appLogoUrl = 'https://lh3.googleusercontent.com/d/1QjWJQ90JWfn6ZlrXJ7eu--bRbpuVvDT-';
+  const appLogoUrl = 'https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ';
   const manifestData = {
     name: "Ecrew - Crew Room",
     short_name: "Ecrew",
@@ -362,7 +362,56 @@
   let editingItem = null;
   let imageUrl = '';
   let currentView = 'dashboard';
-  let userBeingEdited = null; // Digunakan untuk menyimpan ID user yang sedang di edit
+  let userBeingEdited = null;
+
+  // ==========================================
+  // Manajemen History API untuk Tombol "Back" Fisik HP
+  // ==========================================
+  history.replaceState({ view: 'login' }, '');
+
+  window.addEventListener('popstate', (e) => {
+    const state = e.state || { view: 'login' };
+    
+    // Selalu pastikan semua modal tertutup saat terjadi navigasi "Back"
+    document.getElementById('modal').classList.add('hidden');
+    document.getElementById('users-modal').classList.add('hidden');
+    document.getElementById('edit-user-modal').classList.add('hidden');
+    userBeingEdited = null;
+
+    // Keamanan ekstra: cegah kembali ke dashboard jika statusnya belum login
+    if (!currentUser && state.view !== 'login' && state.view !== 'register') {
+        history.replaceState({ view: 'login' }, '');
+        document.getElementById('login-screen').classList.remove('hidden');
+        document.getElementById('app').classList.add('hidden');
+        document.getElementById('view-register').classList.add('hidden');
+        document.getElementById('view-login').classList.remove('hidden');
+        return;
+    }
+
+    if (state.view === 'login') {
+       document.getElementById('login-screen').classList.remove('hidden');
+       document.getElementById('app').classList.add('hidden');
+       document.getElementById('view-register').classList.add('hidden');
+       document.getElementById('view-login').classList.remove('hidden');
+    } else if (state.view === 'register') {
+       document.getElementById('login-screen').classList.remove('hidden');
+       document.getElementById('app').classList.add('hidden');
+       document.getElementById('view-login').classList.add('hidden');
+       document.getElementById('view-register').classList.remove('hidden');
+    } else if (state.view === 'dashboard') {
+       document.getElementById('login-screen').classList.add('hidden');
+       document.getElementById('app').classList.remove('hidden');
+       showDashboard(true);
+    } else if (state.view === 'submenu') {
+       document.getElementById('login-screen').classList.add('hidden');
+       document.getElementById('app').classList.remove('hidden');
+       document.getElementById('submenu-overlay').classList.remove('hidden');
+       document.getElementById('btn-back').classList.remove('hidden');
+       document.getElementById('menu-grid').parentElement.classList.add('hidden');
+       currentView = 'submenu';
+    }
+  });
+
 
   const defaultConfig = {
     dashboard_title: 'Ecrew - Crew Room',
@@ -424,7 +473,6 @@
           let pass = d.url || '';
           let rank = '-';
           
-          // Mengurai JSON yang menyembunyikan Password dan Rank dari kolom URL
           if (pass.startsWith('{')) {
             try {
               const parsed = JSON.parse(pass);
@@ -456,16 +504,11 @@
   // URL WEB APP GOOGLE APPS SCRIPT ANDA
   const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx5tHULYdvZGdUrDPnhSFfR-gSbB0WlB2cDpTmXt7_5mNVYMlSPGsnOwO3xhKsDD4OP/exec"; 
 
-  // SDK DATABASE TERINTEGRASI GOOGLE SHEETS
   window.dataSdk = {
     _data: [],
     init: async (handler) => {
       window.dataSdk._handler = handler;
-
-     
-
       await window.dataSdk.sync();
-      // Auto-sync setiap 5 menit (300.000 ms)
       setInterval(() => window.dataSdk.sync(true), 300000);
     },
 
@@ -546,25 +589,25 @@
     await window.dataSdk.init(dataHandler);
   })();
 
-  // Handler Tombol Sync Manual
   if(document.getElementById('btn-sync')){
       document.getElementById('btn-sync').onclick = () => window.dataSdk.sync();
   }
 
-  // Toggle Antara Layar Login & Register
+  // Toggle Antara Layar Login & Register dengan menggunakan History State
   document.getElementById('btn-go-register').onclick = () => {
+    history.pushState({ view: 'register' }, '');
     document.getElementById('view-login').classList.add('hidden');
     document.getElementById('view-register').classList.remove('hidden');
     document.getElementById('login-error').classList.add('hidden');
   };
 
   document.getElementById('btn-go-login').onclick = () => {
+    history.pushState({ view: 'login' }, '');
     document.getElementById('view-register').classList.add('hidden');
     document.getElementById('view-login').classList.remove('hidden');
     document.getElementById('r-form-msg').classList.add('hidden');
   };
 
-  // Handler: Register Pengguna Baru dari Luar
   document.getElementById('register-form').onsubmit = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-register-submit');
@@ -578,7 +621,6 @@
     const password = document.getElementById('r-pass').value.trim();
     const rank = document.getElementById('r-rank').value;
 
-    // Cek apakah email sudah dipakai
     if (allUsers.some(u => u.email === email)) {
       msgEl.textContent = '❌ Email/Username sudah terdaftar!';
       msgEl.className = 'text-center text-sm py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
@@ -597,7 +639,7 @@
       url: secretData,    
       parent_id: 'SYSTEM_USER_RECORD', 
       is_submenu: true, 
-      order: 0 // Otomatis sebagai USER
+      order: 0 
     };
 
     const result = await window.dataSdk.create(newRawUser);
@@ -608,12 +650,11 @@
       msgEl.className = 'text-center text-sm font-semibold py-3 px-3 rounded-lg mt-2 bg-green-500/20 text-green-300';
       msgEl.classList.remove('hidden');
       
-      // Mengalihkan secara otomatis ke halaman login setelah 2 detik
       setTimeout(() => {
         msgEl.classList.add('hidden');
+        history.pushState({ view: 'login' }, '');
         document.getElementById('view-register').classList.add('hidden');
         document.getElementById('view-login').classList.remove('hidden');
-        // Isi otomatis email ke form login agar memudahkan user
         document.getElementById('login-user').value = email; 
       }, 2000);
     } else {
@@ -626,7 +667,6 @@
     btn.textContent = 'Register';
   };
 
-  // Login handler
   document.getElementById('login-form').onsubmit = (e) => {
     e.preventDefault();
     const user = document.getElementById('login-user').value.trim().toLowerCase();
@@ -652,6 +692,8 @@
       isAdmin = true;
     }
     
+    history.pushState({ view: 'dashboard' }, '');
+
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     
@@ -671,11 +713,12 @@
     lucide.createIcons();
   };
 
-  document.getElementById('btn-back').onclick = () => showDashboard();
+  document.getElementById('btn-back').onclick = () => history.back();
 
   document.getElementById('btn-logout').onclick = () => {
     currentUser = null;
     isAdmin = false;
+    history.pushState({ view: 'login' }, '');
     document.getElementById('login-screen').classList.remove('hidden');
     document.getElementById('app').classList.add('hidden');
     document.getElementById('login-form').reset();
@@ -687,22 +730,18 @@
   // USERS MANAGEMENT LOGIC
   // ==========================================
   document.getElementById('btn-users').onclick = () => {
+    history.pushState({ view: 'modal_users' }, '');
     document.getElementById('users-modal').classList.remove('hidden');
     renderUsersList();
   };
 
-  document.getElementById('users-modal-close').onclick = () => {
-    document.getElementById('users-modal').classList.add('hidden');
-  };
+  document.getElementById('users-modal-close').onclick = () => history.back();
 
   document.getElementById('users-modal').onclick = (e) => {
-    if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden');
+    if (e.target === e.currentTarget) history.back();
   };
 
-  document.getElementById('edit-user-modal-close').onclick = () => {
-    document.getElementById('edit-user-modal').classList.add('hidden');
-    userBeingEdited = null;
-  };
+  document.getElementById('edit-user-modal-close').onclick = () => history.back();
 
   function renderUsersList() {
     const list = document.getElementById('users-list');
@@ -727,7 +766,6 @@
     lucide.createIcons();
   }
 
-  // Open Edit User Pop-up
   window.openEditUser = (backendId) => {
     const user = allUsers.find(u => u.__backendId === backendId);
     if (!user) return;
@@ -739,11 +777,11 @@
     document.getElementById('eu-rank').value = user.rank || '-';
     document.getElementById('eu-role').value = user.role;
     
+    history.pushState({ view: 'modal_edit_user' }, '');
     document.getElementById('eu-form-msg').classList.add('hidden');
     document.getElementById('edit-user-modal').classList.remove('hidden');
   };
 
-  // Delete User
   window.deleteUserRecord = async (backendId) => {
     if (!confirm('Apakah Anda yakin ingin menghapus user ini?')) return;
     const rawUserToDelete = allRawData.find(d => d.__backendId === backendId);
@@ -752,7 +790,6 @@
     }
   };
 
-  // Handler: Add User
   document.getElementById('user-form').onsubmit = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-user-submit');
@@ -808,7 +845,6 @@
     lucide.createIcons();
   };
 
-  // Handler: Edit User Update
   document.getElementById('edit-user-form').onsubmit = async (e) => {
     e.preventDefault();
     if (!userBeingEdited) return;
@@ -849,8 +885,7 @@
       const result = await window.dataSdk.update(updatedRecord);
       
       if (result.isOk) {
-        document.getElementById('edit-user-modal').classList.add('hidden');
-        userBeingEdited = null;
+        history.back(); // Trigger popstate untuk kembali / tutup modal
       } else {
         msgEl.textContent = '❌ Gagal memperbarui data user.';
         msgEl.className = 'text-center text-xs py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
@@ -865,7 +900,11 @@
   // ==========================================
   // DASHBOARD & MENU LOGIC
   // ==========================================
-  function showDashboard() {
+  function showDashboard(fromPopState = false) {
+    if (!fromPopState && currentView === 'submenu') {
+      history.back(); // Jika tidak melalui popstate, trigger history agar state sinkron
+      return;
+    }
     currentView = 'dashboard';
     document.getElementById('btn-back').classList.add('hidden');
     document.getElementById('menu-grid').parentElement.classList.remove('hidden');
@@ -946,6 +985,7 @@
   }
 
   function openSubmenu(parent) {
+    history.pushState({ view: 'submenu' }, '');
     currentView = 'submenu';
     const overlay = document.getElementById('submenu-overlay');
     document.getElementById('btn-back').classList.remove('hidden');
@@ -984,11 +1024,12 @@
   lucide.createIcons();
 }
 
-document.getElementById('submenu-close').onclick = () => showDashboard();
-document.getElementById('submenu-back-btn').onclick = () => showDashboard();
-document.getElementById('submenu-dash-btn').onclick = () => showDashboard();
+document.getElementById('submenu-close').onclick = () => history.back();
+document.getElementById('submenu-back-btn').onclick = () => history.back();
+document.getElementById('submenu-dash-btn').onclick = () => history.back();
 
 function openModal(edit = null) {
+  history.pushState({ view: 'modal_menu' }, '');
   editingItem = edit;
   imageUrl = edit?.image_url || '';
   document.getElementById('modal-title').textContent = edit ? 'Edit Menu' : 'Add Menu';
@@ -1016,8 +1057,8 @@ function openModal(edit = null) {
 function openEdit(item) { openModal(item); }
 
 document.getElementById('btn-add').onclick = () => openModal();
-document.getElementById('modal-close').onclick = () => document.getElementById('modal').classList.add('hidden');
-document.getElementById('modal').onclick = (e) => { if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden'); };
+document.getElementById('modal-close').onclick = () => history.back();
+document.getElementById('modal').onclick = (e) => { if (e.target === e.currentTarget) history.back(); };
 
 document.getElementById('f-image').onchange = (e) => {
   const url = e.target.value.trim();
@@ -1071,8 +1112,7 @@ document.getElementById('menu-form').onsubmit = async (e) => {
     }
 
     if (result.isOk) {
-      document.getElementById('modal').classList.add('hidden');
-      document.getElementById('submenu-overlay').classList.add('hidden');
+      history.back(); // Tutup modal dengan history API
     } else {
       showFormMsg('Failed to save. Try again.', true);
     }
@@ -1099,8 +1139,7 @@ document.getElementById('menu-form').onsubmit = async (e) => {
 
     const result = await window.dataSdk.create(newRecord);
     if (result.isOk) {
-      document.getElementById('modal').classList.add('hidden');
-      document.getElementById('submenu-overlay').classList.add('hidden');
+      history.back();
     } else {
       showFormMsg('Failed to duplicate.', true);
     }
@@ -1118,8 +1157,7 @@ document.getElementById('menu-form').onsubmit = async (e) => {
     for (const child of children) await window.dataSdk.delete(child);
     const result = await window.dataSdk.delete(editingItem);
     if (result.isOk) {
-      document.getElementById('modal').classList.add('hidden');
-      document.getElementById('submenu-overlay').classList.add('hidden');
+      history.back(); // Tutup modal edit
     } else {
       showFormMsg('Failed to delete.', true);
     }
