@@ -405,10 +405,15 @@
     } else if (state.view === 'submenu') {
        document.getElementById('login-screen').classList.add('hidden');
        document.getElementById('app').classList.remove('hidden');
-       document.getElementById('submenu-overlay').classList.remove('hidden');
-       document.getElementById('btn-back').classList.remove('hidden');
-       document.getElementById('menu-grid').parentElement.classList.add('hidden');
-       currentView = 'submenu';
+       
+       if (state.parentId) {
+           const parentNode = allMenus.find(m => m.id === state.parentId);
+           if (parentNode) {
+               openSubmenu(parentNode, true);
+           } else {
+               showDashboard(true);
+           }
+       }
     }
   });
 
@@ -902,8 +907,7 @@
   // ==========================================
   function showDashboard(fromPopState = false) {
     if (!fromPopState && currentView === 'submenu') {
-      history.back(); // Jika tidak melalui popstate, trigger history agar state sinkron
-      return;
+      history.pushState({ view: 'dashboard' }, '');
     }
     currentView = 'dashboard';
     document.getElementById('btn-back').classList.add('hidden');
@@ -914,7 +918,8 @@
   function renderMenus() {
     const grid = document.getElementById('menu-grid');
     const empty = document.getElementById('empty-state');
-    const mainMenus = allMenus.filter(m => !m.is_submenu || !m.parent_id);
+    // Hanya menampilkan menu yang TIDAK memiliki parent_id (Menu Utama)
+    const mainMenus = allMenus.filter(m => !m.parent_id);
 
     if (mainMenus.length === 0) {
       grid.innerHTML = '';
@@ -939,7 +944,8 @@
         card.style.animationDelay = `${i * 0.05}s`;
         grid.appendChild(card);
       }
-      const subCount = allMenus.filter(s => s.parent_id === menu.id && s.is_submenu).length;
+      // Memeriksa apakah menu ini punya anak (sub-menu)
+      const subCount = allMenus.filter(s => s.parent_id === menu.id).length;
       
       const isImgTag = menu.image_url && menu.image_url.includes('<img');
       const imgHtml = isImgTag ? menu.image_url.replace('object-contain', 'object-cover') : (menu.image_url ? `<img src="${menu.image_url}" alt="${menu.name}" class="w-full h-full object-cover" onerror="this.style.background='#334155';">` : `<i data-lucide="folder" class="w-10 h-10 text-slate-500"></i>`);
@@ -972,7 +978,7 @@
       card.innerHTML = cardHtml;
       card.onclick = (e) => {
         if (e.target.closest('.edit-btn')) { openEdit(menu); return; }
-        if (subCount > 0) { openSubmenu(menu); }
+        if (subCount > 0) { openSubmenu(menu); } // Masuk ke tingkat selanjutnya
         else if (menu.url) { window.open(menu.url, '_blank', 'noopener,noreferrer'); }
       };
     });
@@ -984,21 +990,27 @@
     lucide.createIcons();
   }
 
-  function openSubmenu(parent) {
-    history.pushState({ view: 'submenu' }, '');
+  function openSubmenu(parent, fromPopState = false) {
+    if (!fromPopState) {
+        history.pushState({ view: 'submenu', parentId: parent.id }, '');
+    }
+    
     currentView = 'submenu';
     const overlay = document.getElementById('submenu-overlay');
     document.getElementById('btn-back').classList.remove('hidden');
     document.getElementById('menu-grid').parentElement.classList.add('hidden');
     document.getElementById('submenu-title').textContent = parent.name;
     const grid = document.getElementById('submenu-grid');
-    const subs = allMenus.filter(s => s.parent_id === parent.id && s.is_submenu);
+    
+    // Tarik semua menu yang parent-nya adalah id ini
+    const subs = allMenus.filter(s => s.parent_id === parent.id);
+    
     grid.innerHTML = subs.map(s => {
       const hasImg = s.image_url && s.image_url.length > 0;
       const isImgTag = hasImg && s.image_url.includes('<img');
       const renderImg = isImgTag ? s.image_url.replace('object-contain', 'object-cover') : (hasImg ? `<img src="${s.image_url}" alt="${s.name}" class="w-full h-full object-cover" onerror="this.style.background='#475569';">` : `<i data-lucide="file" class="w-10 h-10 text-slate-400"></i>`);
       
-      return `<div class="menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 cursor-pointer group relative" data-url="${s.url || ''}" data-bid="${s.__backendId}">
+      return `<div class="menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 cursor-pointer group relative" data-bid="${s.__backendId}">
         <div class="h-40 bg-slate-700 flex items-center justify-center overflow-hidden">
           ${renderImg}
         </div>
@@ -1008,6 +1020,7 @@
         ${isAdmin ? `<button class="edit-sub absolute top-2 right-2 bg-slate-900/70 rounded-lg p-1.5 opacity-0 group-hover:opacity-100 transition"><i data-lucide="edit" class="w-3.5 h-3.5 text-slate-300"></i></button>` : ''}
       </div>`;
     }).join('');
+
     grid.querySelectorAll('.menu-card').forEach(el => {
       el.onclick = (e) => {
         if (e.target.closest('.edit-sub')) {
@@ -1015,18 +1028,28 @@
           if (item) openEdit(item);
           return;
         }
-      if (el.dataset.url) {
-        window.open(el.dataset.url, '_blank', 'noopener,noreferrer');
-      }
-    };
-  });
-  overlay.classList.remove('hidden');
-  lucide.createIcons();
-}
+        
+        // Pengecekan multi-level sub menu (sub-sub-menu)
+        const item = allMenus.find(m => m.__backendId === el.dataset.bid);
+        if (item) {
+            const hasChildren = allMenus.some(m => m.parent_id === item.id);
+            if (hasChildren) {
+                // Rekursif: masuk ke dalam lagi
+                openSubmenu(item);
+            } else if (item.url) {
+                // Buka URL jika tidak memiliki anak
+                window.open(item.url, '_blank', 'noopener,noreferrer');
+            }
+        }
+      };
+    });
+    overlay.classList.remove('hidden');
+    lucide.createIcons();
+  }
 
-document.getElementById('submenu-close').onclick = () => history.back();
+document.getElementById('submenu-close').onclick = () => { showDashboard(); };
 document.getElementById('submenu-back-btn').onclick = () => history.back();
-document.getElementById('submenu-dash-btn').onclick = () => history.back();
+document.getElementById('submenu-dash-btn').onclick = () => { showDashboard(); };
 
 function openModal(edit = null) {
   history.pushState({ view: 'modal_menu' }, '');
@@ -1047,11 +1070,30 @@ function openModal(edit = null) {
     document.getElementById('img-preview-wrap').classList.add('hidden');
   }
 
+  // == LOGIC HIERARKI PARENT ==
   const sel = document.getElementById('f-parent');
-    const mains = allMenus.filter(m => !m.is_submenu && (!edit || m.__backendId !== edit.__backendId));
-    sel.innerHTML = '<option value="">— None (Main Menu) —</option>' + mains.map(m => `<option value="${m.id}" ${edit?.parent_id === m.id ? 'selected' : ''}>${m.name}</option>`).join('');
+  let optionsHtml = '<option value="">— None (Main Menu) —</option>';
+  
+  // Fungsi rekursif untuk membangun struktur tingkatan tanpa batas
+  function buildMenuTree(parentId, prefix) {
+      const children = allMenus.filter(m => (m.parent_id || '') === parentId);
+      children.forEach(m => {
+          // Jangan tampilkan item yang sedang diedit beserta anak-anaknya agar tidak jadi looping
+          if (edit && m.__backendId === edit.__backendId) return; 
+          
+          const isSelected = edit && edit.parent_id === m.id ? 'selected' : '';
+          optionsHtml += `<option value="${m.id}" ${isSelected}>${prefix}${m.name}</option>`;
+          
+          // Panggil lagi untuk mencari Sub dari Sub (rekursif dengan level lebih dalam)
+          buildMenuTree(m.id, prefix + '— '); 
+      });
+  }
 
-    document.getElementById('modal').classList.remove('hidden');
+  // Mulai dari menu root (tanpa parent)
+  buildMenuTree('', '');
+  sel.innerHTML = optionsHtml;
+  
+  document.getElementById('modal').classList.remove('hidden');
 }
 
 function openEdit(item) { openModal(item); }
@@ -1092,8 +1134,8 @@ document.getElementById('menu-form').onsubmit = async (e) => {
       name,
       image_url: finalImageUrl,
       url,
-      is_submenu: !!parentId,
-      parent_id: parentId,
+      is_submenu: !!parentId, // masih dipertahankan untuk kompatibilitas walau sudah dicek via parent_id
+      parent_id: parentId || '', // dipastikan string kosong bila None
       order: editingItem?.order || allMenus.length
     };
 
