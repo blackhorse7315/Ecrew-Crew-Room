@@ -74,6 +74,14 @@
  </head>
  <body class="h-full">
 
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="h-full w-full flex flex-col items-center justify-center p-4 z-50 fixed inset-0 bg-slate-900">
+   <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/20 mb-4 animate-pulse">
+    <img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" class="w-full h-full object-contain rounded-2xl">
+   </div>
+   <p class="text-cyan-400 font-medium text-sm animate-pulse">Memuat data...</p>
+  </div>
+
   <!-- Login Screen -->
   <div id="login-screen" class="h-full w-full flex items-center justify-center p-4 overflow-y-auto">
    <div class="w-full max-w-md my-auto">
@@ -297,6 +305,21 @@
     </div>
    </div>
 
+   <!-- Exit Confirmation Modal -->
+   <div id="exit-modal" class="hidden fixed inset-0 z-[70] modal-overlay flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border slide-up p-6 text-center border border-slate-700/50">
+     <div class="w-16 h-16 rounded-full bg-red-500/10 mx-auto flex items-center justify-center mb-4">
+      <i data-lucide="log-out" class="w-8 h-8 text-red-400"></i>
+     </div>
+     <h2 class="text-white font-bold text-xl mb-2">Tutup Aplikasi?</h2>
+     <p class="text-slate-400 text-sm mb-6">Apakah Anda yakin ingin keluar dari aplikasi? Sesi akun Anda akan tetap tersimpan.</p>
+     <div class="flex gap-3">
+      <button id="btn-cancel-exit" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl transition border border-slate-600 smooth-button">Batal</button>
+      <button id="btn-confirm-exit" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 rounded-xl transition smooth-button shadow-lg shadow-red-500/20">Ya, Tutup</button>
+     </div>
+    </div>
+   </div>
+
   </div>
 
   <script>
@@ -361,43 +384,47 @@
   
   let editingItem = null;
   let imageUrl = '';
-  let currentView = 'dashboard';
+  let currentView = 'login';
   let userBeingEdited = null;
+  let isInitialized = false;
+  let allowExit = false;
 
   // ==========================================
-  // Manajemen History API untuk Tombol "Back" Fisik HP
+  // Manajemen History API & Auto Login
   // ==========================================
-  history.replaceState({ view: 'login' }, '');
+  history.replaceState({ view: 'base' }, '');
 
   window.addEventListener('popstate', (e) => {
-    const state = e.state || { view: 'login' };
+    const state = e.state || { view: 'base' };
     
     // Selalu pastikan semua modal tertutup saat terjadi navigasi "Back"
     document.getElementById('modal').classList.add('hidden');
     document.getElementById('users-modal').classList.add('hidden');
     document.getElementById('edit-user-modal').classList.add('hidden');
+    document.getElementById('exit-modal').classList.add('hidden');
     userBeingEdited = null;
 
-    // Keamanan ekstra: cegah kembali ke dashboard jika statusnya belum login
-    if (!currentUser && state.view !== 'login' && state.view !== 'register') {
-        history.replaceState({ view: 'login' }, '');
-        document.getElementById('login-screen').classList.remove('hidden');
-        document.getElementById('app').classList.add('hidden');
-        document.getElementById('view-register').classList.add('hidden');
-        document.getElementById('view-login').classList.remove('hidden');
-        return;
-    }
-
-    if (state.view === 'login') {
+    if (state.view === 'base') {
+        if (currentUser) {
+            if (allowExit) return; // Biarkan native back menutup aplikasi
+            
+            // Cegah keluar langsung, munculkan pop-up modal
+            document.getElementById('exit-modal').classList.remove('hidden');
+            // Dorong kembali state dashboard untuk mempertahankan aplikasi tetap hidup
+            history.pushState({ view: 'dashboard' }, ''); 
+        }
+    } else if (state.view === 'login') {
        document.getElementById('login-screen').classList.remove('hidden');
        document.getElementById('app').classList.add('hidden');
        document.getElementById('view-register').classList.add('hidden');
        document.getElementById('view-login').classList.remove('hidden');
+       currentView = 'login';
     } else if (state.view === 'register') {
        document.getElementById('login-screen').classList.remove('hidden');
        document.getElementById('app').classList.add('hidden');
        document.getElementById('view-login').classList.add('hidden');
        document.getElementById('view-register').classList.remove('hidden');
+       currentView = 'register';
     } else if (state.view === 'dashboard') {
        document.getElementById('login-screen').classList.add('hidden');
        document.getElementById('app').classList.remove('hidden');
@@ -467,6 +494,59 @@
     });
   }
 
+  function checkAutoLogin() {
+    document.getElementById('loading-screen').classList.add('hidden');
+    const saved = localStorage.getItem('ecrew_session');
+    
+    if (saved) {
+        try {
+            const creds = JSON.parse(saved);
+            const dbUser = allUsers.find(u => u.email === creds.email && u.password === creds.password);
+            if (dbUser) {
+                doLogin(dbUser, false);
+                return;
+            } else if (creds.email === 'admin' && creds.password === 'ramdan28') {
+                doLogin({ name: 'Master Admin', role: 'admin', rank: 'Admin', email: 'admin', password: 'ramdan28' }, false);
+                return;
+            }
+        } catch(e) {}
+    }
+    
+    // Jika tidak ada login tersimpan, arahkan ke login screen
+    history.pushState({ view: 'login' }, '');
+    document.getElementById('login-screen').classList.remove('hidden');
+  }
+
+  function doLogin(userObj, saveSession) {
+    currentUser = userObj;
+    isAdmin = userObj.role === 'admin';
+
+    if (saveSession) {
+        localStorage.setItem('ecrew_session', JSON.stringify({ email: userObj.email, password: userObj.password }));
+    }
+
+    history.replaceState({ view: 'dashboard' }, '');
+    currentView = 'dashboard';
+
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    
+    if (isAdmin) {
+      document.getElementById('admin-controls').classList.remove('hidden');
+      document.getElementById('dash-welcome').textContent = `🔐 Admin Panel - Welcome, ${currentUser.name}`;
+    } else {
+      document.getElementById('admin-controls').classList.add('hidden');
+      let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
+      if(currentUser.rank && currentUser.rank !== '-') {
+         titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
+      }
+      document.getElementById('dash-welcome').textContent = titleTxt;
+    }
+
+    renderMenus();
+    lucide.createIcons();
+  }
+
   const dataHandler = {
     onDataChanged(data) {
       allRawData = data || [];
@@ -499,10 +579,17 @@
         
       allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD');
       
+      if (!isInitialized) {
+        isInitialized = true;
+        checkAutoLogin();
+      }
+
       if (document.getElementById('users-modal') && !document.getElementById('users-modal').classList.contains('hidden')) {
         renderUsersList();
       }
-      renderMenus();
+      if (currentView === 'dashboard' || currentView === 'submenu') {
+        renderMenus();
+      }
     }
   };
 
@@ -657,7 +744,7 @@
       
       setTimeout(() => {
         msgEl.classList.add('hidden');
-        history.pushState({ view: 'login' }, '');
+        history.replaceState({ view: 'login' }, '');
         document.getElementById('view-register').classList.add('hidden');
         document.getElementById('view-login').classList.remove('hidden');
         document.getElementById('login-user').value = email; 
@@ -690,32 +777,10 @@
     errorEl.classList.add('hidden');
     
     if (dbUser) {
-      currentUser = dbUser;
-      isAdmin = dbUser.role === 'admin';
+      doLogin(dbUser, true);
     } else {
-      currentUser = { name: 'Master Admin', role: 'admin', rank: 'Admin' };
-      isAdmin = true;
+      doLogin({ name: 'Master Admin', role: 'admin', rank: 'Admin', email: 'admin', password: 'ramdan28' }, true);
     }
-    
-    history.pushState({ view: 'dashboard' }, '');
-
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
-    
-    if (isAdmin) {
-      document.getElementById('admin-controls').classList.remove('hidden');
-      document.getElementById('dash-welcome').textContent = `🔐 Admin Panel - Welcome, ${currentUser.name}`;
-    } else {
-      document.getElementById('admin-controls').classList.add('hidden');
-      let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
-      if(currentUser.rank && currentUser.rank !== '-') {
-         titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
-      }
-      document.getElementById('dash-welcome').textContent = titleTxt;
-    }
-
-    renderMenus();
-    lucide.createIcons();
   };
 
   document.getElementById('btn-back').onclick = () => history.back();
@@ -723,12 +788,29 @@
   document.getElementById('btn-logout').onclick = () => {
     currentUser = null;
     isAdmin = false;
-    history.pushState({ view: 'login' }, '');
+    localStorage.removeItem('ecrew_session');
+    
+    history.replaceState({ view: 'login' }, '');
+    currentView = 'login';
+    
     document.getElementById('login-screen').classList.remove('hidden');
     document.getElementById('app').classList.add('hidden');
     document.getElementById('login-form').reset();
     document.getElementById('login-error').classList.add('hidden');
     lucide.createIcons();
+  };
+
+  // ==========================================
+  // Tombol Modal Exit
+  // ==========================================
+  document.getElementById('btn-cancel-exit').onclick = () => {
+      document.getElementById('exit-modal').classList.add('hidden');
+  };
+
+  document.getElementById('btn-confirm-exit').onclick = () => {
+      document.getElementById('exit-modal').classList.add('hidden');
+      allowExit = true;
+      history.back(); // Akan kembali ke state 'base' dan menutup aplikasi secara otomatis
   };
 
   // ==========================================
