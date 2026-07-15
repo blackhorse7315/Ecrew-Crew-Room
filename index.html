@@ -414,9 +414,13 @@
     document.getElementById('users-modal').classList.add('hidden');
     document.getElementById('edit-user-modal').classList.add('hidden');
     document.getElementById('exit-modal').classList.add('hidden');
-    userBeingEdited = null;
+    if(document.getElementById('restricted-modal')) document.getElementById('restricted-modal').classList.add('hidden');
 
-    if (state.view === 'base') {
+    if (state.view === 'modal_users') {
+        // Tampilkan kembali modal User Directory jika user kembali (back) dari pop-up Edit User
+        document.getElementById('users-modal').classList.remove('hidden');
+        userBeingEdited = null;
+    } else if (state.view === 'base') {
         if (currentUser) {
             if (allowExit) return; // Biarkan native back menutup aplikasi
             
