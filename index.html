@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0a0e27">
-  <title>Ecrew - Crew Room V.1</title>
+  <title>Ecrew - Crew Room</title>
   
   <link rel="icon" href="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" type="image/png">
   <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ">
@@ -36,18 +36,13 @@
     @keyframes slideUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
     
     .modal-overlay { background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
-    .submenu-panel { animation: expandDown 0.3s ease forwards; }
-    @keyframes expandDown { from { opacity:0; max-height:0; } to { opacity:1; max-height:800px; } }
     
     .glow-border { 
       background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2));
       border: 1px solid rgba(6, 182, 212, 0.3);
     }
     
-    .premium-gradient {
-      background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-    }
-    
+    .premium-gradient { background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); }
     .text-gradient {
       background: linear-gradient(135deg, #06b6d4, #3b82f6);
       -webkit-background-clip: text;
@@ -60,27 +55,15 @@
       position: relative;
       overflow: hidden;
     }
+    .smooth-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3); }
+    .smooth-button:active { transform: translateY(0); }
     
-    .smooth-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
-    }
-    
-    .smooth-button:active {
-      transform: translateY(0);
-    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
   </style>
-  <style>body { box-sizing: border-box; }</style>
  </head>
  <body class="h-full">
-
-  <!-- Loading Screen -->
-  <div id="loading-screen" class="h-full w-full flex flex-col items-center justify-center p-4 z-50 fixed inset-0 bg-slate-900">
-   <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/20 mb-4 animate-pulse">
-    <img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" class="w-full h-full object-contain rounded-2xl">
-   </div>
-   <p class="text-cyan-400 font-medium text-sm animate-pulse">Memuat data...</p>
-  </div>
 
   <!-- Login Screen -->
   <div id="login-screen" class="h-full w-full flex items-center justify-center p-4 overflow-y-auto">
@@ -95,7 +78,7 @@
      
      <!-- Tampilan Form Login -->
      <div id="view-login">
-       <h2 class="text-white text-center font-semibold text-xl mb-2">Crew Room V.1</h2>
+       <h2 class="text-white text-center font-semibold text-xl mb-2">Crew Room</h2>
        <p class="text-slate-400 text-center text-sm mb-8">Access your flight operations portal</p>
        <form id="login-form" class="space-y-4">
         <div><label class="text-slate-300 text-sm font-semibold block mb-2">Email / Username</label> <input id="login-user" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="email@ecrew.com atau admin">
@@ -111,27 +94,55 @@
 
      <!-- Tampilan Form Register -->
      <div id="view-register" class="hidden">
-        <h2 class="text-white text-center font-bold text-xl mb-2">Welcome To ECrew-Crew Room V.1</h2>
+        <h2 class="text-white text-center font-bold text-xl mb-2">Welcome To ECrew</h2>
         <p class="text-slate-400 text-center text-sm mb-6">Create your crew account</p>
-        <form id="register-form" class="space-y-4">
+        <form id="register-form" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
             <div><label class="text-slate-300 text-xs font-semibold block mb-1">Full Name</label><input id="r-name" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Budi Santoso"></div>
             <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="r-email" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="budi@ecrew.com"></div>
             <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="r-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Create password"></div>
-            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
-                <select id="r-rank" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition">
-                    <option value="Capt">Capt</option>
-                    <option value="FO">FO</option>
-                    <option value="CS">CS</option>
-                    <option value="FOO">FOO</option>
-                    <option value="HLO">HLO</option>
-                    <option value="Flight Support">Flight Support</option>
-                    <option value="-">None</option>
+            
+            <div class="flex gap-3">
+                <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
+                    <select id="r-rank" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition">
+                        <option value="Capt">Capt</option>
+                        <option value="FO">FO</option>
+                        <option value="CS">CS</option>
+                        <option value="FOO">FOO</option>
+                        <option value="HLO">HLO</option>
+                        <option value="Flight Support">Flight Support</option>
+                        <option value="-">None</option>
+                    </select>
+                </div>
+                <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
+                    <select id="r-pos" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition">
+                        <option value="General Manager">General Manager</option>
+                        <option value="Operation Manager">Operation Manager</option>
+                        <option value="Maintenance Manager">Maintenance Manager</option>
+                        <option value="Chief Pilot Rotary Wing">Chief Pilot Rotary Wing</option>
+                        <option value="Chief Pilot Fixed Wing">Chief Pilot Fixed Wing</option>
+                        <option value="Chief Flight Support">Chief Flight Support</option>
+                        <option value="Chief Engineer">Chief Engineer</option>
+                        <option value="Chief Inspector">Chief Inspector</option>
+                        <option value="Pilot">Pilot</option>
+                        <option value="Engineer">Engineer</option>
+                        <option value="Cabin Service">Cabin Service</option>
+                        <option value="FOO/HLO">FOO/HLO</option>
+                        <option value="-">None</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Rule</label>
+                <select id="r-rule" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition">
+                    <option value="Member">Member</option>
+                    <option value="Key Person">Key Person</option>
                 </select>
             </div>
+            
             <div id="r-form-msg" class="hidden text-center text-sm py-2 px-3 rounded-lg"></div>
             <button type="submit" id="btn-register-submit" class="w-full premium-gradient text-white font-bold py-3 rounded-xl transition smooth-button shadow-xl shadow-cyan-500/20 mt-2">Register</button>
         </form>
-        <div class="mt-6 text-center">
+        <div class="mt-4 text-center">
             <p class="text-slate-400 text-sm">Already have an account? <button id="btn-go-login" class="text-cyan-400 font-semibold hover:text-cyan-300 transition">Login Here</button></p>
         </div>
      </div>
@@ -151,7 +162,7 @@
       <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/20"><img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl">
       </div>
       <div>
-       <h1 id="dash-title" class="text-white font-bold text-lg tracking-tight">Ecrew - Crew Room V.1</h1>
+       <h1 id="dash-title" class="text-white font-bold text-lg tracking-tight">Ecrew - Crew Room</h1>
        <p id="dash-welcome" class="text-slate-400 text-xs font-medium">Welcome back, Captain!</p>
       </div>
      </div>
@@ -175,6 +186,7 @@
     </div>
    </main>
    
+   <!-- Submenu Overlay -->
    <div id="submenu-overlay" class="hidden fixed inset-0 z-40 bg-slate-900 flex flex-col">
     <div class="bg-slate-800/80 border-b border-slate-700 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between sticky top-0 gap-3">
      <div class="flex items-center gap-3">
@@ -192,11 +204,11 @@
    
    <!-- Menu Add/Edit Modal -->
    <div id="modal" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
-    <div class="bg-slate-900 rounded-3xl w-full max-w-md glow-border slide-up">
-     <div class="p-6 border-b border-slate-700/40 flex items-center justify-between">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-md glow-border slide-up flex flex-col max-h-[95vh]">
+     <div class="p-6 border-b border-slate-700/40 flex items-center justify-between shrink-0">
       <h2 id="modal-title" class="text-white font-bold text-xl">Add Menu</h2><button id="modal-close" class="text-slate-400 hover:text-white transition hover:scale-110"><i data-lucide="x" class="w-5 h-5"></i></button>
      </div>
-     <form id="menu-form" class="p-6 space-y-5">
+     <form id="menu-form" class="p-6 space-y-5 overflow-y-auto custom-scrollbar">
       <div><label class="text-slate-300 text-sm font-semibold block mb-2">Menu Name</label> <input id="f-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="e.g. Flight Schedule">
       </div>
       <div><label class="text-slate-300 text-sm font-semibold block mb-2">Image URL</label>
@@ -209,6 +221,25 @@
       </div>
       <div><label class="text-slate-300 text-sm font-semibold block mb-2">Parent Menu (optional)</label> <select id="f-parent" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition"> <option value="">— None (Main Menu) —</option> </select>
       </div>
+      <div>
+        <label class="text-slate-300 text-sm font-semibold block mb-2">Akses Posisi (Pilih siapa saja yang bisa buka)</label> 
+        <div class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white max-h-40 overflow-y-auto space-y-2 custom-scrollbar">
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="All" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Semua Posisi (All)</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="General Manager" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">General Manager</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Operation Manager" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Operation Manager</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Maintenance Manager" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Maintenance Manager</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Chief Pilot Rotary Wing" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Chief Pilot Rotary Wing</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Chief Pilot Fixed Wing" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Chief Pilot Fixed Wing</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Chief Flight Support" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Chief Flight Support</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Chief Engineer" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Chief Engineer</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Chief Inspector" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Chief Inspector</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Pilot" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Pilot</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Engineer" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Engineer</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Cabin Service" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Cabin Service</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="FOO/HLO" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">FOO/HLO</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="-" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">None (-)</span></label>
+        </div>
+      </div>
       <div class="flex gap-3 pt-2"><button type="submit" id="btn-submit" class="flex-1 premium-gradient text-white font-semibold py-3 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2"> <i data-lucide="check" class="w-4 h-4"></i> Save </button> <button type="button" id="btn-duplicate" class="hidden bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 font-semibold py-3 px-4 rounded-xl transition border border-blue-500/30 smooth-button" title="Duplicate this menu"> <i data-lucide="copy" class="w-4 h-4"></i> </button> <button type="button" id="btn-delete" class="hidden bg-red-500/20 text-red-300 hover:bg-red-500/30 font-semibold py-3 px-4 rounded-xl transition border border-red-500/30 smooth-button"> <i data-lucide="trash-2" class="w-4 h-4"></i> </button>
       </div>
       <div id="form-msg" class="hidden text-center text-sm py-2 px-3 rounded-lg"></div>
@@ -218,7 +249,7 @@
 
    <!-- Manage Users Modal -->
    <div id="users-modal" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
-    <div class="bg-slate-900 rounded-3xl w-full max-w-4xl glow-border slide-up flex flex-col max-h-[90vh]">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-4xl glow-border slide-up flex flex-col max-h-[95vh]">
      <div class="p-6 border-b border-slate-700/40 flex items-center justify-between">
       <h2 class="text-white font-bold text-xl">Manage Users</h2><button id="users-modal-close" class="text-slate-400 hover:text-white transition hover:scale-110"><i data-lucide="x" class="w-5 h-5"></i></button>
      </div>
@@ -252,6 +283,32 @@
           </div>
         </div>
 
+        <div class="flex gap-4">
+            <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
+               <select id="u-pos" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition">
+                <option value="General Manager">General Manager</option>
+                <option value="Operation Manager">Operation Manager</option>
+                <option value="Maintenance Manager">Maintenance Manager</option>
+                <option value="Chief Pilot Rotary Wing">Chief Pilot Rotary Wing</option>
+                <option value="Chief Pilot Fixed Wing">Chief Pilot Fixed Wing</option>
+                <option value="Chief Flight Support">Chief Flight Support</option>
+                <option value="Chief Engineer">Chief Engineer</option>
+                <option value="Chief Inspector">Chief Inspector</option>
+                <option value="Pilot">Pilot</option>
+                <option value="Engineer">Engineer</option>
+                <option value="Cabin Service">Cabin Service</option>
+                <option value="FOO/HLO">FOO/HLO</option>
+                <option value="-">None</option>
+               </select>
+            </div>
+            <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rule</label>
+               <select id="u-rule" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition">
+                <option value="Member">Member</option>
+                <option value="Key Person">Key Person</option>
+               </select>
+            </div>
+        </div>
+
         <div class="pt-2"><button type="submit" id="btn-user-submit" class="w-full premium-gradient text-white font-semibold py-3 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20 flex justify-center items-center gap-2"><i data-lucide="user-plus" class="w-4 h-4"></i> Add User</button></div>
         <div id="u-form-msg" class="hidden text-center text-xs py-2 px-3 rounded-lg mt-2"></div>
        </form>
@@ -270,14 +327,15 @@
    
    <!-- Edit User Pop-up Modal -->
    <div id="edit-user-modal" class="hidden fixed inset-0 z-[60] modal-overlay flex items-center justify-center p-4">
-    <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border slide-up border border-cyan-500/30">
-     <div class="p-5 border-b border-slate-700/40 flex items-center justify-between">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border slide-up border border-cyan-500/30 overflow-y-auto max-h-screen">
+     <div class="p-5 border-b border-slate-700/40 flex items-center justify-between sticky top-0 bg-slate-900 z-10">
       <h2 class="text-white font-bold text-lg">Edit User</h2><button id="edit-user-modal-close" class="text-slate-400 hover:text-white transition hover:scale-110"><i data-lucide="x" class="w-5 h-5"></i></button>
      </div>
      <form id="edit-user-form" class="p-6 space-y-4">
       <div><label class="text-slate-300 text-xs font-semibold block mb-1">Full Name</label><input id="eu-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition"></div>
       <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="eu-email" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition"></div>
       <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="eu-pass" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition"></div>
+      
       <div class="flex gap-4">
         <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
          <select id="eu-rank" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition">
@@ -297,6 +355,33 @@
          </select>
         </div>
       </div>
+      
+      <div class="flex gap-4">
+          <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
+             <select id="eu-pos" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition">
+              <option value="General Manager">General Manager</option>
+              <option value="Operation Manager">Operation Manager</option>
+              <option value="Maintenance Manager">Maintenance Manager</option>
+              <option value="Chief Pilot Rotary Wing">Chief Pilot Rotary Wing</option>
+              <option value="Chief Pilot Fixed Wing">Chief Pilot Fixed Wing</option>
+              <option value="Chief Flight Support">Chief Flight Support</option>
+              <option value="Chief Engineer">Chief Engineer</option>
+              <option value="Chief Inspector">Chief Inspector</option>
+              <option value="Pilot">Pilot</option>
+              <option value="Engineer">Engineer</option>
+              <option value="Cabin Service">Cabin Service</option>
+              <option value="FOO/HLO">FOO/HLO</option>
+              <option value="-">None</option>
+             </select>
+          </div>
+          <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rule</label>
+             <select id="eu-rule" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition">
+              <option value="Member">Member</option>
+              <option value="Key Person">Key Person</option>
+             </select>
+          </div>
+      </div>
+
       <div class="pt-3 flex gap-3">
         <button type="submit" id="btn-eu-submit" class="flex-1 premium-gradient text-white font-semibold py-2.5 rounded-xl transition smooth-button">Update</button>
       </div>
@@ -305,30 +390,30 @@
     </div>
    </div>
 
-   <!-- Exit Confirmation Modal -->
-   <div id="exit-modal" class="hidden fixed inset-0 z-[70] modal-overlay flex items-center justify-center p-4">
-    <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border slide-up p-6 text-center border border-slate-700/50">
-     <div class="w-16 h-16 rounded-full bg-red-500/10 mx-auto flex items-center justify-center mb-4">
-      <i data-lucide="log-out" class="w-8 h-8 text-red-400"></i>
-     </div>
-     <h2 class="text-white font-bold text-xl mb-2">Tutup Aplikasi?</h2>
-     <p class="text-slate-400 text-sm mb-6">Apakah Anda yakin ingin keluar dari aplikasi? Sesi akun Anda akan tetap tersimpan.</p>
-     <div class="flex gap-3">
-      <button id="btn-cancel-exit" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl transition border border-slate-600 smooth-button">Batal</button>
-      <button id="btn-confirm-exit" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 rounded-xl transition smooth-button shadow-lg shadow-red-500/20">Ya, Tutup</button>
-     </div>
+   <!-- Modal Restricted Access (CS) -->
+   <div id="restricted-modal" class="hidden fixed inset-0 z-[70] modal-overlay flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-sm border border-red-500/30 p-6 text-center shadow-2xl slide-up">
+        <div class="w-16 h-16 bg-red-500/20 text-red-400 mx-auto rounded-full flex items-center justify-center mb-4">
+            <i data-lucide="lock" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-white font-bold text-lg mb-2">Akses Ditolak</h3>
+        <p id="restricted-message" class="text-slate-400 text-sm mb-6">Akun dengan Rank <span class="font-bold text-red-400">Cabin Service (CS)</span> hanya diizinkan untuk membuka menu yang berkaitan dengan Cabin Service.</p>
+        <button id="btn-close-restricted" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700">Mengerti</button>
     </div>
    </div>
-
-   <!-- Restricted Access Modal -->
-   <div id="restricted-modal" class="hidden fixed inset-0 z-[75] modal-overlay flex items-center justify-center p-4">
-    <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border slide-up p-6 text-center border border-slate-700/50">
-     <div class="w-16 h-16 rounded-full bg-red-500/10 mx-auto flex items-center justify-center mb-4">
-      <i data-lucide="lock" class="w-8 h-8 text-red-400"></i>
-     </div>
-     <h2 class="text-white font-bold text-xl mb-2">Akses Ditolak</h2>
-     <p class="text-slate-400 text-sm mb-6">Sebagai rank <span class="text-cyan-400 font-bold">CS</span>, Anda hanya diizinkan untuk mengakses menu <b>Cabin Service</b>.</p>
-     <button id="btn-close-restricted" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-xl transition border border-slate-600 smooth-button">Mengerti</button>
+   
+   <!-- Modal Exit Confirmation -->
+   <div id="exit-modal" class="hidden fixed inset-0 z-[70] modal-overlay flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-sm border border-slate-700/50 p-6 text-center shadow-2xl slide-up">
+        <div class="w-16 h-16 bg-amber-500/20 text-amber-400 mx-auto rounded-full flex items-center justify-center mb-4">
+            <i data-lucide="log-out" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-white font-bold text-lg mb-2">Keluar Aplikasi?</h3>
+        <p class="text-slate-400 text-sm mb-6">Apakah Anda yakin ingin keluar dari aplikasi? (Sesi Anda akan tetap tersimpan)</p>
+        <div class="flex gap-3">
+            <button id="btn-exit-cancel" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 rounded-xl transition border border-slate-700">Batal</button>
+            <button id="btn-exit-confirm" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 rounded-xl transition shadow-lg shadow-red-500/20">Ya, Keluar</button>
+        </div>
     </div>
    </div>
 
@@ -341,7 +426,7 @@
   const appLogoUrl = 'https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ';
   const manifestData = {
     name: "Ecrew - Crew Room",
-    short_name: "Crew Room",
+    short_name: "Ecrew",
     description: "Portal operasi penerbangan Ecrew",
     start_url: window.location.href,
     display: "standalone",
@@ -396,51 +481,74 @@
   
   let editingItem = null;
   let imageUrl = '';
-  let currentView = 'login';
+  let currentView = 'dashboard';
   let userBeingEdited = null;
-  let isInitialized = false;
-  let allowExit = false;
 
   // ==========================================
-  // Manajemen History API & Auto Login
+  // KEEP LOGGED IN & History API for "Back"
   // ==========================================
-  history.replaceState({ view: 'base' }, '');
+  const savedSession = localStorage.getItem('ecrew_session');
+  if (savedSession) {
+      try {
+          currentUser = JSON.parse(savedSession);
+          isAdmin = currentUser.role === 'admin';
+          history.replaceState({ view: 'dashboard' }, '');
+          document.getElementById('login-screen').classList.add('hidden');
+          document.getElementById('app').classList.remove('hidden');
+          
+          if (isAdmin) {
+              document.getElementById('admin-controls').classList.remove('hidden');
+              document.getElementById('dash-welcome').textContent = `🔐 Admin Panel - Welcome, ${currentUser.name}`;
+          } else {
+              document.getElementById('admin-controls').classList.add('hidden');
+              let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
+              if(currentUser.rank && currentUser.rank !== '-') {
+                  titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
+              }
+              document.getElementById('dash-welcome').textContent = titleTxt;
+          }
+      } catch(e) {
+          localStorage.removeItem('ecrew_session');
+          history.replaceState({ view: 'login' }, '');
+      }
+  } else {
+      history.replaceState({ view: 'login' }, '');
+  }
 
   window.addEventListener('popstate', (e) => {
-    const state = e.state || { view: 'base' };
+    const state = e.state || { view: 'login' };
     
-    // Selalu pastikan semua modal tertutup saat terjadi navigasi "Back"
-    document.getElementById('modal').classList.add('hidden');
-    document.getElementById('users-modal').classList.add('hidden');
-    document.getElementById('edit-user-modal').classList.add('hidden');
-    document.getElementById('exit-modal').classList.add('hidden');
-    if(document.getElementById('restricted-modal')) document.getElementById('restricted-modal').classList.add('hidden');
+    // Selalu pastikan modal standar tertutup
+    const modals = ['modal', 'users-modal', 'edit-user-modal', 'restricted-modal', 'exit-modal'];
+    modals.forEach(id => document.getElementById(id).classList.add('hidden'));
+    userBeingEdited = null;
 
-    if (state.view === 'modal_users') {
-        // Tampilkan kembali modal User Directory jika user kembali (back) dari pop-up Edit User
-        document.getElementById('users-modal').classList.remove('hidden');
-        userBeingEdited = null;
-    } else if (state.view === 'base') {
-        if (currentUser) {
-            if (allowExit) return; // Biarkan native back menutup aplikasi
-            
-            // Cegah keluar langsung, munculkan pop-up modal
-            document.getElementById('exit-modal').classList.remove('hidden');
-            // Dorong kembali state dashboard untuk mempertahankan aplikasi tetap hidup
-            history.pushState({ view: 'dashboard' }, ''); 
-        }
-    } else if (state.view === 'login') {
+    // Trap Exit: Cegah kembali ke login jika masih login (tampilkan modal konfirmasi)
+    if (currentUser && state.view === 'login') {
+        document.getElementById('exit-modal').classList.remove('hidden');
+        history.pushState({ view: 'dashboard' }, '');
+        return;
+    }
+    // Cegah bypass dashboard jika belum login
+    if (!currentUser && state.view !== 'login' && state.view !== 'register') {
+        history.replaceState({ view: 'login' }, '');
+        document.getElementById('login-screen').classList.remove('hidden');
+        document.getElementById('app').classList.add('hidden');
+        document.getElementById('view-register').classList.add('hidden');
+        document.getElementById('view-login').classList.remove('hidden');
+        return;
+    }
+
+    if (state.view === 'login') {
        document.getElementById('login-screen').classList.remove('hidden');
        document.getElementById('app').classList.add('hidden');
        document.getElementById('view-register').classList.add('hidden');
        document.getElementById('view-login').classList.remove('hidden');
-       currentView = 'login';
     } else if (state.view === 'register') {
        document.getElementById('login-screen').classList.remove('hidden');
        document.getElementById('app').classList.add('hidden');
        document.getElementById('view-login').classList.add('hidden');
        document.getElementById('view-register').classList.remove('hidden');
-       currentView = 'register';
     } else if (state.view === 'dashboard') {
        document.getElementById('login-screen').classList.add('hidden');
        document.getElementById('app').classList.remove('hidden');
@@ -459,7 +567,19 @@
        }
     }
   });
-
+  
+  document.getElementById('btn-exit-cancel').onclick = () => {
+      document.getElementById('exit-modal').classList.add('hidden');
+  };
+  document.getElementById('btn-exit-confirm').onclick = () => {
+      try {
+          if (navigator.app && navigator.app.exitApp) { navigator.app.exitApp(); }
+          else { window.close(); }
+      } catch(e) {
+          alert("Silakan tutup tab atau aplikasi Anda.");
+      }
+      document.getElementById('exit-modal').classList.add('hidden');
+  };
 
   const defaultConfig = {
     dashboard_title: 'Ecrew - Crew Room',
@@ -510,59 +630,6 @@
     });
   }
 
-  function checkAutoLogin() {
-    document.getElementById('loading-screen').classList.add('hidden');
-    const saved = localStorage.getItem('ecrew_session');
-    
-    if (saved) {
-        try {
-            const creds = JSON.parse(saved);
-            const dbUser = allUsers.find(u => u.email === creds.email && u.password === creds.password);
-            if (dbUser) {
-                doLogin(dbUser, false);
-                return;
-            } else if (creds.email === 'admin' && creds.password === 'ramdan28') {
-                doLogin({ name: 'Master Admin', role: 'admin', rank: 'Admin', email: 'admin', password: 'ramdan28' }, false);
-                return;
-            }
-        } catch(e) {}
-    }
-    
-    // Jika tidak ada login tersimpan, arahkan ke login screen
-    history.pushState({ view: 'login' }, '');
-    document.getElementById('login-screen').classList.remove('hidden');
-  }
-
-  function doLogin(userObj, saveSession) {
-    currentUser = userObj;
-    isAdmin = userObj.role === 'admin';
-
-    if (saveSession) {
-        localStorage.setItem('ecrew_session', JSON.stringify({ email: userObj.email, password: userObj.password }));
-    }
-
-    history.replaceState({ view: 'dashboard' }, '');
-    currentView = 'dashboard';
-
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
-    
-    if (isAdmin) {
-      document.getElementById('admin-controls').classList.remove('hidden');
-      document.getElementById('dash-welcome').textContent = `🔐 Admin Panel - Welcome, ${currentUser.name}`;
-    } else {
-      document.getElementById('admin-controls').classList.add('hidden');
-      let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
-      if(currentUser.rank && currentUser.rank !== '-') {
-         titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
-      }
-      document.getElementById('dash-welcome').textContent = titleTxt;
-    }
-
-    renderMenus();
-    lucide.createIcons();
-  }
-
   const dataHandler = {
     onDataChanged(data) {
       allRawData = data || [];
@@ -573,12 +640,16 @@
         .map(d => {
           let pass = d.url || '';
           let rank = '-';
+          let pos = '-';
+          let rule = 'Member';
           
           if (pass.startsWith('{')) {
             try {
               const parsed = JSON.parse(pass);
               pass = parsed.p || '';
               rank = parsed.r || '-';
+              pos = parsed.pos || '-';
+              rule = parsed.rule || 'Member';
             } catch(e) {}
           }
 
@@ -589,27 +660,21 @@
             email: d.image_url, 
             password: pass,    
             rank: rank,
+            position: pos,
+            rule: rule,
             role: d.order === 1 ? 'admin' : 'user'
           };
         });
         
       allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD');
       
-      if (!isInitialized) {
-        isInitialized = true;
-        checkAutoLogin();
-      }
-
       if (document.getElementById('users-modal') && !document.getElementById('users-modal').classList.contains('hidden')) {
         renderUsersList();
       }
-      if (currentView === 'dashboard' || currentView === 'submenu') {
-        renderMenus();
-      }
+      renderMenus();
     }
   };
 
-  // URL WEB APP GOOGLE APPS SCRIPT ANDA
   const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx5tHULYdvZGdUrDPnhSFfR-gSbB0WlB2cDpTmXt7_5mNVYMlSPGsnOwO3xhKsDD4OP/exec"; 
 
   window.dataSdk = {
@@ -728,6 +793,8 @@
     const email = document.getElementById('r-email').value.trim().toLowerCase();
     const password = document.getElementById('r-pass').value.trim();
     const rank = document.getElementById('r-rank').value;
+    const position = document.getElementById('r-pos').value;
+    const rule = document.getElementById('r-rule').value;
 
     if (allUsers.some(u => u.email === email)) {
       msgEl.textContent = '❌ Email/Username sudah terdaftar!';
@@ -738,7 +805,7 @@
       return;
     }
 
-    const secretData = JSON.stringify({ p: password, r: rank });
+    const secretData = JSON.stringify({ p: password, r: rank, pos: position, rule: rule });
 
     const newRawUser = {
       id: 'user_' + Date.now().toString(36),
@@ -760,7 +827,7 @@
       
       setTimeout(() => {
         msgEl.classList.add('hidden');
-        history.replaceState({ view: 'login' }, '');
+        history.pushState({ view: 'login' }, '');
         document.getElementById('view-register').classList.add('hidden');
         document.getElementById('view-login').classList.remove('hidden');
         document.getElementById('login-user').value = email; 
@@ -793,10 +860,35 @@
     errorEl.classList.add('hidden');
     
     if (dbUser) {
-      doLogin(dbUser, true);
+      currentUser = dbUser;
+      isAdmin = dbUser.role === 'admin';
     } else {
-      doLogin({ name: 'Master Admin', role: 'admin', rank: 'Admin', email: 'admin', password: 'ramdan28' }, true);
+      currentUser = { name: 'Master Admin', role: 'admin', rank: 'Admin', position: '-', rule: 'Key Person' };
+      isAdmin = true;
     }
+    
+    // Save session untuk Keep Logged In
+    localStorage.setItem('ecrew_session', JSON.stringify(currentUser));
+    
+    history.pushState({ view: 'dashboard' }, '');
+
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    
+    if (isAdmin) {
+      document.getElementById('admin-controls').classList.remove('hidden');
+      document.getElementById('dash-welcome').textContent = `🔐 Admin Panel - Welcome, ${currentUser.name}`;
+    } else {
+      document.getElementById('admin-controls').classList.add('hidden');
+      let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
+      if(currentUser.rank && currentUser.rank !== '-') {
+         titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
+      }
+      document.getElementById('dash-welcome').textContent = titleTxt;
+    }
+
+    renderMenus();
+    lucide.createIcons();
   };
 
   document.getElementById('btn-back').onclick = () => history.back();
@@ -804,33 +896,13 @@
   document.getElementById('btn-logout').onclick = () => {
     currentUser = null;
     isAdmin = false;
-    localStorage.removeItem('ecrew_session');
-    
-    history.replaceState({ view: 'login' }, '');
-    currentView = 'login';
-    
+    localStorage.removeItem('ecrew_session'); // Hapus sesi
+    history.pushState({ view: 'login' }, '');
     document.getElementById('login-screen').classList.remove('hidden');
     document.getElementById('app').classList.add('hidden');
     document.getElementById('login-form').reset();
     document.getElementById('login-error').classList.add('hidden');
     lucide.createIcons();
-  };
-
-  // ==========================================
-  // Tombol Modal Exit
-  // ==========================================
-  document.getElementById('btn-cancel-exit').onclick = () => {
-      document.getElementById('exit-modal').classList.add('hidden');
-  };
-
-  document.getElementById('btn-confirm-exit').onclick = () => {
-      document.getElementById('exit-modal').classList.add('hidden');
-      allowExit = true;
-      history.back(); // Akan kembali ke state 'base' dan menutup aplikasi secara otomatis
-  };
-
-  document.getElementById('btn-close-restricted').onclick = () => {
-      document.getElementById('restricted-modal').classList.add('hidden');
   };
 
   // ==========================================
@@ -862,7 +934,7 @@
       <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-3 flex justify-between items-center group hover:bg-slate-800/80 transition">
         <div class="truncate pr-2">
           <p class="text-white text-sm font-semibold truncate">${u.name} <span class="text-cyan-400 text-xs ml-1 opacity-80 font-normal border border-cyan-500/30 px-1.5 py-0.5 rounded-md">${u.rank}</span></p>
-          <p class="text-slate-400 text-xs mt-1 truncate">${u.email} &bull; <span class="${u.role === 'admin' ? 'text-indigo-400' : 'text-emerald-400'} font-medium capitalize">${u.role}</span></p>
+          <p class="text-slate-400 text-xs mt-1 truncate">${u.email} &bull; <span class="${u.role === 'admin' ? 'text-indigo-400' : 'text-emerald-400'} font-medium capitalize">${u.role}</span> &bull; <span class="text-slate-300 font-medium">${u.position !== '-' ? u.position : 'No Position'}</span> &bull; <span class="text-amber-400 font-medium">${u.rule}</span></p>
         </div>
         <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
           <button type="button" onclick="openEditUser('${u.__backendId}')" class="text-slate-400 hover:text-blue-400 p-2 rounded-lg hover:bg-blue-500/10 transition" title="Edit User"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
@@ -882,6 +954,8 @@
     document.getElementById('eu-email').value = user.email;
     document.getElementById('eu-pass').value = user.password;
     document.getElementById('eu-rank').value = user.rank || '-';
+    document.getElementById('eu-pos').value = user.position || '-';
+    document.getElementById('eu-rule').value = user.rule || 'Member';
     document.getElementById('eu-role').value = user.role;
     
     history.pushState({ view: 'modal_edit_user' }, '');
@@ -910,6 +984,8 @@
     const password = document.getElementById('u-pass').value.trim();
     const role = document.getElementById('u-role').value;
     const rank = document.getElementById('u-rank').value;
+    const position = document.getElementById('u-pos').value;
+    const rule = document.getElementById('u-rule').value;
 
     if (allUsers.some(u => u.email === email)) {
       msgEl.textContent = '❌ Email/Username sudah digunakan!';
@@ -921,7 +997,7 @@
       return;
     }
 
-    const secretData = JSON.stringify({ p: password, r: rank });
+    const secretData = JSON.stringify({ p: password, r: rank, pos: position, rule: rule });
 
     const newRawUser = {
       id: 'user_' + Date.now().toString(36),
@@ -967,6 +1043,8 @@
     const password = document.getElementById('eu-pass').value.trim();
     const role = document.getElementById('eu-role').value;
     const rank = document.getElementById('eu-rank').value;
+    const position = document.getElementById('eu-pos').value;
+    const rule = document.getElementById('eu-rule').value;
 
     if (allUsers.some(u => u.email === email && u.__backendId !== userBeingEdited)) {
       msgEl.textContent = '❌ Email/Username sudah digunakan oleh user lain!';
@@ -977,7 +1055,7 @@
       return;
     }
 
-    const secretData = JSON.stringify({ p: password, r: rank });
+    const secretData = JSON.stringify({ p: password, r: rank, pos: position, rule: rule });
     const rawUserToUpdate = allRawData.find(d => d.__backendId === userBeingEdited);
 
     if (rawUserToUpdate) {
@@ -1081,14 +1159,24 @@
       card.onclick = (e) => {
         if (e.target.closest('.edit-btn')) { openEdit(menu); return; }
         
-        // Restriksi khusus Rank CS: Hanya bisa klik menu yang mengandung kata "Cabin Service"
-        if (!isAdmin && currentUser && currentUser.rank === 'CS') {
-            if (!menu.name.toLowerCase().includes('cabin service')) {
+        // Pembatasan Khusus Akses Position
+        if (!isAdmin && currentUser && menu.access_positions && !menu.access_positions.includes('All')) {
+            if (!menu.access_positions.includes(currentUser.position)) {
+                document.getElementById('restricted-message').innerHTML = `Menu ini hanya dapat diakses oleh <span class="font-bold text-red-400">Posisi Tertentu</span>. Akses Anda ditolak.`;
                 document.getElementById('restricted-modal').classList.remove('hidden');
                 return;
             }
         }
 
+        // Pembatasan Khusus Rank CS
+        if (!isAdmin && currentUser && currentUser.rank === 'CS') {
+            if (!menu.name.toLowerCase().includes('cabin service')) {
+                document.getElementById('restricted-message').innerHTML = `Akun dengan Rank <span class="font-bold text-red-400">Cabin Service (CS)</span> hanya diizinkan untuk membuka menu yang berkaitan dengan Cabin Service.`;
+                document.getElementById('restricted-modal').classList.remove('hidden');
+                return; // Blokir aksi selanjutnya
+            }
+        }
+        
         if (subCount > 0) { openSubmenu(menu); } // Masuk ke tingkat selanjutnya
         else if (menu.url) { window.open(menu.url, '_blank', 'noopener,noreferrer'); }
       };
@@ -1100,6 +1188,11 @@
 
     lucide.createIcons();
   }
+
+  // Tutup Modal Restricted (CS)
+  document.getElementById('btn-close-restricted').onclick = () => {
+      document.getElementById('restricted-modal').classList.add('hidden');
+  };
 
   function openSubmenu(parent, fromPopState = false) {
     if (!fromPopState) {
@@ -1140,9 +1233,26 @@
           return;
         }
         
-        // Pengecekan multi-level sub menu (sub-sub-menu)
         const item = allMenus.find(m => m.__backendId === el.dataset.bid);
         if (item) {
+            // Pembatasan Khusus Akses Position di dalam Submenu
+            if (!isAdmin && currentUser && item.access_positions && !item.access_positions.includes('All')) {
+                if (!item.access_positions.includes(currentUser.position)) {
+                    document.getElementById('restricted-message').innerHTML = `Menu ini hanya dapat diakses oleh <span class="font-bold text-red-400">Posisi Tertentu</span>. Akses Anda ditolak.`;
+                    document.getElementById('restricted-modal').classList.remove('hidden');
+                    return;
+                }
+            }
+
+            // Pembatasan Khusus Rank CS di dalam Submenu
+            if (!isAdmin && currentUser && currentUser.rank === 'CS') {
+                if (!item.name.toLowerCase().includes('cabin service')) {
+                    document.getElementById('restricted-message').innerHTML = `Akun dengan Rank <span class="font-bold text-red-400">Cabin Service (CS)</span> hanya diizinkan untuk membuka menu yang berkaitan dengan Cabin Service.`;
+                    document.getElementById('restricted-modal').classList.remove('hidden');
+                    return; // Blokir
+                }
+            }
+            
             const hasChildren = allMenus.some(m => m.parent_id === item.id);
             if (hasChildren) {
                 // Rekursif: masuk ke dalam lagi
@@ -1170,6 +1280,13 @@ function openModal(edit = null) {
   document.getElementById('f-name').value = edit?.name || '';
   document.getElementById('f-url').value = edit?.url || '';
   document.getElementById('f-image').value = edit?.image_url || '';
+  
+  // Update Checklist Position saat Modal dibuka
+  const accessPos = edit?.access_positions || ['All'];
+  document.querySelectorAll('input[name="f-pos-access"]').forEach(cb => {
+      cb.checked = accessPos.includes(cb.value);
+  });
+  
   document.getElementById('btn-delete').classList.toggle('hidden', !edit);
   document.getElementById('btn-duplicate').classList.toggle('hidden', !edit);
   document.getElementById('form-msg').classList.add('hidden');
@@ -1189,7 +1306,7 @@ function openModal(edit = null) {
   function buildMenuTree(parentId, prefix) {
       const children = allMenus.filter(m => (m.parent_id || '') === parentId);
       children.forEach(m => {
-          // Jangan tampilkan item yang sedang diedit beserta anak-anaknya agar tidak jadi looping
+          // Jangan tampilkan item yang sedang diedit beserta anak-anaknya agar tidak jadi looping parent
           if (edit && m.__backendId === edit.__backendId) return; 
           
           const isSelected = edit && edit.parent_id === m.id ? 'selected' : '';
@@ -1237,6 +1354,10 @@ document.getElementById('menu-form').onsubmit = async (e) => {
     const url = document.getElementById('f-url').value.trim();
     const imgUrl = document.getElementById('f-image').value.trim();
     const parentId = document.getElementById('f-parent').value;
+    
+    // Ambil semua Posisi yang di Checklist
+    let selectedPositions = Array.from(document.querySelectorAll('input[name="f-pos-access"]:checked')).map(cb => cb.value);
+    if (selectedPositions.length === 0) selectedPositions = ['All']; // Default jika lupa pilih
 
     const finalImageUrl = convertGoogleDriveUrl(imgUrl);
 
@@ -1245,9 +1366,10 @@ document.getElementById('menu-form').onsubmit = async (e) => {
       name,
       image_url: finalImageUrl,
       url,
-      is_submenu: !!parentId, // masih dipertahankan untuk kompatibilitas walau sudah dicek via parent_id
-      parent_id: parentId || '', // dipastikan string kosong bila None
-      order: editingItem?.order || allMenus.length
+      is_submenu: !!parentId,
+      parent_id: parentId || '', // string kosong bila None
+      order: editingItem?.order || allMenus.length,
+      access_positions: selectedPositions
     };
 
     let result;
@@ -1287,7 +1409,8 @@ document.getElementById('menu-form').onsubmit = async (e) => {
       url: editingItem.url,
       is_submenu: editingItem.is_submenu,
       parent_id: editingItem.parent_id,
-      order: allMenus.length
+      order: allMenus.length,
+      access_positions: editingItem.access_positions || ['All']
     };
 
     const result = await window.dataSdk.create(newRecord);
