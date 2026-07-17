@@ -670,7 +670,21 @@
           };
         });
         
-      allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD');
+      // MAPPING: Menu dan Konversi JSON untuk Access Positions
+      allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD').map(m => {
+          let acc = ['All'];
+          if (m.access_positions) {
+              try {
+                  // Membuka bungkus data JSON dari Google Sheet menjadi Array
+                  acc = typeof m.access_positions === 'string' ? JSON.parse(m.access_positions) : m.access_positions;
+              } catch(e) {
+                  // Fallback jika format lama
+                  acc = typeof m.access_positions === 'string' ? m.access_positions.split(',') : ['All'];
+              }
+          }
+          if (!Array.isArray(acc)) acc = ['All'];
+          return { ...m, access_positions: acc };
+      });
       
       if (document.getElementById('users-modal') && !document.getElementById('users-modal').classList.contains('hidden')) {
         renderUsersList();
@@ -1371,9 +1385,10 @@ document.getElementById('menu-form').onsubmit = async (e) => {
       image_url: finalImageUrl,
       url,
       is_submenu: !!parentId,
-      parent_id: parentId || '', // string kosong bila None
+      parent_id: parentId || '', 
       order: editingItem?.order || allMenus.length,
-      access_positions: selectedPositions
+      // Bungkus data dalam string JSON agar aman saat masuk ke Google Sheet
+      access_positions: JSON.stringify(selectedPositions)
     };
 
     let result;
@@ -1414,7 +1429,8 @@ document.getElementById('menu-form').onsubmit = async (e) => {
       is_submenu: editingItem.is_submenu,
       parent_id: editingItem.parent_id,
       order: allMenus.length,
-      access_positions: editingItem.access_positions || ['All']
+      // Simpan duplikat juga dengan dibungkus string JSON
+      access_positions: JSON.stringify(editingItem.access_positions || ['All'])
     };
 
     const result = await window.dataSdk.create(newRecord);
