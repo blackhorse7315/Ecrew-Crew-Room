@@ -24,8 +24,8 @@
       border: 1px solid rgba(255,255,255,0.05);
     }
     .menu-card:hover { 
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 25px 50px rgba(6, 182, 212, 0.15), 0 0 40px rgba(6, 182, 212, 0.1);
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(6, 182, 212, 0.15), 0 0 25px rgba(6, 182, 212, 0.1);
       border: 1px solid rgba(6, 182, 212, 0.3);
     }
     
@@ -36,13 +36,18 @@
     @keyframes slideUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
     
     .modal-overlay { background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
+    .submenu-panel { animation: expandDown 0.3s ease forwards; }
+    @keyframes expandDown { from { opacity:0; max-height:0; } to { opacity:1; max-height:800px; } }
     
     .glow-border { 
       background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2));
       border: 1px solid rgba(6, 182, 212, 0.3);
     }
     
-    .premium-gradient { background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); }
+    .premium-gradient {
+      background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+    }
+    
     .text-gradient {
       background: linear-gradient(135deg, #06b6d4, #3b82f6);
       -webkit-background-clip: text;
@@ -55,19 +60,42 @@
       position: relative;
       overflow: hidden;
     }
-    .smooth-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3); }
-    .smooth-button:active { transform: translateY(0); }
     
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+    .smooth-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+    }
+    
+    .smooth-button:active {
+      transform: translateY(0);
+    }
+    
+    /* Scrollbar minimalis untuk area yg bisa di-scroll */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(6, 182, 212, 0.5);
+        border-radius: 10px;
+    }
   </style>
+  <style>body { box-sizing: border-box; }</style>
  </head>
  <body class="h-full">
 
+  <!-- Loading Awal (Cek Sesi Login) -->
+  <div id="loading-screen" class="h-full w-full flex flex-col items-center justify-center p-4">
+    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/20 mb-4 animate-pulse"><img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl"></div>
+    <p class="text-cyan-400 font-semibold animate-pulse">Memuat Ecrew...</p>
+  </div>
+
   <!-- Login Screen -->
-  <div id="login-screen" class="h-full w-full flex items-center justify-center p-4 overflow-y-auto">
-   <div class="w-full max-w-md my-auto">
+  <div id="login-screen" class="hidden h-full w-full flex items-center justify-center p-4 overflow-y-auto">
+   <div class="w-full max-w-md my-auto py-8">
     <div class="glow-border rounded-3xl p-8 relative">
      <div class="absolute inset-0 bg-gradient-to-br from-slate-900/80 to-slate-900/60 rounded-3xl -z-10"></div>
      <div class="flex items-center justify-center gap-4 mb-8">
@@ -94,18 +122,18 @@
 
      <!-- Tampilan Form Register -->
      <div id="view-register" class="hidden">
-        <h2 class="text-white text-center font-bold text-xl mb-2">Welcome To ECrew</h2>
+        <h2 class="text-white text-center font-bold text-xl mb-2">Welcome To ECrew-Crew Room</h2>
         <p class="text-slate-400 text-center text-sm mb-6">Create your crew account</p>
-        <form id="register-form" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
-            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Full Name</label><input id="r-name" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Budi Santoso"></div>
-            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="r-email" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="budi@ecrew.com"></div>
-            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="r-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Create password"></div>
+        <form id="register-form" class="space-y-4">
+            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Full Name</label><input id="r-name" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Budi Santoso"></div>
+            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="r-email" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="budi@ecrew.com"></div>
+            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="r-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Create password"></div>
             
-            <div class="flex gap-3">
-                <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
-                    <select id="r-rank" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition">
-                        <option value="Capt">Capt</option>
-                        <option value="FO">FO</option>
+            <div class="flex gap-2">
+                <div class="w-1/2"><label class="text-slate-300 text-[11px] font-semibold block mb-1">Rank</label>
+                    <select id="r-rank" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
+                        <option value="Captain">Captain</option>
+                        <option value="First Officer">First Officer</option>
                         <option value="CS">CS</option>
                         <option value="FOO">FOO</option>
                         <option value="HLO">HLO</option>
@@ -113,33 +141,20 @@
                         <option value="-">None</option>
                     </select>
                 </div>
-                <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
-                    <select id="r-pos" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition">
-                        <option value="General Manager">General Manager</option>
-                        <option value="Operation Manager">Operation Manager</option>
-                        <option value="Maintenance Manager">Maintenance Manager</option>
-                        <option value="Chief Pilot Rotary Wing">Chief Pilot Rotary Wing</option>
-                        <option value="Chief Pilot Fixed Wing">Chief Pilot Fixed Wing</option>
-                        <option value="Chief Flight Support">Chief Flight Support</option>
-                        <option value="Chief Engineer">Chief Engineer</option>
-                        <option value="Chief Inspector">Chief Inspector</option>
-                        <option value="Captain">Captain</option>
-                        <option value="First Officer">First Officer</option>
-                        <option value="Engineer">Engineer</option>
-                        <option value="Cabin Service">Cabin Service</option>
-                        <option value="FOO/HLO">FOO/HLO</option>
-                        <option value="-">None</option>
+                <div class="w-1/2"><label class="text-slate-300 text-[11px] font-semibold block mb-1">Rule</label>
+                    <select id="r-rule" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
+                        <option value="Key Person">Key Person</option>
+                        <option value="Member">Member</option>
                     </select>
                 </div>
             </div>
             
-            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Rule</label>
-                <select id="r-rule" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 transition">
-                    <option value="Member">Member</option>
-                    <option value="Key Person">Key Person</option>
+            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
+                <select id="r-pos" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
+                    <!-- Options populated by JS -->
                 </select>
             </div>
-            
+
             <div id="r-form-msg" class="hidden text-center text-sm py-2 px-3 rounded-lg"></div>
             <button type="submit" id="btn-register-submit" class="w-full premium-gradient text-white font-bold py-3 rounded-xl transition smooth-button shadow-xl shadow-cyan-500/20 mt-2">Register</button>
         </form>
@@ -156,28 +171,31 @@
   </div>
   
   <div id="app" class="hidden h-full w-full overflow-auto">
-   <header class="bg-slate-900/60 backdrop-blur-xl border-b border-slate-700/40 px-6 py-5 sticky top-0 z-30">
+   <header class="bg-slate-900/60 backdrop-blur-xl border-b border-slate-700/40 px-4 sm:px-6 py-4 sticky top-0 z-30">
     <div class="max-w-7xl mx-auto flex items-center justify-between w-full">
-     <div class="flex items-center gap-4 flex-1">
-      <button id="btn-back" class="hidden text-slate-300 hover:text-white transition hover:scale-110"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
-      <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/20"><img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl">
+     <div class="flex items-center gap-3 sm:gap-4 flex-1">
+      <button id="btn-back" class="hidden text-slate-300 hover:text-white transition hover:scale-110 p-1"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+      <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0"><img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-xl sm:rounded-2xl">
       </div>
-      <div>
-       <h1 id="dash-title" class="text-white font-bold text-lg tracking-tight">Ecrew - Crew Room</h1>
-       <p id="dash-welcome" class="text-slate-400 text-xs font-medium">Welcome back, Captain!</p>
+      <div class="truncate pr-2">
+       <h1 id="dash-title" class="text-white font-bold text-base sm:text-lg tracking-tight truncate">Ecrew - Crew Room</h1>
+       <p id="dash-welcome" class="text-slate-400 text-[10px] sm:text-xs font-medium truncate">Welcome back, Captain!</p>
       </div>
      </div>
-     <div id="admin-controls" class="hidden flex items-center gap-3">
-      <button id="btn-users" class="flex items-center gap-2 bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 font-semibold px-4 py-2.5 rounded-xl transition border border-indigo-500/30 smooth-button"> <i data-lucide="users" class="w-4 h-4"></i> Manage Users </button>
-      <button id="btn-add" class="flex items-center gap-2 premium-gradient text-white font-semibold px-5 py-2.5 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20"> <i data-lucide="plus" class="w-4 h-4"></i> Add Menu </button>
+     <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+         <div id="admin-controls" class="hidden flex items-center gap-2 sm:gap-3">
+          <button id="btn-users" class="flex items-center gap-1 sm:gap-2 bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 font-semibold px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl transition border border-indigo-500/30 smooth-button"> <i data-lucide="users" class="w-4 h-4"></i> <span class="hidden md:inline">Manage Users</span> </button>
+          <button id="btn-add" class="flex items-center gap-1 sm:gap-2 premium-gradient text-white font-semibold px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20"> <i data-lucide="plus" class="w-4 h-4"></i> <span class="hidden md:inline">Add Menu</span> </button>
+         </div>
+         <button id="btn-sync" class="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 text-cyan-400 font-medium px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl transition border border-slate-700/30 smooth-button" title="Sync Database"> <i data-lucide="refresh-cw" id="sync-icon" class="w-4 h-4"></i> </button>
+         <button id="btn-logout" class="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 font-medium px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl transition border border-slate-700/30 smooth-button" title="Logout"> <i data-lucide="log-out" class="w-4 h-4"></i> <span class="hidden md:inline">Logout</span> </button>
      </div>
-     <button id="btn-sync" class="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 text-cyan-400 font-medium px-4 py-2.5 rounded-xl transition border border-slate-700/30 smooth-button" title="Sync Database"> <i data-lucide="refresh-cw" id="sync-icon" class="w-4 h-4"></i> <span class="hidden sm:inline">Sync</span> </button>
-     <button id="btn-logout" class="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 font-medium px-4 py-2.5 rounded-xl transition border border-slate-700/30 smooth-button"> <i data-lucide="log-out" class="w-4 h-4"></i> Logout </button>
     </div>
    </header>
    
-   <main class="max-w-7xl mx-auto px-6 py-8">
-    <div id="menu-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <!-- TAMPILAN MOBILE: 3 GRID (grid-cols-3) -->
+    <div id="menu-grid" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
     </div>
     <div id="empty-state" class="hidden text-center py-20 fade-in">
      <div class="w-24 h-24 mx-auto rounded-3xl glow-border flex items-center justify-center mb-6"><i data-lucide="layout-grid" class="w-12 h-12 text-slate-600"></i>
@@ -187,64 +205,56 @@
     </div>
    </main>
    
-   <!-- Submenu Overlay -->
    <div id="submenu-overlay" class="hidden fixed inset-0 z-40 bg-slate-900 flex flex-col">
-    <div class="bg-slate-800/80 border-b border-slate-700 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between sticky top-0 gap-3">
-     <div class="flex items-center gap-3">
-      <button id="submenu-back-btn" class="text-slate-300 hover:text-white flex items-center gap-1 bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1.5 rounded-lg transition"><i data-lucide="arrow-left" class="w-4 h-4"></i><span class="text-sm font-medium">Back</span></button>
-      <button id="submenu-dash-btn" class="text-slate-300 hover:text-cyan-400 flex items-center gap-1 bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1.5 rounded-lg transition"><i data-lucide="layout-grid" class="w-4 h-4"></i><span class="text-sm font-medium">Dashboard</span></button>
+    <div class="bg-slate-800/80 border-b border-slate-700 px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between sticky top-0 gap-3 backdrop-blur-xl">
+     <div class="flex items-center gap-3 overflow-hidden">
+      <button id="submenu-back-btn" class="text-slate-300 hover:text-white flex items-center gap-1 bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1.5 rounded-lg transition shrink-0"><i data-lucide="arrow-left" class="w-4 h-4"></i><span class="text-sm font-medium">Back</span></button>
+      <button id="submenu-dash-btn" class="text-slate-300 hover:text-cyan-400 flex items-center gap-1 bg-slate-700/50 hover:bg-slate-600/50 px-3 py-1.5 rounded-lg transition shrink-0"><i data-lucide="layout-grid" class="w-4 h-4"></i><span class="text-sm font-medium hidden sm:inline">Dashboard</span></button>
       <div class="h-6 w-px bg-slate-600 mx-1 hidden sm:block"></div>
-      <h2 id="submenu-title" class="text-white font-bold text-xl truncate"></h2>
+      <h2 id="submenu-title" class="text-white font-bold text-lg sm:text-xl truncate"></h2>
      </div>
-     <button id="submenu-close" class="text-slate-400 hover:text-white self-end sm:self-auto"><i data-lucide="x" class="w-6 h-6"></i></button>
+     <button id="submenu-close" class="text-slate-400 hover:text-white self-end sm:self-auto shrink-0"><i data-lucide="x" class="w-6 h-6"></i></button>
     </div>
-    <main class="flex-1 overflow-auto px-6 py-8">
-     <div id="submenu-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+    <main class="flex-1 overflow-auto px-4 sm:px-6 py-6 sm:py-8">
+     <!-- TAMPILAN MOBILE: 3 GRID (grid-cols-3) -->
+     <div id="submenu-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3"></div>
     </main>
    </div>
    
-   <!-- Menu Add/Edit Modal -->
+   <!-- Menu Add/Edit Modal (DENGAN MAX HEIGHT & SCROLL) -->
    <div id="modal" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
     <div class="bg-slate-900 rounded-3xl w-full max-w-md glow-border slide-up flex flex-col max-h-[95vh]">
-     <div class="p-6 border-b border-slate-700/40 flex items-center justify-between shrink-0">
+     <div class="p-5 sm:p-6 border-b border-slate-700/40 flex items-center justify-between shrink-0">
       <h2 id="modal-title" class="text-white font-bold text-xl">Add Menu</h2><button id="modal-close" class="text-slate-400 hover:text-white transition hover:scale-110"><i data-lucide="x" class="w-5 h-5"></i></button>
      </div>
-     <form id="menu-form" class="p-6 space-y-5 overflow-y-auto custom-scrollbar">
-      <div><label class="text-slate-300 text-sm font-semibold block mb-2">Menu Name</label> <input id="f-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="e.g. Flight Schedule">
+     <!-- Area form bisa discroll ke bawah agar tidak terpotong -->
+     <form id="menu-form" class="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar">
+      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Menu Name</label> <input id="f-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="e.g. Flight Schedule">
       </div>
-      <div><label class="text-slate-300 text-sm font-semibold block mb-2">Image URL</label>
-       <div id="img-preview-wrap" class="hidden mb-3">
-        <img id="img-preview" class="w-full h-32 object-contain rounded-xl">
-       </div><input id="f-image" type="text" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="https://drive.google.com/file/d/10uZFwtnBY0nXRz1v_6v76LZubOFmc0jY/view?usp=drivesdk">
-       <p class="text-slate-500 text-xs mt-2 font-medium">Google Drive link akan otomatis di-convert menjadi tag &lt;img&gt; saat disimpan</p>
+      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Image URL</label>
+       <div id="img-preview-wrap" class="hidden mb-2">
+        <img id="img-preview" class="w-full h-24 sm:h-32 object-contain rounded-xl">
+       </div><input id="f-image" type="text" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="https://drive.google.com/file/d/.../view">
       </div>
-      <div><label class="text-slate-300 text-sm font-semibold block mb-2">Link URL</label> <input id="f-url" type="url" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="https://example.com">
+      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Link URL</label> <input id="f-url" type="url" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="https://example.com">
       </div>
-      <div><label class="text-slate-300 text-sm font-semibold block mb-2">Parent Menu (optional)</label> <select id="f-parent" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition"> <option value="">— None (Main Menu) —</option> </select>
+      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Parent Menu (optional)</label> <select id="f-parent" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition"> <option value="">— None (Main Menu) —</option> </select>
       </div>
+      
+      <!-- Hak Akses Multi-pilihan (Checkbox) -->
       <div>
-        <label class="text-slate-300 text-sm font-semibold block mb-2">Akses Posisi (Pilih siapa saja yang bisa buka)</label> 
-        <div class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white max-h-40 overflow-y-auto space-y-2 custom-scrollbar">
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="All" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Semua Posisi (All)</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="General Manager" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">General Manager</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Operation Manager" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Operation Manager</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Maintenance Manager" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Maintenance Manager</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Chief Pilot Rotary Wing" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Chief Pilot Rotary Wing</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Chief Pilot Fixed Wing" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Chief Pilot Fixed Wing</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Chief Flight Support" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Chief Flight Support</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Chief Engineer" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Chief Engineer</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Chief Inspector" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Chief Inspector</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Captain" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Captain</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="First Officer" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">First Officer</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Engineer" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Engineer</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="Cabin Service" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">Cabin Service</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="FOO/HLO" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">FOO/HLO</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" name="f-pos-access" value="-" class="accent-cyan-500 w-4 h-4 rounded"> <span class="text-sm">None (-)</span></label>
+        <label class="text-slate-300 text-sm font-semibold block mb-1 flex items-center justify-between">
+            <span>Access Allowed For (Position)</span>
+            <button type="button" id="btn-check-all" class="text-[10px] text-cyan-400 hover:text-cyan-300 px-2 py-0.5 border border-cyan-500/30 rounded">Check All</button>
+        </label> 
+        <div class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl p-3 max-h-40 overflow-y-auto custom-scrollbar flex flex-col gap-2" id="access-checkbox-container">
+            <!-- Checkbox akan digenerate oleh JS -->
         </div>
       </div>
-      <div class="flex gap-3 pt-2"><button type="submit" id="btn-submit" class="flex-1 premium-gradient text-white font-semibold py-3 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2"> <i data-lucide="check" class="w-4 h-4"></i> Save </button> <button type="button" id="btn-duplicate" class="hidden bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 font-semibold py-3 px-4 rounded-xl transition border border-blue-500/30 smooth-button" title="Duplicate this menu"> <i data-lucide="copy" class="w-4 h-4"></i> </button> <button type="button" id="btn-delete" class="hidden bg-red-500/20 text-red-300 hover:bg-red-500/30 font-semibold py-3 px-4 rounded-xl transition border border-red-500/30 smooth-button"> <i data-lucide="trash-2" class="w-4 h-4"></i> </button>
+
+      <div class="flex gap-2 pt-2 shrink-0"><button type="submit" id="btn-submit" class="flex-1 premium-gradient text-white font-semibold py-3 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 text-sm sm:text-base"> <i data-lucide="check" class="w-4 h-4"></i> Save </button> <button type="button" id="btn-duplicate" class="hidden bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 font-semibold py-3 px-4 rounded-xl transition border border-blue-500/30 smooth-button" title="Duplicate this menu"> <i data-lucide="copy" class="w-4 h-4"></i> </button> <button type="button" id="btn-delete" class="hidden bg-red-500/20 text-red-300 hover:bg-red-500/30 font-semibold py-3 px-4 rounded-xl transition border border-red-500/30 smooth-button" title="Delete menu"> <i data-lucide="trash-2" class="w-4 h-4"></i> </button>
       </div>
-      <div id="form-msg" class="hidden text-center text-sm py-2 px-3 rounded-lg"></div>
+      <div id="form-msg" class="hidden text-center text-sm py-2 px-3 rounded-lg shrink-0"></div>
      </form>
     </div>
    </div>
@@ -252,24 +262,24 @@
    <!-- Manage Users Modal -->
    <div id="users-modal" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
     <div class="bg-slate-900 rounded-3xl w-full max-w-4xl glow-border slide-up flex flex-col max-h-[95vh]">
-     <div class="p-6 border-b border-slate-700/40 flex items-center justify-between">
+     <div class="p-5 sm:p-6 border-b border-slate-700/40 flex items-center justify-between shrink-0">
       <h2 class="text-white font-bold text-xl">Manage Users</h2><button id="users-modal-close" class="text-slate-400 hover:text-white transition hover:scale-110"><i data-lucide="x" class="w-5 h-5"></i></button>
      </div>
-     <div class="flex-1 overflow-auto p-6 flex flex-col md:flex-row gap-8">
+     <div class="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-6 flex flex-col md:flex-row gap-6 md:gap-8">
       
       <!-- Formulir Tambah User Baru -->
-      <div class="w-full md:w-[45%]">
+      <div class="w-full md:w-[45%] shrink-0">
        <h3 class="text-white font-semibold mb-4 text-lg">Add New User</h3>
-       <form id="user-form" class="space-y-4">
-        <div><label class="text-slate-300 text-xs font-semibold block mb-1">Full Name</label><input id="u-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="Budi Santoso"></div>
-        <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="u-email" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="budi@ecrew.com"></div>
-        <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="u-pass" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="P@ssw0rd123"></div>
+       <form id="user-form" class="space-y-3">
+        <div><label class="text-slate-300 text-xs font-semibold block mb-1">Full Name</label><input id="u-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="Budi Santoso"></div>
+        <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="u-email" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="budi@ecrew.com"></div>
+        <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="u-pass" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="P@ssw0rd123"></div>
         
-        <div class="flex gap-4">
+        <div class="flex gap-3">
           <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
-           <select id="u-rank" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition">
-            <option value="Capt">Capt</option>
-            <option value="FO">FO</option>
+           <select id="u-rank" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition text-sm">
+            <option value="Captain">Captain</option>
+            <option value="First Officer">First Officer</option>
             <option value="CS">CS</option>
             <option value="FOO">FOO</option>
             <option value="HLO">HLO</option>
@@ -277,50 +287,36 @@
             <option value="-">None</option>
            </select>
           </div>
-          <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Role</label>
-           <select id="u-role" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition">
+          <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Role (Admin/User)</label>
+           <select id="u-role" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition text-sm">
             <option value="user">User</option>
             <option value="admin">Admin</option>
            </select>
           </div>
         </div>
 
-        <div class="flex gap-4">
-            <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
-               <select id="u-pos" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition">
-                <option value="General Manager">General Manager</option>
-                <option value="Operation Manager">Operation Manager</option>
-                <option value="Maintenance Manager">Maintenance Manager</option>
-                <option value="Chief Pilot Rotary Wing">Chief Pilot Rotary Wing</option>
-                <option value="Chief Pilot Fixed Wing">Chief Pilot Fixed Wing</option>
-                <option value="Chief Flight Support">Chief Flight Support</option>
-                <option value="Chief Engineer">Chief Engineer</option>
-                <option value="Chief Inspector">Chief Inspector</option>
-                <option value="Captain">Captain</option>
-                <option value="First Officer">First Officer</option>
-                <option value="Engineer">Engineer</option>
-                <option value="Cabin Service">Cabin Service</option>
-                <option value="FOO/HLO">FOO/HLO</option>
-                <option value="-">None</option>
-               </select>
-            </div>
+        <div class="flex gap-3">
             <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rule</label>
-               <select id="u-rule" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition">
-                <option value="Member">Member</option>
-                <option value="Key Person">Key Person</option>
-               </select>
+                <select id="u-rule" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
+                    <option value="Key Person">Key Person</option>
+                    <option value="Member">Member</option>
+                </select>
+            </div>
+            <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
+                <select id="u-pos" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
+                </select>
             </div>
         </div>
 
-        <div class="pt-2"><button type="submit" id="btn-user-submit" class="w-full premium-gradient text-white font-semibold py-3 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20 flex justify-center items-center gap-2"><i data-lucide="user-plus" class="w-4 h-4"></i> Add User</button></div>
-        <div id="u-form-msg" class="hidden text-center text-xs py-2 px-3 rounded-lg mt-2"></div>
+        <div class="pt-2"><button type="submit" id="btn-user-submit" class="w-full premium-gradient text-white font-semibold py-2.5 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20 flex justify-center items-center gap-2"><i data-lucide="user-plus" class="w-4 h-4"></i> Add User</button></div>
+        <div id="u-form-msg" class="hidden text-center text-xs py-2 px-3 rounded-lg mt-1"></div>
        </form>
       </div>
 
       <!-- User Directory -->
       <div class="w-full md:w-[55%] border-t md:border-t-0 md:border-l border-slate-700/50 pt-6 md:pt-0 md:pl-8 flex flex-col">
        <h3 class="text-white font-semibold mb-4 text-lg flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5 text-cyan-400"></i> User Directory</h3>
-       <div id="users-list" class="flex-1 space-y-3 overflow-y-auto pr-2 max-h-[380px]">
+       <div id="users-list" class="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2 min-h-[250px] max-h-[380px]">
         </div>
       </div>
 
@@ -330,20 +326,19 @@
    
    <!-- Edit User Pop-up Modal -->
    <div id="edit-user-modal" class="hidden fixed inset-0 z-[60] modal-overlay flex items-center justify-center p-4">
-    <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border slide-up border border-cyan-500/30 overflow-y-auto max-h-screen">
-     <div class="p-5 border-b border-slate-700/40 flex items-center justify-between sticky top-0 bg-slate-900 z-10">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border slide-up border border-cyan-500/30 max-h-[95vh] flex flex-col">
+     <div class="p-4 sm:p-5 border-b border-slate-700/40 flex items-center justify-between shrink-0">
       <h2 class="text-white font-bold text-lg">Edit User</h2><button id="edit-user-modal-close" class="text-slate-400 hover:text-white transition hover:scale-110"><i data-lucide="x" class="w-5 h-5"></i></button>
      </div>
-     <form id="edit-user-form" class="p-6 space-y-4">
+     <form id="edit-user-form" class="p-4 sm:p-6 space-y-3 overflow-y-auto custom-scrollbar">
       <div><label class="text-slate-300 text-xs font-semibold block mb-1">Full Name</label><input id="eu-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition"></div>
       <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="eu-email" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition"></div>
       <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="eu-pass" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition"></div>
-      
-      <div class="flex gap-4">
+      <div class="flex gap-3">
         <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
-         <select id="eu-rank" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition">
-          <option value="Capt">Capt</option>
-          <option value="FO">FO</option>
+         <select id="eu-rank" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
+          <option value="Captain">Captain</option>
+          <option value="First Officer">First Officer</option>
           <option value="CS">CS</option>
           <option value="FOO">FOO</option>
           <option value="HLO">HLO</option>
@@ -351,73 +346,57 @@
           <option value="-">None</option>
          </select>
         </div>
-        <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Role</label>
-         <select id="eu-role" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition">
+        <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Role (Admin/User)</label>
+         <select id="eu-role" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
           <option value="user">User</option>
           <option value="admin">Admin</option>
          </select>
         </div>
       </div>
-      
-      <div class="flex gap-4">
-          <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
-             <select id="eu-pos" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition">
-              <option value="General Manager">General Manager</option>
-              <option value="Operation Manager">Operation Manager</option>
-              <option value="Maintenance Manager">Maintenance Manager</option>
-              <option value="Chief Pilot Rotary Wing">Chief Pilot Rotary Wing</option>
-              <option value="Chief Pilot Fixed Wing">Chief Pilot Fixed Wing</option>
-              <option value="Chief Flight Support">Chief Flight Support</option>
-              <option value="Chief Engineer">Chief Engineer</option>
-              <option value="Chief Inspector">Chief Inspector</option>
-              <option value="Captain">Captain</option>
-              <option value="First Officer">First Officer</option>
-              <option value="Engineer">Engineer</option>
-              <option value="Cabin Service">Cabin Service</option>
-              <option value="FOO/HLO">FOO/HLO</option>
-              <option value="-">None</option>
-             </select>
-          </div>
-          <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rule</label>
-             <select id="eu-rule" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition">
-              <option value="Member">Member</option>
-              <option value="Key Person">Key Person</option>
-             </select>
-          </div>
+      <div class="flex gap-3">
+        <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rule</label>
+            <select id="eu-rule" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
+                <option value="Key Person">Key Person</option>
+                <option value="Member">Member</option>
+            </select>
+        </div>
+        <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
+            <select id="eu-pos" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
+            </select>
+        </div>
       </div>
-
-      <div class="pt-3 flex gap-3">
-        <button type="submit" id="btn-eu-submit" class="flex-1 premium-gradient text-white font-semibold py-2.5 rounded-xl transition smooth-button">Update</button>
+      <div class="pt-2 shrink-0">
+        <button type="submit" id="btn-eu-submit" class="w-full premium-gradient text-white font-semibold py-2.5 rounded-xl transition smooth-button">Update</button>
       </div>
-      <div id="eu-form-msg" class="hidden text-center text-xs py-2 px-3 rounded-lg mt-2"></div>
+      <div id="eu-form-msg" class="hidden text-center text-xs py-2 px-3 rounded-lg mt-1 shrink-0"></div>
      </form>
     </div>
    </div>
 
-   <!-- Modal Restricted Access (CS) -->
-   <div id="restricted-modal" class="hidden fixed inset-0 z-[70] modal-overlay flex items-center justify-center p-4">
-    <div class="bg-slate-900 rounded-3xl w-full max-w-sm border border-red-500/30 p-6 text-center shadow-2xl slide-up">
-        <div class="w-16 h-16 bg-red-500/20 text-red-400 mx-auto rounded-full flex items-center justify-center mb-4">
-            <i data-lucide="lock" class="w-8 h-8"></i>
-        </div>
-        <h3 class="text-white font-bold text-lg mb-2">Akses Ditolak</h3>
-        <p id="restricted-message" class="text-slate-400 text-sm mb-6">Akun dengan Rank <span class="font-bold text-red-400">Cabin Service (CS)</span> hanya diizinkan untuk membuka menu yang berkaitan dengan Cabin Service.</p>
-        <button id="btn-close-restricted" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700">Mengerti</button>
+   <!-- Peringatan Akses Ditolak -->
+   <div id="restricted-modal" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border border border-red-500/30 slide-up text-center p-6 sm:p-8">
+     <div class="w-20 h-20 mx-auto bg-red-500/10 rounded-full flex items-center justify-center mb-5">
+         <i data-lucide="lock" class="w-10 h-10 text-red-400"></i>
+     </div>
+     <h2 class="text-white font-bold text-xl mb-2">Akses Ditolak</h2>
+     <p id="restricted-msg" class="text-slate-400 text-sm mb-6">Maaf, Anda tidak memiliki izin untuk membuka menu ini sesuai dengan aturan otorisasi posisi Anda.</p>
+     <button id="btn-close-restricted" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Mengerti</button>
     </div>
    </div>
-   
-   <!-- Modal Exit Confirmation -->
-   <div id="exit-modal" class="hidden fixed inset-0 z-[70] modal-overlay flex items-center justify-center p-4">
-    <div class="bg-slate-900 rounded-3xl w-full max-w-sm border border-slate-700/50 p-6 text-center shadow-2xl slide-up">
-        <div class="w-16 h-16 bg-amber-500/20 text-amber-400 mx-auto rounded-full flex items-center justify-center mb-4">
-            <i data-lucide="log-out" class="w-8 h-8"></i>
-        </div>
-        <h3 class="text-white font-bold text-lg mb-2">Keluar Aplikasi?</h3>
-        <p class="text-slate-400 text-sm mb-6">Apakah Anda yakin ingin keluar dari aplikasi? (Sesi Anda akan tetap tersimpan)</p>
-        <div class="flex gap-3">
-            <button id="btn-exit-cancel" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 rounded-xl transition border border-slate-700">Batal</button>
-            <button id="btn-exit-confirm" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 rounded-xl transition shadow-lg shadow-red-500/20">Ya, Keluar</button>
-        </div>
+
+   <!-- Konfirmasi Keluar (Exit Modal Trap) -->
+   <div id="exit-modal" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border border border-slate-500/30 slide-up text-center p-6 sm:p-8">
+     <div class="w-20 h-20 mx-auto bg-yellow-500/10 rounded-full flex items-center justify-center mb-5">
+         <i data-lucide="log-out" class="w-10 h-10 text-yellow-400"></i>
+     </div>
+     <h2 class="text-white font-bold text-xl mb-2">Keluar Aplikasi?</h2>
+     <p class="text-slate-400 text-sm mb-6">Anda menekan tombol kembali. Apakah Anda ingin keluar dari akun Ecrew Anda?</p>
+     <div class="flex gap-3">
+         <button id="btn-cancel-exit" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Batal</button>
+         <button id="btn-confirm-exit" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya, Logout</button>
+     </div>
     </div>
    </div>
 
@@ -430,7 +409,7 @@
   const appLogoUrl = 'https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ';
   const manifestData = {
     name: "Ecrew - Crew Room",
-    short_name: "Crew Room",
+    short_name: "Ecrew",
     description: "Portal operasi penerbangan Ecrew",
     start_url: window.location.href,
     display: "standalone",
@@ -458,11 +437,107 @@
       .catch(err => console.log('PWA Service Worker tidak dapat diinisiasi:', err));
   }
 
+  // ==========================================
+  // DAFTAR POSISI (Global)
+  // ==========================================
+  const POSITIONS_LIST = [
+      "General Manager", "Operation Manager", "Chief Pilot Rotary Wing", 
+      "Chief Pilot Fixed Wing", "Chief Flight Support", "Cabin Service", 
+      "FOO/HLO", "Maintenance Manager", "Chief Engineer", "Chief Inspector", 
+      "Captain", "First Officer", "Engineer"
+  ];
+
+  // Injeksi Daftar Posisi ke HTML
+  function populatePositionDropdowns() {
+      const optionsHTML = POSITIONS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
+      if(document.getElementById('r-pos')) document.getElementById('r-pos').innerHTML = optionsHTML;
+      if(document.getElementById('u-pos')) document.getElementById('u-pos').innerHTML = optionsHTML;
+      if(document.getElementById('eu-pos')) document.getElementById('eu-pos').innerHTML = optionsHTML;
+      
+      const cbContainer = document.getElementById('access-checkbox-container');
+      if(cbContainer) {
+          // Checkbox dinamis
+          let cbHTML = `
+            <label class="flex items-center gap-2 cursor-pointer group">
+                <input type="checkbox" value="All" id="cb-all-pos" class="access-cb w-4 h-4 rounded border-slate-600 text-cyan-500 focus:ring-cyan-500/50 bg-slate-700" checked>
+                <span class="text-white text-sm group-hover:text-cyan-300 transition font-semibold">Semua Posisi (All)</span>
+            </label>
+            <div class="h-px w-full bg-slate-700 my-1"></div>
+          `;
+          cbHTML += POSITIONS_LIST.map(p => `
+            <label class="flex items-center gap-2 cursor-pointer group pl-2">
+                <input type="checkbox" value="${p}" class="access-cb access-cb-item w-4 h-4 rounded border-slate-600 text-cyan-500 focus:ring-cyan-500/50 bg-slate-700" disabled>
+                <span class="text-slate-300 text-sm group-hover:text-white transition">${p}</span>
+            </label>
+          `).join('');
+          cbContainer.innerHTML = cbHTML;
+          
+          // Logika Checkbox
+          const allCb = document.getElementById('cb-all-pos');
+          const itemCbs = document.querySelectorAll('.access-cb-item');
+          
+          allCb.onchange = (e) => {
+              itemCbs.forEach(cb => {
+                  if(e.target.checked) {
+                      cb.checked = false;
+                      cb.disabled = true;
+                  } else {
+                      cb.disabled = false;
+                  }
+              });
+          };
+
+          document.getElementById('btn-check-all').onclick = () => {
+              allCb.checked = false;
+              itemCbs.forEach(cb => {
+                  cb.disabled = false;
+                  cb.checked = true;
+              });
+          };
+      }
+  }
+
+  function getSelectedAccessPositions() {
+      const allCb = document.getElementById('cb-all-pos');
+      if(allCb && allCb.checked) return 'All'; 
+      
+      const itemCbs = document.querySelectorAll('.access-cb-item:checked');
+      const selected = Array.from(itemCbs).map(cb => cb.value);
+      
+      return selected.length > 0 ? JSON.stringify(selected) : 'All'; 
+  }
+
+  function setAccessPositions(accessVal) {
+      const allCb = document.getElementById('cb-all-pos');
+      const itemCbs = document.querySelectorAll('.access-cb-item');
+      
+      if(!accessVal || accessVal === 'All' || accessVal === '[]') {
+          allCb.checked = true;
+          itemCbs.forEach(cb => { cb.checked = false; cb.disabled = true; });
+          return;
+      }
+
+      allCb.checked = false;
+      let parsedArr = [];
+      try {
+          parsedArr = JSON.parse(accessVal); 
+      } catch(e) { parsedArr = [accessVal]; }
+
+      itemCbs.forEach(cb => {
+          cb.disabled = false;
+          cb.checked = parsedArr.includes(cb.value);
+      });
+  }
+
+  // Panggil saat load
+  populatePositionDropdowns();
+
   function convertGoogleDriveUrl(url) {
     if (!url) return '';
     const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
     if (match && match[1]) {
-      return `<img src="https://lh3.googleusercontent.com/d/${match[1]}" alt="Logo" class="w-full h-full object-cover" />`;
+      // Menggunakan object-cover dan ditambahkan efek animasi perbesar (scale-110)
+      return `<img src="https://lh3.googleusercontent.com/d/${match[1]}" alt="Logo" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />`;
     }
     return url;
   }
@@ -485,55 +560,65 @@
   
   let editingItem = null;
   let imageUrl = '';
-  let currentView = 'dashboard';
+  let currentView = 'login';
   let userBeingEdited = null;
 
   // ==========================================
-  // KEEP LOGGED IN & History API for "Back"
+  // MANAJEMEN SESI (LOCAL STORAGE) & HISTORY API (TOMBOL BACK)
   // ==========================================
-  const savedSession = localStorage.getItem('ecrew_session');
-  if (savedSession) {
-      try {
-          currentUser = JSON.parse(savedSession);
-          isAdmin = currentUser.role === 'admin';
-          history.replaceState({ view: 'dashboard' }, '');
-          document.getElementById('login-screen').classList.add('hidden');
-          document.getElementById('app').classList.remove('hidden');
-          
-          if (isAdmin) {
-              document.getElementById('admin-controls').classList.remove('hidden');
-              document.getElementById('dash-welcome').textContent = `🔐 Admin Panel - Welcome, ${currentUser.name}`;
-          } else {
-              document.getElementById('admin-controls').classList.add('hidden');
-              let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
-              if(currentUser.rank && currentUser.rank !== '-') {
-                  titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
-              }
-              document.getElementById('dash-welcome').textContent = titleTxt;
+  function checkSession() {
+      const savedUser = localStorage.getItem('ecrew_session');
+      if (savedUser) {
+          try {
+              const userObj = JSON.parse(savedUser);
+              currentUser = userObj;
+              isAdmin = userObj.role === 'admin';
+              showAppDashboard();
+              return true;
+          } catch(e) {
+              localStorage.removeItem('ecrew_session');
           }
-      } catch(e) {
-          localStorage.removeItem('ecrew_session');
-          history.replaceState({ view: 'login' }, '');
       }
-  } else {
+      // Jika tidak ada sesi
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
       history.replaceState({ view: 'login' }, '');
+      return false;
   }
+
+  function saveSession(userObj) {
+      localStorage.setItem('ecrew_session', JSON.stringify(userObj));
+  }
+
+  function clearSession() {
+      localStorage.removeItem('ecrew_session');
+      currentUser = null;
+      isAdmin = false;
+  }
+
+  history.replaceState({ view: 'start' }, '');
 
   window.addEventListener('popstate', (e) => {
     const state = e.state || { view: 'login' };
     
-    // Selalu pastikan modal standar tertutup
-    const modals = ['modal', 'users-modal', 'edit-user-modal', 'restricted-modal', 'exit-modal'];
-    modals.forEach(id => document.getElementById(id).classList.add('hidden'));
-    userBeingEdited = null;
-
-    // Trap Exit: Cegah kembali ke login jika masih login (tampilkan modal konfirmasi)
-    if (currentUser && state.view === 'login') {
+    // Selalu pastikan semua modal tertutup
+    document.getElementById('modal').classList.add('hidden');
+    document.getElementById('users-modal').classList.add('hidden');
+    document.getElementById('edit-user-modal').classList.add('hidden');
+    document.getElementById('restricted-modal').classList.add('hidden');
+    
+    // EXIT TRAP (Jebakan Keluar) jika back dari Dashboard
+    if (state.view === 'start' && currentUser) {
         document.getElementById('exit-modal').classList.remove('hidden');
+        // Push state dashboard kembali agar tidak benar-benar keluar browser
         history.pushState({ view: 'dashboard' }, '');
         return;
+    } else {
+        document.getElementById('exit-modal').classList.add('hidden');
     }
-    // Cegah bypass dashboard jika belum login
+
+    userBeingEdited = null;
+
     if (!currentUser && state.view !== 'login' && state.view !== 'register') {
         history.replaceState({ view: 'login' }, '');
         document.getElementById('login-screen').classList.remove('hidden');
@@ -569,21 +654,11 @@
                showDashboard(true);
            }
        }
+    } else if (state.view === 'modal_users') {
+        document.getElementById('users-modal').classList.remove('hidden');
     }
   });
-  
-  document.getElementById('btn-exit-cancel').onclick = () => {
-      document.getElementById('exit-modal').classList.add('hidden');
-  };
-  document.getElementById('btn-exit-confirm').onclick = () => {
-      try {
-          if (navigator.app && navigator.app.exitApp) { navigator.app.exitApp(); }
-          else { window.close(); }
-      } catch(e) {
-          alert("Silakan tutup tab atau aplikasi Anda.");
-      }
-      document.getElementById('exit-modal').classList.add('hidden');
-  };
+
 
   const defaultConfig = {
     dashboard_title: 'Ecrew - Crew Room',
@@ -645,7 +720,7 @@
           let pass = d.url || '';
           let rank = '-';
           let pos = '-';
-          let rule = 'Member';
+          let rul = '-';
           
           if (pass.startsWith('{')) {
             try {
@@ -653,7 +728,7 @@
               pass = parsed.p || '';
               rank = parsed.r || '-';
               pos = parsed.pos || '-';
-              rule = parsed.rule || 'Member';
+              rul = parsed.rul || '-';
             } catch(e) {}
           }
 
@@ -665,26 +740,12 @@
             password: pass,    
             rank: rank,
             position: pos,
-            rule: rule,
+            rule: rul,
             role: d.order === 1 ? 'admin' : 'user'
           };
         });
         
-      // MAPPING: Menu dan Konversi JSON untuk Access Positions
-      allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD').map(m => {
-          let acc = ['All'];
-          if (m.access_positions) {
-              try {
-                  // Membuka bungkus data JSON dari Google Sheet menjadi Array
-                  acc = typeof m.access_positions === 'string' ? JSON.parse(m.access_positions) : m.access_positions;
-              } catch(e) {
-                  // Fallback jika format lama
-                  acc = typeof m.access_positions === 'string' ? m.access_positions.split(',') : ['All'];
-              }
-          }
-          if (!Array.isArray(acc)) acc = ['All'];
-          return { ...m, access_positions: acc };
-      });
+      allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD');
       
       if (document.getElementById('users-modal') && !document.getElementById('users-modal').classList.contains('hidden')) {
         renderUsersList();
@@ -693,6 +754,7 @@
     }
   };
 
+  // URL WEB APP GOOGLE APPS SCRIPT ANDA
   const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx5tHULYdvZGdUrDPnhSFfR-gSbB0WlB2cDpTmXt7_5mNVYMlSPGsnOwO3xhKsDD4OP/exec"; 
 
   window.dataSdk = {
@@ -701,6 +763,9 @@
       window.dataSdk._handler = handler;
       await window.dataSdk.sync();
       setInterval(() => window.dataSdk.sync(true), 300000);
+      
+      // Cek Sesi setelah data pertama masuk
+      checkSession();
     },
 
     sync: async (isAuto = false) => {
@@ -784,7 +849,6 @@
       document.getElementById('btn-sync').onclick = () => window.dataSdk.sync();
   }
 
-  // Toggle Antara Layar Login & Register dengan menggunakan History State
   document.getElementById('btn-go-register').onclick = () => {
     history.pushState({ view: 'register' }, '');
     document.getElementById('view-login').classList.add('hidden');
@@ -811,8 +875,8 @@
     const email = document.getElementById('r-email').value.trim().toLowerCase();
     const password = document.getElementById('r-pass').value.trim();
     const rank = document.getElementById('r-rank').value;
-    const position = document.getElementById('r-pos').value;
     const rule = document.getElementById('r-rule').value;
+    const pos = document.getElementById('r-pos').value;
 
     if (allUsers.some(u => u.email === email)) {
       msgEl.textContent = '❌ Email/Username sudah terdaftar!';
@@ -823,7 +887,7 @@
       return;
     }
 
-    const secretData = JSON.stringify({ p: password, r: rank, pos: position, rule: rule });
+    const secretData = JSON.stringify({ p: password, r: rank, pos: pos, rul: rule });
 
     const newRawUser = {
       id: 'user_' + Date.now().toString(36),
@@ -881,47 +945,57 @@
       currentUser = dbUser;
       isAdmin = dbUser.role === 'admin';
     } else {
-      currentUser = { name: 'Master Admin', role: 'admin', rank: 'Admin', position: '-', rule: 'Key Person' };
+      currentUser = { name: 'Master Admin', role: 'admin', rank: 'Admin', position: 'All', rule: 'Key Person' };
       isAdmin = true;
     }
     
-    // Save session untuk Keep Logged In
-    localStorage.setItem('ecrew_session', JSON.stringify(currentUser));
-    
-    history.pushState({ view: 'dashboard' }, '');
+    saveSession(currentUser);
+    showAppDashboard();
+  };
 
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
-    
-    if (isAdmin) {
-      document.getElementById('admin-controls').classList.remove('hidden');
-      document.getElementById('dash-welcome').textContent = `🔐 Admin Panel - Welcome, ${currentUser.name}`;
-    } else {
-      document.getElementById('admin-controls').classList.add('hidden');
-      let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
-      if(currentUser.rank && currentUser.rank !== '-') {
-         titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
+  function showAppDashboard() {
+      history.pushState({ view: 'dashboard' }, '');
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      
+      if (isAdmin) {
+        document.getElementById('admin-controls').classList.remove('hidden');
+        document.getElementById('dash-welcome').textContent = `🔐 Admin Panel - Welcome, ${currentUser.name}`;
+      } else {
+        document.getElementById('admin-controls').classList.add('hidden');
+        let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
+        if(currentUser.rank && currentUser.rank !== '-') {
+           titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
+        }
+        document.getElementById('dash-welcome').textContent = titleTxt;
       }
-      document.getElementById('dash-welcome').textContent = titleTxt;
-    }
+  
+      renderMenus();
+      lucide.createIcons();
+  }
 
-    renderMenus();
-    lucide.createIcons();
+  // Tombol Cancel & Confirm pada modal Exit Trap
+  document.getElementById('btn-cancel-exit').onclick = () => {
+      document.getElementById('exit-modal').classList.add('hidden');
+  };
+  
+  document.getElementById('btn-confirm-exit').onclick = () => {
+      document.getElementById('exit-modal').classList.add('hidden');
+      doLogout();
   };
 
-  document.getElementById('btn-back').onclick = () => history.back();
+  document.getElementById('btn-logout').onclick = () => doLogout();
 
-  document.getElementById('btn-logout').onclick = () => {
-    currentUser = null;
-    isAdmin = false;
-    localStorage.removeItem('ecrew_session'); // Hapus sesi
-    history.pushState({ view: 'login' }, '');
-    document.getElementById('login-screen').classList.remove('hidden');
-    document.getElementById('app').classList.add('hidden');
-    document.getElementById('login-form').reset();
-    document.getElementById('login-error').classList.add('hidden');
-    lucide.createIcons();
-  };
+  function doLogout() {
+      clearSession();
+      history.pushState({ view: 'login' }, '');
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('login-form').reset();
+      document.getElementById('login-error').classList.add('hidden');
+      lucide.createIcons();
+  }
 
   // ==========================================
   // USERS MANAGEMENT LOGIC
@@ -951,10 +1025,11 @@
     list.innerHTML = allUsers.map(u => `
       <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-3 flex justify-between items-center group hover:bg-slate-800/80 transition">
         <div class="truncate pr-2">
-          <p class="text-white text-sm font-semibold truncate">${u.name} <span class="text-cyan-400 text-xs ml-1 opacity-80 font-normal border border-cyan-500/30 px-1.5 py-0.5 rounded-md">${u.rank}</span></p>
-          <p class="text-slate-400 text-xs mt-1 truncate">${u.email} &bull; <span class="${u.role === 'admin' ? 'text-indigo-400' : 'text-emerald-400'} font-medium capitalize">${u.role}</span> &bull; <span class="text-slate-300 font-medium">${u.position !== '-' ? u.position : 'No Position'}</span> &bull; <span class="text-amber-400 font-medium">${u.rule}</span></p>
+          <p class="text-white text-sm font-semibold truncate">${u.name} <span class="text-cyan-400 text-[10px] ml-1 opacity-80 font-normal border border-cyan-500/30 px-1.5 py-0.5 rounded-md">${u.rank}</span></p>
+          <p class="text-slate-400 text-xs mt-1 truncate">${u.email} &bull; <span class="${u.role === 'admin' ? 'text-indigo-400' : 'text-emerald-400'} font-medium capitalize">${u.role}</span></p>
+          <p class="text-slate-500 text-[10px] mt-0.5 truncate">${u.position || '-'} &bull; ${u.rule || '-'}</p>
         </div>
-        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+        <div class="flex flex-col sm:flex-row items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition shrink-0">
           <button type="button" onclick="openEditUser('${u.__backendId}')" class="text-slate-400 hover:text-blue-400 p-2 rounded-lg hover:bg-blue-500/10 transition" title="Edit User"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
           <button type="button" onclick="deleteUserRecord('${u.__backendId}')" class="text-slate-400 hover:text-red-400 p-2 rounded-lg hover:bg-red-500/10 transition" title="Delete User"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         </div>
@@ -972,9 +1047,12 @@
     document.getElementById('eu-email').value = user.email;
     document.getElementById('eu-pass').value = user.password;
     document.getElementById('eu-rank').value = user.rank || '-';
-    document.getElementById('eu-pos').value = user.position || '-';
-    document.getElementById('eu-rule').value = user.rule || 'Member';
     document.getElementById('eu-role').value = user.role;
+    document.getElementById('eu-rule').value = user.rule || 'Member';
+    
+    if(document.getElementById('eu-pos').querySelector(`option[value="${user.position}"]`)) {
+        document.getElementById('eu-pos').value = user.position;
+    }
     
     history.pushState({ view: 'modal_edit_user' }, '');
     document.getElementById('eu-form-msg').classList.add('hidden');
@@ -1002,8 +1080,8 @@
     const password = document.getElementById('u-pass').value.trim();
     const role = document.getElementById('u-role').value;
     const rank = document.getElementById('u-rank').value;
-    const position = document.getElementById('u-pos').value;
     const rule = document.getElementById('u-rule').value;
+    const pos = document.getElementById('u-pos').value;
 
     if (allUsers.some(u => u.email === email)) {
       msgEl.textContent = '❌ Email/Username sudah digunakan!';
@@ -1015,7 +1093,7 @@
       return;
     }
 
-    const secretData = JSON.stringify({ p: password, r: rank, pos: position, rule: rule });
+    const secretData = JSON.stringify({ p: password, r: rank, pos: pos, rul: rule });
 
     const newRawUser = {
       id: 'user_' + Date.now().toString(36),
@@ -1061,8 +1139,8 @@
     const password = document.getElementById('eu-pass').value.trim();
     const role = document.getElementById('eu-role').value;
     const rank = document.getElementById('eu-rank').value;
-    const position = document.getElementById('eu-pos').value;
     const rule = document.getElementById('eu-rule').value;
+    const pos = document.getElementById('eu-pos').value;
 
     if (allUsers.some(u => u.email === email && u.__backendId !== userBeingEdited)) {
       msgEl.textContent = '❌ Email/Username sudah digunakan oleh user lain!';
@@ -1073,7 +1151,7 @@
       return;
     }
 
-    const secretData = JSON.stringify({ p: password, r: rank, pos: position, rule: rule });
+    const secretData = JSON.stringify({ p: password, r: rank, pos: pos, rul: rule });
     const rawUserToUpdate = allRawData.find(d => d.__backendId === userBeingEdited);
 
     if (rawUserToUpdate) {
@@ -1103,6 +1181,51 @@
   // ==========================================
   // DASHBOARD & MENU LOGIC
   // ==========================================
+  
+  // Validasi Hak Akses Khusus
+  function checkAccess(menu) {
+      if (isAdmin) return true;
+      
+      // 1. Pembatasan Rank CS lama (Masih berlaku bersamaan)
+      if (currentUser && currentUser.rank === 'CS') {
+          const mName = menu.name.toLowerCase();
+          if (!mName.includes('cabin service')) {
+              showRestrictedModal("Rank CS hanya diizinkan untuk membuka menu yang berkaitan dengan Cabin Service.");
+              return false;
+          }
+      }
+
+      // 2. Pembatasan berdasarkan Position (Checkbox Multi-pilih)
+      // Jika kolom kosong atau All, biarkan masuk
+      if (!menu.access_positions || menu.access_positions === 'All' || menu.access_positions.length === 0) {
+          return true;
+      }
+
+      // Mengekstrak array JSON yg tersimpan di access_positions
+      let allowedPositions = [];
+      try {
+          allowedPositions = Array.isArray(menu.access_positions) ? menu.access_positions : JSON.parse(menu.access_positions);
+      } catch (e) {
+          allowedPositions = []; // Jika gagal parse, asumsikan kosong/error
+      }
+
+      if (currentUser && !allowedPositions.includes(currentUser.position)) {
+           showRestrictedModal(`Menu ini hanya diperbolehkan untuk posisi tertentu. Akses untuk posisi Anda (${currentUser.position || 'Unknown'}) ditolak.`);
+           return false;
+      }
+
+      return true;
+  }
+
+  function showRestrictedModal(msg) {
+      document.getElementById('restricted-msg').textContent = msg;
+      document.getElementById('restricted-modal').classList.remove('hidden');
+  }
+
+  document.getElementById('btn-close-restricted').onclick = () => {
+      document.getElementById('restricted-modal').classList.add('hidden');
+  };
+
   function showDashboard(fromPopState = false) {
     if (!fromPopState && currentView === 'submenu') {
       history.pushState({ view: 'dashboard' }, '');
@@ -1138,7 +1261,8 @@
       if (!card) {
         card = document.createElement('div');
         card.dataset.id = menu.__backendId;
-        card.className = 'menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 cursor-pointer relative group fade-in aspect-square';
+        // PENGATURAN KOTAK AGAR SAMA (ASPECT-SQUARE)
+        card.className = 'menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 cursor-pointer relative group fade-in aspect-square flex flex-col';
         card.style.animationDelay = `${i * 0.05}s`;
         grid.appendChild(card);
       }
@@ -1146,55 +1270,35 @@
       const subCount = allMenus.filter(s => s.parent_id === menu.id).length;
       
       const isImgTag = menu.image_url && menu.image_url.includes('<img');
-      const imgHtml = isImgTag ? menu.image_url.replace('object-contain', 'object-cover') : (menu.image_url ? `<img src="${menu.image_url}" alt="${menu.name}" class="w-full h-full object-cover" onerror="this.style.background='#334155';">` : `<i data-lucide="folder" class="w-10 h-10 text-slate-500"></i>`);
       
-      let cardHtml;
-      if (isAdmin) {
-        cardHtml = `
-          <div class="flex flex-col h-full">
-            <div class="flex-1 bg-slate-700 flex items-center justify-center overflow-hidden">
-              ${imgHtml}
-            </div>
-            <div class="p-2 text-center">
-              <p class="text-white font-semibold text-xs line-clamp-2">${menu.name}</p>
-            </div>
-          </div>
-          <button class="edit-btn absolute top-2 right-2 bg-slate-900/70 rounded-lg p-1.5 opacity-0 group-hover:opacity-100 transition"><i data-lucide="edit" class="w-3.5 h-3.5 text-slate-300"></i></button>
-        `;
+      let imgHtml;
+      if (isImgTag) {
+          imgHtml = menu.image_url;
+          if(!imgHtml.includes('group-hover:scale-110')) {
+               imgHtml = imgHtml.replace('class="', 'class="transition-transform duration-500 group-hover:scale-110 ');
+          }
+      } else if (menu.image_url) {
+          imgHtml = `<img src="${menu.image_url}" alt="${menu.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="this.style.background='#334155';">`;
       } else {
-        cardHtml = `
-          <div class="flex flex-col h-full">
-            <div class="flex-1 bg-slate-700 flex items-center justify-center overflow-hidden">
-              ${imgHtml}
-            </div>
-            <div class="p-2 text-center">
-              <p class="text-white font-semibold text-xs line-clamp-2">${menu.name}</p>
-            </div>
-          </div>
-        `;
+          imgHtml = `<i data-lucide="folder" class="w-12 h-12 text-slate-400 group-hover:text-cyan-400 group-hover:scale-110 transition-all duration-300"></i>`;
       }
+      
+      let cardHtml = `
+          <div class="flex-1 bg-slate-700/50 flex items-center justify-center overflow-hidden relative">
+            ${imgHtml}
+            ${isAdmin ? `<button class="edit-btn absolute top-1.5 right-1.5 bg-slate-900/80 hover:bg-cyan-600/80 rounded-md p-1.5 opacity-0 group-hover:opacity-100 transition-all z-10"><i data-lucide="edit" class="w-3.5 h-3.5 text-slate-200"></i></button>` : ''}
+          </div>
+          <div class="p-1.5 sm:p-2 text-center h-10 sm:h-11 flex items-center justify-center">
+            <p class="text-slate-200 group-hover:text-cyan-300 font-medium text-[10px] sm:text-xs line-clamp-2 leading-[1.2] transition-colors">${menu.name}</p>
+          </div>
+      `;
       card.innerHTML = cardHtml;
       card.onclick = (e) => {
         if (e.target.closest('.edit-btn')) { openEdit(menu); return; }
         
-        // Pembatasan Khusus Akses Position
-        if (!isAdmin && currentUser && menu.access_positions && !menu.access_positions.includes('All')) {
-            if (!menu.access_positions.includes(currentUser.position)) {
-                document.getElementById('restricted-message').innerHTML = `Menu ini hanya dapat diakses oleh <span class="font-bold text-red-400">Posisi Tertentu</span>. Akses Anda ditolak.`;
-                document.getElementById('restricted-modal').classList.remove('hidden');
-                return;
-            }
-        }
+        // Pengecekan Akses Posisi & Rank
+        if(!checkAccess(menu)) return;
 
-        // Pembatasan Khusus Rank CS
-        if (!isAdmin && currentUser && currentUser.rank === 'CS') {
-            if (!menu.name.toLowerCase().includes('cabin service')) {
-                document.getElementById('restricted-message').innerHTML = `Akun dengan Rank <span class="font-bold text-red-400">Cabin Service (CS)</span> hanya diizinkan untuk membuka menu yang berkaitan dengan Cabin Service.`;
-                document.getElementById('restricted-modal').classList.remove('hidden');
-                return; // Blokir aksi selanjutnya
-            }
-        }
-        
         if (subCount > 0) { openSubmenu(menu); } // Masuk ke tingkat selanjutnya
         else if (menu.url) { window.open(menu.url, '_blank', 'noopener,noreferrer'); }
       };
@@ -1206,11 +1310,6 @@
 
     lucide.createIcons();
   }
-
-  // Tutup Modal Restricted (CS)
-  document.getElementById('btn-close-restricted').onclick = () => {
-      document.getElementById('restricted-modal').classList.add('hidden');
-  };
 
   function openSubmenu(parent, fromPopState = false) {
     if (!fromPopState) {
@@ -1230,16 +1329,28 @@
     grid.innerHTML = subs.map(s => {
       const hasImg = s.image_url && s.image_url.length > 0;
       const isImgTag = hasImg && s.image_url.includes('<img');
-      const renderImg = isImgTag ? s.image_url.replace('object-contain', 'object-cover') : (hasImg ? `<img src="${s.image_url}" alt="${s.name}" class="w-full h-full object-cover" onerror="this.style.background='#475569';">` : `<i data-lucide="file" class="w-10 h-10 text-slate-400"></i>`);
       
-      return `<div class="menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 cursor-pointer group relative" data-bid="${s.__backendId}">
-        <div class="h-40 bg-slate-700 flex items-center justify-center overflow-hidden">
+      let renderImg;
+      if (isImgTag) {
+          renderImg = s.image_url;
+          if(!renderImg.includes('group-hover:scale-110')) {
+               renderImg = renderImg.replace('class="', 'class="transition-transform duration-500 group-hover:scale-110 ');
+          }
+      } else if (hasImg) {
+          renderImg = `<img src="${s.image_url}" alt="${s.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="this.style.background='#475569';">`;
+      } else {
+          renderImg = `<i data-lucide="file" class="w-12 h-12 text-slate-400 group-hover:text-cyan-400 group-hover:scale-110 transition-all duration-300"></i>`;
+      }
+      
+      // PENGATURAN KOTAK AGAR SAMA (ASPECT-SQUARE) & UKURAN TEKS KONSISTEN
+      return `<div class="menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 cursor-pointer group relative aspect-square flex flex-col" data-bid="${s.__backendId}">
+        <div class="flex-1 bg-slate-700/50 flex items-center justify-center overflow-hidden relative">
           ${renderImg}
+          ${isAdmin ? `<button class="edit-sub absolute top-1.5 right-1.5 bg-slate-900/80 hover:bg-cyan-600/80 rounded-md p-1.5 opacity-0 group-hover:opacity-100 transition-all z-10"><i data-lucide="edit" class="w-3.5 h-3.5 text-slate-200"></i></button>` : ''}
         </div>
-        <div class="p-4 text-center">
-          <p class="text-white font-semibold text-sm truncate">${s.name}</p>
+        <div class="p-1.5 sm:p-2 text-center h-10 sm:h-11 flex items-center justify-center">
+          <p class="text-slate-200 group-hover:text-cyan-300 font-medium text-[10px] sm:text-xs line-clamp-2 leading-[1.2] transition-colors">${s.name}</p>
         </div>
-        ${isAdmin ? `<button class="edit-sub absolute top-2 right-2 bg-slate-900/70 rounded-lg p-1.5 opacity-0 group-hover:opacity-100 transition"><i data-lucide="edit" class="w-3.5 h-3.5 text-slate-300"></i></button>` : ''}
       </div>`;
     }).join('');
 
@@ -1253,24 +1364,9 @@
         
         const item = allMenus.find(m => m.__backendId === el.dataset.bid);
         if (item) {
-            // Pembatasan Khusus Akses Position di dalam Submenu
-            if (!isAdmin && currentUser && item.access_positions && !item.access_positions.includes('All')) {
-                if (!item.access_positions.includes(currentUser.position)) {
-                    document.getElementById('restricted-message').innerHTML = `Menu ini hanya dapat diakses oleh <span class="font-bold text-red-400">Posisi Tertentu</span>. Akses Anda ditolak.`;
-                    document.getElementById('restricted-modal').classList.remove('hidden');
-                    return;
-                }
-            }
+            // Pengecekan Akses
+            if(!checkAccess(item)) return;
 
-            // Pembatasan Khusus Rank CS di dalam Submenu
-            if (!isAdmin && currentUser && currentUser.rank === 'CS') {
-                if (!item.name.toLowerCase().includes('cabin service')) {
-                    document.getElementById('restricted-message').innerHTML = `Akun dengan Rank <span class="font-bold text-red-400">Cabin Service (CS)</span> hanya diizinkan untuk membuka menu yang berkaitan dengan Cabin Service.`;
-                    document.getElementById('restricted-modal').classList.remove('hidden');
-                    return; // Blokir
-                }
-            }
-            
             const hasChildren = allMenus.some(m => m.parent_id === item.id);
             if (hasChildren) {
                 // Rekursif: masuk ke dalam lagi
@@ -1299,12 +1395,9 @@ function openModal(edit = null) {
   document.getElementById('f-url').value = edit?.url || '';
   document.getElementById('f-image').value = edit?.image_url || '';
   
-  // Update Checklist Position saat Modal dibuka
-  const accessPos = edit?.access_positions || ['All'];
-  document.querySelectorAll('input[name="f-pos-access"]').forEach(cb => {
-      cb.checked = accessPos.includes(cb.value);
-  });
-  
+  // Set nilai Checkbox multi-pilihan berdasarkan Data Google Sheet
+  setAccessPositions(edit?.access_positions);
+
   document.getElementById('btn-delete').classList.toggle('hidden', !edit);
   document.getElementById('btn-duplicate').classList.toggle('hidden', !edit);
   document.getElementById('form-msg').classList.add('hidden');
@@ -1324,7 +1417,7 @@ function openModal(edit = null) {
   function buildMenuTree(parentId, prefix) {
       const children = allMenus.filter(m => (m.parent_id || '') === parentId);
       children.forEach(m => {
-          // Jangan tampilkan item yang sedang diedit beserta anak-anaknya agar tidak jadi looping parent
+          // Jangan tampilkan item yang sedang diedit beserta anak-anaknya agar tidak jadi looping
           if (edit && m.__backendId === edit.__backendId) return; 
           
           const isSelected = edit && edit.parent_id === m.id ? 'selected' : '';
@@ -1372,10 +1465,7 @@ document.getElementById('menu-form').onsubmit = async (e) => {
     const url = document.getElementById('f-url').value.trim();
     const imgUrl = document.getElementById('f-image').value.trim();
     const parentId = document.getElementById('f-parent').value;
-    
-    // Ambil semua Posisi yang di Checklist
-    let selectedPositions = Array.from(document.querySelectorAll('input[name="f-pos-access"]:checked')).map(cb => cb.value);
-    if (selectedPositions.length === 0) selectedPositions = ['All']; // Default jika lupa pilih
+    const accessPos = getSelectedAccessPositions(); // Ambil dari check-box (sudah berupa text/string JSON)
 
     const finalImageUrl = convertGoogleDriveUrl(imgUrl);
 
@@ -1384,11 +1474,10 @@ document.getElementById('menu-form').onsubmit = async (e) => {
       name,
       image_url: finalImageUrl,
       url,
-      is_submenu: !!parentId,
-      parent_id: parentId || '', 
-      order: editingItem?.order || allMenus.length,
-      // Bungkus data dalam string JSON agar aman saat masuk ke Google Sheet
-      access_positions: JSON.stringify(selectedPositions)
+      is_submenu: !!parentId, // masih dipertahankan untuk kompatibilitas walau sudah dicek via parent_id
+      parent_id: parentId || '', // dipastikan string kosong bila None
+      access_positions: accessPos, 
+      order: editingItem?.order || allMenus.length
     };
 
     let result;
@@ -1428,9 +1517,8 @@ document.getElementById('menu-form').onsubmit = async (e) => {
       url: editingItem.url,
       is_submenu: editingItem.is_submenu,
       parent_id: editingItem.parent_id,
-      order: allMenus.length,
-      // Simpan duplikat juga dengan dibungkus string JSON
-      access_positions: JSON.stringify(editingItem.access_positions || ['All'])
+      access_positions: editingItem.access_positions,
+      order: allMenus.length
     };
 
     const result = await window.dataSdk.create(newRecord);
@@ -1465,7 +1553,7 @@ document.getElementById('menu-form').onsubmit = async (e) => {
   function showFormMsg(text, isError) {
     const el = document.getElementById('form-msg');
     el.textContent = text;
-    el.className = `text-center text-sm py-2 px-3 rounded-lg ${isError ? 'bg-red-500/20 text-red-300' : 'bg-green-500/20 text-green-300'}`;
+    el.className = `text-center text-sm py-2 px-3 rounded-lg shrink-0 ${isError ? 'bg-red-500/20 text-red-300' : 'bg-green-500/20 text-green-300'}`;
     el.classList.remove('hidden');
   }
 
