@@ -1185,17 +1185,8 @@
   // Validasi Hak Akses Khusus
   function checkAccess(menu) {
       if (isAdmin) return true;
-      
-      // 1. Pembatasan Rank CS lama (Masih berlaku bersamaan)
-      if (currentUser && currentUser.rank === 'CS') {
-          const mName = menu.name.toLowerCase();
-          if (!mName.includes('cabin service')) {
-              showRestrictedModal("Rank CS hanya diizinkan untuk membuka menu yang berkaitan dengan Cabin Service.");
-              return false;
-          }
-      }
 
-      // 2. Pembatasan berdasarkan Position (Checkbox Multi-pilih)
+      // Pembatasan berdasarkan Position (Checkbox Multi-pilih)
       // Jika kolom kosong atau All, biarkan masuk
       if (!menu.access_positions || menu.access_positions === 'All' || menu.access_positions.length === 0) {
           return true;
@@ -1296,7 +1287,7 @@
       card.onclick = (e) => {
         if (e.target.closest('.edit-btn')) { openEdit(menu); return; }
         
-        // Pengecekan Akses Posisi & Rank
+        // Pengecekan Akses Posisi
         if(!checkAccess(menu)) return;
 
         if (subCount > 0) { openSubmenu(menu); } // Masuk ke tingkat selanjutnya
