@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html class="h-full">
  <head>
@@ -165,7 +164,7 @@
      </div>
 
      <div class="text-slate-400 text-xs mt-8 p-4 bg-slate-800/30 rounded-xl text-center border border-slate-700/30">
-      <p class="text-slate-300">Powered by <span class="text-cyan-400 font-semibold">SkyOps Solution</span> 2024</p>
+      <p class="text-slate-300">Powered by <span class="text-cyan-400 font-semibold">SkyOps Solution</span> 2026</p>
      </div>
     </div>
    </div>
@@ -242,14 +241,28 @@
       <div><label class="text-slate-300 text-sm font-semibold block mb-1">Parent Menu (optional)</label> <select id="f-parent" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition"> <option value="">— None (Main Menu) —</option> </select>
       </div>
       
-      <!-- Hak Akses Multi-pilihan (Checkbox) -->
-      <div>
-        <label class="text-slate-300 text-sm font-semibold block mb-1 flex items-center justify-between">
-            <span>Access Allowed For (Position)</span>
-            <button type="button" id="btn-check-all" class="text-[10px] text-cyan-400 hover:text-cyan-300 px-2 py-0.5 border border-cyan-500/30 rounded">Check All</button>
-        </label> 
-        <div class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl p-3 max-h-40 overflow-y-auto custom-scrollbar flex flex-col gap-2" id="access-checkbox-container">
-            <!-- Checkbox akan digenerate oleh JS -->
+      <!-- Visibilitas Menu (Hide/Unhide Khusus Posisi) -->
+      <div class="bg-slate-800/40 p-3 sm:p-4 rounded-xl border border-slate-700/50">
+        <label class="text-slate-300 text-sm font-semibold block mb-3">Visibilitas Menu (Hide/Unhide)</label>
+        <div class="flex flex-col gap-2.5 mb-2">
+           <label class="flex items-center gap-2 cursor-pointer group">
+              <input type="radio" name="menu_vis" id="vis_all" value="All" class="w-4 h-4 text-cyan-500 bg-slate-700 border-slate-600 focus:ring-cyan-500/50" checked>
+              <span class="text-slate-300 text-sm group-hover:text-white transition font-medium">Tampil Semua (Unhide)</span>
+           </label>
+           <label class="flex items-center gap-2 cursor-pointer group">
+              <input type="radio" name="menu_vis" id="vis_restricted" value="Restricted" class="w-4 h-4 text-cyan-500 bg-slate-700 border-slate-600 focus:ring-cyan-500/50">
+              <span class="text-slate-300 text-sm group-hover:text-white transition font-medium">Sembunyikan & Khususkan (Hide)</span>
+           </label>
+        </div>
+        
+        <div id="restricted-pos-wrapper" class="hidden mt-3 border-t border-slate-700/50 pt-3">
+            <label class="text-slate-300 text-xs font-semibold block mb-2 flex items-center justify-between">
+                <span>Pilih Posisi yang Bisa Melihat:</span>
+                <button type="button" id="btn-check-all" class="text-[10px] text-cyan-400 hover:text-cyan-300 px-2 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded">Pilih Semua</button>
+            </label> 
+            <div class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl p-3 max-h-40 overflow-y-auto custom-scrollbar flex flex-col gap-2" id="access-checkbox-container">
+                <!-- Checkbox akan digenerate oleh JS -->
+            </div>
         </div>
       </div>
 
@@ -393,7 +406,7 @@
          <i data-lucide="log-out" class="w-10 h-10 text-yellow-400"></i>
      </div>
      <h2 class="text-white font-bold text-xl mb-2">Keluar Aplikasi?</h2>
-     <p class="text-slate-400 text-sm mb-6">Anda menekan tombol kembali. Apakah Anda ingin keluar dari akun Crew Room Anda?</p>
+     <p class="text-slate-400 text-sm mb-6">Anda menekan tombol kembali. Apakah Anda ingin keluar dari akun Ecrew Anda?</p>
      <div class="flex gap-3">
          <button id="btn-cancel-exit" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Batal</button>
          <button id="btn-confirm-exit" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya, Logout</button>
@@ -410,8 +423,8 @@
   const appLogoUrl = 'https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ';
   const manifestData = {
     name: "Ecrew - Crew Room",
-    short_name: "Crew Room",
-    description: "Portal operasi penerbangan Crew Room",
+    short_name: "Ecrew",
+    description: "Portal operasi penerbangan Ecrew",
     start_url: window.location.href,
     display: "standalone",
     background_color: "#0a0e27",
@@ -445,10 +458,10 @@
       "General Manager", "Operation Manager", "Chief Pilot Rotary Wing", 
       "Chief Pilot Fixed Wing", "Chief Flight Support", "Cabin Service", 
       "FOO/HLO", "Maintenance Manager", "Chief Engineer", "Chief Inspector", 
-      "Captain", "First Officer", "Engineer"
+      "Captain", "First Officer", "Engineer", "POI", "Visitor"
   ];
 
-  // Injeksi Daftar Posisi ke HTML
+  // Injeksi Daftar Posisi ke HTML (Untuk Select Form User & Checkbox Form Menu)
   function populatePositionDropdowns() {
       const optionsHTML = POSITIONS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
       if(document.getElementById('r-pos')) document.getElementById('r-pos').innerHTML = optionsHTML;
@@ -457,50 +470,37 @@
       
       const cbContainer = document.getElementById('access-checkbox-container');
       if(cbContainer) {
-          // Checkbox dinamis
-          let cbHTML = `
-            <label class="flex items-center gap-2 cursor-pointer group">
-                <input type="checkbox" value="All" id="cb-all-pos" class="access-cb w-4 h-4 rounded border-slate-600 text-cyan-500 focus:ring-cyan-500/50 bg-slate-700" checked>
-                <span class="text-white text-sm group-hover:text-cyan-300 transition font-semibold">Semua Posisi (All)</span>
-            </label>
-            <div class="h-px w-full bg-slate-700 my-1"></div>
-          `;
-          cbHTML += POSITIONS_LIST.map(p => `
-            <label class="flex items-center gap-2 cursor-pointer group pl-2">
-                <input type="checkbox" value="${p}" class="access-cb access-cb-item w-4 h-4 rounded border-slate-600 text-cyan-500 focus:ring-cyan-500/50 bg-slate-700" disabled>
+          // Buat Checkbox secara dinamis
+          cbContainer.innerHTML = POSITIONS_LIST.map(p => `
+            <label class="flex items-center gap-2 cursor-pointer group pl-1">
+                <input type="checkbox" value="${p}" class="access-cb-item w-4 h-4 rounded border-slate-600 text-cyan-500 focus:ring-cyan-500/50 bg-slate-700">
                 <span class="text-slate-300 text-sm group-hover:text-white transition">${p}</span>
             </label>
           `).join('');
-          cbContainer.innerHTML = cbHTML;
           
-          // Logika Checkbox
-          const allCb = document.getElementById('cb-all-pos');
-          const itemCbs = document.querySelectorAll('.access-cb-item');
-          
-          allCb.onchange = (e) => {
-              itemCbs.forEach(cb => {
-                  if(e.target.checked) {
-                      cb.checked = false;
-                      cb.disabled = true;
-                  } else {
-                      cb.disabled = false;
-                  }
-              });
-          };
-
           document.getElementById('btn-check-all').onclick = () => {
-              allCb.checked = false;
-              itemCbs.forEach(cb => {
-                  cb.disabled = false;
-                  cb.checked = true;
-              });
+              const cbs = document.querySelectorAll('.access-cb-item');
+              const allChecked = Array.from(cbs).every(cb => cb.checked);
+              cbs.forEach(cb => cb.checked = !allChecked);
+              document.getElementById('btn-check-all').textContent = allChecked ? "Pilih Semua" : "Batal Pilih";
           };
+          
+          // Listener Radio Button Hide/Unhide
+          const visAll = document.getElementById('vis_all');
+          const visRestricted = document.getElementById('vis_restricted');
+          const wrapper = document.getElementById('restricted-pos-wrapper');
+          
+          if(visAll && visRestricted && wrapper) {
+              visAll.addEventListener('change', () => wrapper.classList.add('hidden'));
+              visRestricted.addEventListener('change', () => wrapper.classList.remove('hidden'));
+          }
       }
   }
 
+  // Mengambil daftar posisi yang dicentang saat menyimpan menu
   function getSelectedAccessPositions() {
-      const allCb = document.getElementById('cb-all-pos');
-      if(allCb && allCb.checked) return 'All'; 
+      const visAll = document.getElementById('vis_all');
+      if(visAll && visAll.checked) return 'All'; 
       
       const itemCbs = document.querySelectorAll('.access-cb-item:checked');
       const selected = Array.from(itemCbs).map(cb => cb.value);
@@ -508,29 +508,38 @@
       return selected.length > 0 ? JSON.stringify(selected) : 'All'; 
   }
 
+  // Mengatur ulang tampilan centang saat membuka modal Edit Menu
   function setAccessPositions(accessVal) {
-      const allCb = document.getElementById('cb-all-pos');
+      const visAll = document.getElementById('vis_all');
+      const visRestricted = document.getElementById('vis_restricted');
+      const wrapper = document.getElementById('restricted-pos-wrapper');
       const itemCbs = document.querySelectorAll('.access-cb-item');
       
+      // Reset tombol "Pilih Semua"
+      const btnCheckAll = document.getElementById('btn-check-all');
+      if(btnCheckAll) btnCheckAll.textContent = "Pilih Semua";
+      
       if(!accessVal || accessVal === 'All' || accessVal === '[]') {
-          allCb.checked = true;
-          itemCbs.forEach(cb => { cb.checked = false; cb.disabled = true; });
+          if(visAll) visAll.checked = true;
+          if(wrapper) wrapper.classList.add('hidden');
+          itemCbs.forEach(cb => cb.checked = false);
           return;
       }
 
-      allCb.checked = false;
+      if(visRestricted) visRestricted.checked = true;
+      if(wrapper) wrapper.classList.remove('hidden');
+      
       let parsedArr = [];
       try {
           parsedArr = JSON.parse(accessVal); 
       } catch(e) { parsedArr = [accessVal]; }
 
       itemCbs.forEach(cb => {
-          cb.disabled = false;
           cb.checked = parsedArr.includes(cb.value);
       });
   }
 
-  // Panggil saat load
+  // Panggil penyusunan kolom saat load
   populatePositionDropdowns();
 
   function convertGoogleDriveUrl(url) {
@@ -714,7 +723,7 @@
     onDataChanged(data) {
       allRawData = data || [];
       
-      // MAPPING: Memisahkan User
+      // MAPPING: Memisahkan Data User
       allUsers = allRawData
         .filter(d => d.parent_id === 'SYSTEM_USER_RECORD')
         .map(d => {
@@ -746,7 +755,30 @@
           };
         });
         
-      allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD');
+      // MAPPING: Memisahkan Data Menu & Mengekstrak URL yang dipacking
+      allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD').map(m => {
+          let actualUrl = m.url || '';
+          let accessPos = 'All';
+          
+          // Mengurai JSON yang kita sembunyikan di dalam kolom URL
+          if (actualUrl.startsWith('{')) {
+              try {
+                  const parsedUrlObj = JSON.parse(actualUrl);
+                  if (parsedUrlObj.link !== undefined) {
+                      actualUrl = parsedUrlObj.link;
+                      accessPos = parsedUrlObj.access;
+                  }
+              } catch(e) {
+                  // Apabila bukan JSON format kita (misal ada { di URL biasa), diamkan saja.
+              }
+          }
+          
+          return {
+              ...m,
+              url: actualUrl,
+              access_positions: accessPos
+          };
+      });
       
       if (document.getElementById('users-modal') && !document.getElementById('users-modal').classList.contains('hidden')) {
         renderUsersList();
@@ -770,75 +802,99 @@
     },
 
     sync: async (isAuto = false) => {
-      if (!GAS_WEB_APP_URL) return;
       const icon = document.getElementById('sync-icon');
       if (icon) icon.classList.add('animate-spin');
 
       try {
+        if (!GAS_WEB_APP_URL) throw new Error("URL GAS kosong");
+        
         const res = await fetch(GAS_WEB_APP_URL);
-        const data = await res.json();
+        const text = await res.text(); 
+        
+        // Cek jika respons berupa tag HTML (Biasanya halaman error/login dari Google)
+        if (text.trim().startsWith('<')) {
+            throw new Error("URL mengembalikan HTML. Pastikan deploy Google Apps Script menggunakan akses 'Anyone'.");
+        }
+        
+        const data = JSON.parse(text);
         window.dataSdk._data = Array.isArray(data) ? data : [];
-        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
+        
+        // Simpan cadangan ke local storage untuk offline mode
+        localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
+        
       } catch (e) {
-        console.error('Sinkronisasi gagal', e);
+        console.warn('Sinkronisasi server gagal, menggunakan data lokal:', e.message);
+        // Fallback: Ambil dari penyimpanan lokal agar aplikasi tidak crash
+        const localData = localStorage.getItem('ecrew_db');
+        if (localData) {
+            try { window.dataSdk._data = JSON.parse(localData); } catch(err){}
+        }
       }
+
+      if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
       if (icon) icon.classList.remove('animate-spin');
     },
 
     create: async (record) => {
       const newRec = { ...record, __backendId: Date.now().toString(36) + Math.random().toString(36).substr(2) };
-      if (!GAS_WEB_APP_URL) {
-        window.dataSdk._data.push(newRec);
-        localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
-        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
-        return { isOk: true };
-      }
+      
+      // Optimistic update: Selalu simpan lokal agar UI langsung merespons
+      window.dataSdk._data.push(newRec);
+      localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
+      if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
+
+      if (!GAS_WEB_APP_URL) return { isOk: true };
 
       try {
-        await fetch(GAS_WEB_APP_URL, {
+        const res = await fetch(GAS_WEB_APP_URL, {
           method: 'POST',
           body: JSON.stringify({ action: 'create', record: newRec })
         });
-        await window.dataSdk.sync(true);
+        const text = await res.text();
+        if (text.trim().startsWith('<')) throw new Error("Gagal kirim: Endpoint HTML");
         return { isOk: true };
-      } catch(e) { return { isOk: false }; }
+      } catch(e) { 
+        return { isOk: true }; // Tetap return true agar aplikasi lanjut secara lokal
+      }
     },
 
     update: async (record) => {
-      if (!GAS_WEB_APP_URL) {
-        const idx = window.dataSdk._data.findIndex(r => r.__backendId === record.__backendId);
-        if (idx !== -1) window.dataSdk._data[idx] = record;
-        localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
-        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
-        return { isOk: true };
-      }
+      // Optimistic update
+      const idx = window.dataSdk._data.findIndex(r => r.__backendId === record.__backendId);
+      if (idx !== -1) window.dataSdk._data[idx] = record;
+      localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
+      if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
+
+      if (!GAS_WEB_APP_URL) return { isOk: true };
 
       try {
-        await fetch(GAS_WEB_APP_URL, {
+        const res = await fetch(GAS_WEB_APP_URL, {
           method: 'POST',
           body: JSON.stringify({ action: 'update', record: record })
         });
-        await window.dataSdk.sync(true);
+        const text = await res.text();
+        if (text.trim().startsWith('<')) throw new Error("Gagal kirim: Endpoint HTML");
         return { isOk: true };
-      } catch(e) { return { isOk: false }; }
+      } catch(e) { return { isOk: true }; }
     },
 
     delete: async (record) => {
-      if (!GAS_WEB_APP_URL) {
-        window.dataSdk._data = window.dataSdk._data.filter(r => r.__backendId !== record.__backendId);
-        localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
-        if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
-        return { isOk: true };
-      }
+      // Optimistic update
+      window.dataSdk._data = window.dataSdk._data.filter(r => r.__backendId !== record.__backendId);
+      localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
+      if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
+
+      if (!GAS_WEB_APP_URL) return { isOk: true };
 
       try {
-        await fetch(GAS_WEB_APP_URL, {
+        const res = await fetch(GAS_WEB_APP_URL, {
           method: 'POST',
           body: JSON.stringify({ action: 'delete', record: record })
         });
-        await window.dataSdk.sync(true);
+        const text = await res.text();
+        if (text.trim().startsWith('<')) throw new Error("Gagal kirim: Endpoint HTML");
         return { isOk: true };
-      } catch(e) { return { isOk: false }; }
+      } catch(e) { return { isOk: true }; }
     }
   };
 
@@ -1183,26 +1239,23 @@
   // DASHBOARD & MENU LOGIC
   // ==========================================
   
-  // Validasi Hak Akses Khusus
+  // Validasi Akses: Cek apakah menu diizinkan untuk posisi currentUser
   function checkAccess(menu) {
-      if (isAdmin) return true;
+      if (isAdmin) return true; // Admin selalu bisa lihat semuanya
 
-      // Pembatasan berdasarkan Position (Checkbox Multi-pilih)
-      // Jika kolom kosong atau All, biarkan masuk
       if (!menu.access_positions || menu.access_positions === 'All' || menu.access_positions.length === 0) {
-          return true;
+          return true; // Tampil untuk semuanya
       }
 
-      // Mengekstrak array JSON yg tersimpan di access_positions
       let allowedPositions = [];
       try {
           allowedPositions = Array.isArray(menu.access_positions) ? menu.access_positions : JSON.parse(menu.access_positions);
       } catch (e) {
-          allowedPositions = []; // Jika gagal parse, asumsikan kosong/error
+          allowedPositions = [];
       }
 
+      // Jika posisi user tidak terdaftar dalam daftar yang dicentang admin
       if (currentUser && !allowedPositions.includes(currentUser.position)) {
-           showRestrictedModal(`Menu ini hanya diperbolehkan untuk posisi tertentu. Akses untuk posisi Anda (${currentUser.position || 'Unknown'}) ditolak.`);
            return false;
       }
 
@@ -1231,8 +1284,9 @@
   function renderMenus() {
     const grid = document.getElementById('menu-grid');
     const empty = document.getElementById('empty-state');
-    // Hanya menampilkan menu yang TIDAK memiliki parent_id (Menu Utama)
-    const mainMenus = allMenus.filter(m => !m.parent_id);
+    
+    // FILTER: Hanya menampilkan menu utama yang diizinkan untuk posisi pengguna
+    const mainMenus = allMenus.filter(m => !m.parent_id && checkAccess(m));
 
     if (mainMenus.length === 0) {
       grid.innerHTML = '';
@@ -1258,9 +1312,8 @@
         card.style.animationDelay = `${i * 0.05}s`;
         grid.appendChild(card);
       }
-      // Memeriksa apakah menu ini punya anak (sub-menu)
-      const subCount = allMenus.filter(s => s.parent_id === menu.id).length;
       
+      const subCount = allMenus.filter(s => s.parent_id === menu.id).length;
       const isImgTag = menu.image_url && menu.image_url.includes('<img');
       
       let imgHtml;
@@ -1288,10 +1341,13 @@
       card.onclick = (e) => {
         if (e.target.closest('.edit-btn')) { openEdit(menu); return; }
         
-        // Pengecekan Akses Posisi
-        if(!checkAccess(menu)) return;
+        // Pengaman berlapis jika di-klik secara paksa
+        if(!checkAccess(menu)) {
+            showRestrictedModal(`Akses untuk posisi Anda (${currentUser.position || 'Unknown'}) ditolak.`);
+            return;
+        }
 
-        if (subCount > 0) { openSubmenu(menu); } // Masuk ke tingkat selanjutnya
+        if (subCount > 0) { openSubmenu(menu); } 
         else if (menu.url) { window.open(menu.url, '_blank', 'noopener,noreferrer'); }
       };
     });
@@ -1315,8 +1371,8 @@
     document.getElementById('submenu-title').textContent = parent.name;
     const grid = document.getElementById('submenu-grid');
     
-    // Tarik semua menu yang parent-nya adalah id ini
-    const subs = allMenus.filter(s => s.parent_id === parent.id);
+    // FILTER: Tarik semua sub-menu yang diizinkan untuk posisi pengguna
+    const subs = allMenus.filter(s => s.parent_id === parent.id && checkAccess(s));
     
     grid.innerHTML = subs.map(s => {
       const hasImg = s.image_url && s.image_url.length > 0;
@@ -1334,7 +1390,6 @@
           renderImg = `<i data-lucide="file" class="w-12 h-12 text-slate-400 group-hover:text-cyan-400 group-hover:scale-110 transition-all duration-300"></i>`;
       }
       
-      // PENGATURAN KOTAK AGAR SAMA (ASPECT-SQUARE) & UKURAN TEKS KONSISTEN
       return `<div class="menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 cursor-pointer group relative aspect-square flex flex-col" data-bid="${s.__backendId}">
         <div class="flex-1 bg-slate-700/50 flex items-center justify-center overflow-hidden relative">
           ${renderImg}
@@ -1356,15 +1411,16 @@
         
         const item = allMenus.find(m => m.__backendId === el.dataset.bid);
         if (item) {
-            // Pengecekan Akses
-            if(!checkAccess(item)) return;
+            // Pengaman ekstra jika ada klik paksa
+            if(!checkAccess(item)) {
+                showRestrictedModal(`Akses untuk posisi Anda (${currentUser.position || 'Unknown'}) ditolak.`);
+                return;
+            }
 
             const hasChildren = allMenus.some(m => m.parent_id === item.id);
             if (hasChildren) {
-                // Rekursif: masuk ke dalam lagi
                 openSubmenu(item);
             } else if (item.url) {
-                // Buka URL jika tidak memiliki anak
                 window.open(item.url, '_blank', 'noopener,noreferrer');
             }
         }
@@ -1387,7 +1443,7 @@ function openModal(edit = null) {
   document.getElementById('f-url').value = edit?.url || '';
   document.getElementById('f-image').value = edit?.image_url || '';
   
-  // Set nilai Checkbox multi-pilihan berdasarkan Data Google Sheet
+  // Membaca status centang yang sudah dibungkus sebelumnya (JSON String)
   setAccessPositions(edit?.access_positions);
 
   document.getElementById('btn-delete').classList.toggle('hidden', !edit);
@@ -1405,25 +1461,19 @@ function openModal(edit = null) {
   const sel = document.getElementById('f-parent');
   let optionsHtml = '<option value="">— None (Main Menu) —</option>';
   
-  // Fungsi rekursif untuk membangun struktur tingkatan tanpa batas
   function buildMenuTree(parentId, prefix) {
       const children = allMenus.filter(m => (m.parent_id || '') === parentId);
       children.forEach(m => {
-          // Jangan tampilkan item yang sedang diedit beserta anak-anaknya agar tidak jadi looping
           if (edit && m.__backendId === edit.__backendId) return; 
           
           const isSelected = edit && edit.parent_id === m.id ? 'selected' : '';
           optionsHtml += `<option value="${m.id}" ${isSelected}>${prefix}${m.name}</option>`;
-          
-          // Panggil lagi untuk mencari Sub dari Sub (rekursif dengan level lebih dalam)
           buildMenuTree(m.id, prefix + '— '); 
       });
   }
 
-  // Mulai dari menu root (tanpa parent)
   buildMenuTree('', '');
   sel.innerHTML = optionsHtml;
-  
   document.getElementById('modal').classList.remove('hidden');
 }
 
@@ -1454,21 +1504,23 @@ document.getElementById('menu-form').onsubmit = async (e) => {
     btn.innerHTML = '<span class="animate-pulse">Saving...</span>';
 
     const name = document.getElementById('f-name').value.trim();
-    const url = document.getElementById('f-url').value.trim();
+    const inputUrl = document.getElementById('f-url').value.trim();
     const imgUrl = document.getElementById('f-image').value.trim();
     const parentId = document.getElementById('f-parent').value;
-    const accessPos = getSelectedAccessPositions(); // Ambil dari check-box (sudah berupa text/string JSON)
+    const accessPos = getSelectedAccessPositions(); // String format JSON
 
     const finalImageUrl = convertGoogleDriveUrl(imgUrl);
+    
+    // PERBAIKAN: Menyembunyikan accessPos ke dalam kolom url (JSON Packing)
+    const finalPackedUrl = JSON.stringify({ link: inputUrl, access: accessPos });
 
     const record = {
       id: editingItem?.id || Date.now().toString(36) + Math.random().toString(36).slice(2,6),
       name,
       image_url: finalImageUrl,
-      url,
-      is_submenu: !!parentId, // masih dipertahankan untuk kompatibilitas walau sudah dicek via parent_id
-      parent_id: parentId || '', // dipastikan string kosong bila None
-      access_positions: accessPos, 
+      url: finalPackedUrl, // Data Access diselamatkan ke sini
+      is_submenu: !!parentId, 
+      parent_id: parentId || '', 
       order: editingItem?.order || allMenus.length
     };
 
@@ -1487,7 +1539,7 @@ document.getElementById('menu-form').onsubmit = async (e) => {
     }
 
     if (result.isOk) {
-      history.back(); // Tutup modal dengan history API
+      history.back(); 
     } else {
       showFormMsg('Failed to save. Try again.', true);
     }
@@ -1502,14 +1554,16 @@ document.getElementById('menu-form').onsubmit = async (e) => {
     btn.disabled = true;
     btn.innerHTML = '<span class="animate-pulse">...</span>';
 
+    // PERBAIKAN: Bungkus ulang sebelum disalin
+    const finalPackedUrl = JSON.stringify({ link: editingItem.url, access: editingItem.access_positions });
+
     const newRecord = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
       name: editingItem.name + ' (Copy)',
       image_url: editingItem.image_url,
-      url: editingItem.url,
+      url: finalPackedUrl,
       is_submenu: editingItem.is_submenu,
       parent_id: editingItem.parent_id,
-      access_positions: editingItem.access_positions,
       order: allMenus.length
     };
 
