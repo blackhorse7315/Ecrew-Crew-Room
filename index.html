@@ -399,26 +399,29 @@
    <div id="exit-modal" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
     <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border border border-slate-500/30 slide-up text-center p-6 sm:p-8">
      <div class="w-20 h-20 mx-auto bg-yellow-500/10 rounded-full flex items-center justify-center mb-5">
-         <i data-lucide="log-out" class="w-10 h-10 text-yellow-400"></i>
+         <i data-lucide="alert-triangle" class="w-10 h-10 text-yellow-400"></i>
      </div>
      <h2 class="text-white font-bold text-xl mb-2">Keluar Aplikasi?</h2>
-     <p class="text-slate-400 text-sm mb-6">Anda menekan tombol kembali. Apakah Anda ingin keluar dari akun Crew Room Anda?</p>
+     <p class="text-slate-400 text-sm mb-6">Anda menekan tombol kembali. Yakin ingin menutup halaman Ecrew? Sesi login Anda akan tetap aman.</p>
      <div class="flex gap-3">
          <button id="btn-cancel-exit" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Batal</button>
-         <button id="btn-confirm-exit" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya, Logout</button>
+         <button id="btn-confirm-exit" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya, Keluar</button>
      </div>
     </div>
    </div>
 
-   <!-- Modal Konfirmasi Umum -->
+   <!-- Custom Confirm Modal -->
    <div id="custom-confirm-modal" class="hidden fixed inset-0 z-[70] modal-overlay flex items-center justify-center p-4">
     <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border border border-slate-500/30 slide-up text-center p-6 sm:p-8">
-        <h2 class="text-white font-bold text-xl mb-2">Konfirmasi</h2>
-        <p class="text-slate-400 text-sm mb-6" id="confirm-msg">Apakah Anda yakin?</p>
-        <div class="flex gap-3">
-            <button id="btn-cancel-confirm" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Batal</button>
-            <button id="btn-ok-confirm" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya</button>
-        </div>
+     <div class="w-16 h-16 mx-auto bg-slate-800 rounded-full flex items-center justify-center mb-5 border border-slate-700">
+         <i data-lucide="help-circle" class="w-8 h-8 text-cyan-400"></i>
+     </div>
+     <h2 class="text-white font-bold text-xl mb-2">Konfirmasi</h2>
+     <p class="text-slate-400 text-sm mb-6" id="confirm-msg">Apakah Anda yakin?</p>
+     <div class="flex gap-3">
+         <button id="btn-cancel-confirm" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Batal</button>
+         <button id="btn-ok-confirm" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya</button>
+     </div>
     </div>
    </div>
 
@@ -578,6 +581,7 @@
 
   let currentUser = null;
   let isAdmin = false;
+  let isDataInitialized = false;
   
   let allRawData = []; 
   let allMenus = [];
@@ -587,8 +591,11 @@
   let imageUrl = '';
   let currentView = 'login';
   let userBeingEdited = null;
-  let isDataInitialized = false;
+  let allowAppExit = false; // Flag untuk mengizinkan pengguna keluar
 
+  // ==========================================
+  // MANAJEMEN SESI (LOCAL STORAGE) & HISTORY API (TOMBOL BACK)
+  // ==========================================
   function checkSession() {
       const savedUser = localStorage.getItem('ecrew_session');
       if (savedUser) {
@@ -625,14 +632,18 @@
   window.addEventListener('popstate', (e) => {
     const state = e.state || { view: 'login' };
     
+    // Selalu pastikan semua modal tertutup
     document.getElementById('modal').classList.add('hidden');
     document.getElementById('users-modal').classList.add('hidden');
     document.getElementById('edit-user-modal').classList.add('hidden');
     document.getElementById('restricted-modal').classList.add('hidden');
     document.getElementById('custom-confirm-modal').classList.add('hidden');
     
+    // EXIT TRAP (Jebakan Keluar) jika back dari Dashboard
     if (state.view === 'start' && currentUser) {
+        if (allowAppExit) return; // Lewati trap dan biarkan browser keluar jika pengguna sudah klik "Ya"
         document.getElementById('exit-modal').classList.remove('hidden');
+        // Push state dashboard kembali agar tidak benar-benar keluar browser
         history.pushState({ view: 'dashboard' }, '');
         return;
     } else {
@@ -980,13 +991,15 @@
       lucide.createIcons();
   }
 
+  // Tombol Cancel & Confirm pada modal Exit Trap
   document.getElementById('btn-cancel-exit').onclick = () => {
       document.getElementById('exit-modal').classList.add('hidden');
   };
   
   document.getElementById('btn-confirm-exit').onclick = () => {
       document.getElementById('exit-modal').classList.add('hidden');
-      doLogout();
+      allowAppExit = true;
+      history.go(-2); // Kembali 2 langkah di history untuk benar-benar keluar web tanpa menghapus sesi login
   };
 
   document.getElementById('btn-logout').onclick = () => doLogout();
