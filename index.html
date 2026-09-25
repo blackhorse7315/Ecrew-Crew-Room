@@ -594,15 +594,12 @@
       if (savedUser) {
           try {
               const userObj = JSON.parse(savedUser);
-              // Validasi dengan data terbaru dari database
-              const dbUserValid = allUsers.find(u => u.email === userObj.email && u.password === userObj.password);
-              
-              if (dbUserValid || (userObj.role === 'admin' && userObj.name === 'Master Admin')) {
-                  currentUser = dbUserValid || userObj;
-                  isAdmin = currentUser.role === 'admin';
-                  showAppDashboard();
-                  return true;
-              }
+              // 1. Percaya pada localStorage secara Instan (Optimistic Login)
+              // Menghindari logout sepihak akibat Firebase lambat memuat data
+              currentUser = userObj;
+              isAdmin = currentUser.role === 'admin';
+              showAppDashboard();
+              return true;
           } catch(e) {}
       }
       
@@ -717,17 +714,35 @@
         
       allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD');
       
+      isDataInitialized = true;
+
+      // 2. Validasi Ulang Sesi di Latar Belakang (Background Validation)
+      if (currentUser && currentUser.name !== 'Master Admin') {
+          const dbUserValid = allUsers.find(u => u.email === currentUser.email && u.password === currentUser.password);
+          if (dbUserValid) {
+              // Update sesi lokal (misal ada perubahan role/posisi oleh Admin di database)
+              currentUser = dbUserValid;
+              isAdmin = currentUser.role === 'admin';
+              saveSession(currentUser);
+              
+              // Update teks sambutan agar tetap sinkron dengan database
+              let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
+              if(currentUser.rank && currentUser.rank !== '-') {
+                 titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
+              }
+              document.getElementById('dash-welcome').textContent = isAdmin ? `🔐 Admin Panel - Welcome, ${currentUser.name}` : titleTxt;
+          } else {
+              // User telah dihapus di database atau password diubah, paksa log out!
+              doLogout();
+              return; 
+          }
+      }
+      
       if (document.getElementById('users-modal') && !document.getElementById('users-modal').classList.contains('hidden')) {
         renderUsersList();
       }
       if(currentUser) {
           renderMenus();
-      }
-      
-      // Pengecekan sesi pertama kali setelah data load
-      if(!isDataInitialized) {
-          isDataInitialized = true;
-          checkSession();
       }
     }
   };
@@ -736,21 +751,29 @@
     _data: [],
     init: async (handler) => {
       window.dataSdk._handler = handler;
-      document.getElementById('loading-text').textContent = 'Menghubungkan ke Database Aman...';
+      
+      if (!currentUser) {
+          document.getElementById('loading-text').textContent = 'Menghubungkan ke Database Aman...';
+      }
 
       // Wajib Auth sebelum Query Firestore
       try {
           await signInAnonymously(auth);
       } catch (error) {
           console.error("Auth Error:", error);
-          document.getElementById('loading-text').textContent = 'Gagal Autentikasi. Pastikan Anonymous Sign-In diaktifkan di Firebase Console.';
+          if (!currentUser) document.getElementById('loading-text').textContent = 'Gagal Autentikasi. Pastikan Anonymous Sign-In diaktifkan di Firebase Console.';
           return;
       }
 
       let menusData = [];
       let usersData = [];
+      let menusLoaded = false;
+      let usersLoaded = false;
 
       const triggerDataUpdate = () => {
+          // Pastikan kedua tabel (Menus & Users) selesai ditarik sebelum disuntik ke antarmuka
+          if (!menusLoaded || !usersLoaded) return; 
+          
           // Gabungkan data agar kompatibel dengan logika lama aplikasi
           const formattedUsers = usersData.map(u => ({...u, parent_id: 'SYSTEM_USER_RECORD'}));
           window.dataSdk._data = [...menusData, ...formattedUsers];
@@ -760,21 +783,15 @@
       // Listeners Real-time Firestore
       onSnapshot(menusRef, (snapshot) => {
           menusData = snapshot.docs.map(doc => ({ ...doc.data(), __backendId: doc.id }));
+          menusLoaded = true;
           triggerDataUpdate();
       }, (error) => console.error("Menus Sync Error:", error));
 
       onSnapshot(usersRef, (snapshot) => {
           usersData = snapshot.docs.map(doc => ({ ...doc.data(), __backendId: doc.id }));
+          usersLoaded = true;
           triggerDataUpdate();
       }, (error) => console.error("Users Sync Error:", error));
-      
-      // Fallback jika database benar-benar kosong
-      setTimeout(() => {
-          if(!isDataInitialized) {
-              isDataInitialized = true;
-              checkSession();
-          }
-      }, 3000);
     },
 
     create: async (record) => {
@@ -829,6 +846,9 @@
       }
     }
   };
+
+  // EKSEKUSI PENGECEKAN SESI LANGSUNG SAAT APLIKASI DIBUKA
+  checkSession();
 
   (async () => {
     await window.dataSdk.init(dataHandler);
@@ -1201,6 +1221,14 @@
   function renderMenus() {
     const grid = document.getElementById('menu-grid');
     const empty = document.getElementById('empty-state');
+    
+    // Tunda rendering status kosong jika koneksi dari Firebase belum selesai
+    if (!isDataInitialized) {
+        grid.innerHTML = '';
+        empty.classList.add('hidden');
+        return;
+    }
+
     // Menampilkan menu utama, disortir, lalu di-filter HANYA untuk posisi yang memiliki akses
     const mainMenus = allMenus
         .filter(m => !m.parent_id)
