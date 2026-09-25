@@ -12,12 +12,14 @@
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  
   <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
+  
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Lora:wght@400;600&display=swap" rel="stylesheet">
+  
   <style>
     * { font-family: 'Poppins', sans-serif; }
-    body { background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1629 100%); }
+    body { background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1629 100%); box-sizing: border-box; }
     
     .menu-card { 
       transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -83,14 +85,13 @@
         border-radius: 10px;
     }
   </style>
-  <style>body { box-sizing: border-box; }</style>
  </head>
  <body class="h-full">
 
   <!-- Loading Awal (Cek Sesi Login) -->
   <div id="loading-screen" class="h-full w-full flex flex-col items-center justify-center p-4">
     <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/20 mb-4 animate-pulse"><img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl"></div>
-    <p class="text-cyan-400 font-semibold animate-pulse">Memuat Ecrew...</p>
+    <p class="text-cyan-400 font-semibold animate-pulse" id="loading-text">Memuat Sistem...</p>
   </div>
 
   <!-- Login Screen -->
@@ -187,7 +188,6 @@
           <button id="btn-users" class="flex items-center gap-1 sm:gap-2 bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30 font-semibold px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl transition border border-indigo-500/30 smooth-button"> <i data-lucide="users" class="w-4 h-4"></i> <span class="hidden md:inline">Manage Users</span> </button>
           <button id="btn-add" class="flex items-center gap-1 sm:gap-2 premium-gradient text-white font-semibold px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20"> <i data-lucide="plus" class="w-4 h-4"></i> <span class="hidden md:inline">Add Menu</span> </button>
          </div>
-         <button id="btn-sync" class="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 text-cyan-400 font-medium px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl transition border border-slate-700/30 smooth-button" title="Sync Database"> <i data-lucide="refresh-cw" id="sync-icon" class="w-4 h-4"></i> </button>
          <button id="btn-logout" class="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 font-medium px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl transition border border-slate-700/30 smooth-button" title="Logout"> <i data-lucide="log-out" class="w-4 h-4"></i> <span class="hidden md:inline">Logout</span> </button>
      </div>
     </div>
@@ -221,13 +221,12 @@
     </main>
    </div>
    
-   <!-- Menu Add/Edit Modal (DENGAN MAX HEIGHT & SCROLL) -->
+   <!-- Menu Add/Edit Modal -->
    <div id="modal" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
     <div class="bg-slate-900 rounded-3xl w-full max-w-md glow-border slide-up flex flex-col max-h-[95vh]">
      <div class="p-5 sm:p-6 border-b border-slate-700/40 flex items-center justify-between shrink-0">
       <h2 id="modal-title" class="text-white font-bold text-xl">Add Menu</h2><button id="modal-close" class="text-slate-400 hover:text-white transition hover:scale-110"><i data-lucide="x" class="w-5 h-5"></i></button>
      </div>
-     <!-- Area form bisa discroll ke bawah agar tidak terpotong -->
      <form id="menu-form" class="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar">
       <div><label class="text-slate-300 text-sm font-semibold block mb-1">Menu Name</label> <input id="f-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="e.g. Flight Schedule">
       </div>
@@ -240,29 +239,26 @@
       </div>
       <div><label class="text-slate-300 text-sm font-semibold block mb-1">Parent Menu (optional)</label> <select id="f-parent" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition"> <option value="">— None (Main Menu) —</option> </select>
       </div>
+      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Urutan Tampil (Angka)</label> <input id="f-order" type="number" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="Contoh: 1, 2, 3...">
+      </div>
       
-      <!-- Visibilitas Menu (Hide/Unhide Khusus Posisi) -->
-      <div class="bg-slate-800/40 p-3 sm:p-4 rounded-xl border border-slate-700/50">
-        <label class="text-slate-300 text-sm font-semibold block mb-3">Visibilitas Menu (Hide/Unhide)</label>
-        <div class="flex flex-col gap-2.5 mb-2">
-           <label class="flex items-center gap-2 cursor-pointer group">
-              <input type="radio" name="menu_vis" id="vis_all" value="All" class="w-4 h-4 text-cyan-500 bg-slate-700 border-slate-600 focus:ring-cyan-500/50" checked>
-              <span class="text-slate-300 text-sm group-hover:text-white transition font-medium">Tampil Semua (Unhide)</span>
-           </label>
-           <label class="flex items-center gap-2 cursor-pointer group">
-              <input type="radio" name="menu_vis" id="vis_restricted" value="Restricted" class="w-4 h-4 text-cyan-500 bg-slate-700 border-slate-600 focus:ring-cyan-500/50">
-              <span class="text-slate-300 text-sm group-hover:text-white transition font-medium">Sembunyikan & Khususkan (Hide)</span>
-           </label>
-        </div>
-        
-        <div id="restricted-pos-wrapper" class="hidden mt-3 border-t border-slate-700/50 pt-3">
-            <label class="text-slate-300 text-xs font-semibold block mb-2 flex items-center justify-between">
-                <span>Pilih Posisi yang Bisa Melihat:</span>
-                <button type="button" id="btn-check-all" class="text-[10px] text-cyan-400 hover:text-cyan-300 px-2 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded">Pilih Semua</button>
-            </label> 
-            <div class="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl p-3 max-h-40 overflow-y-auto custom-scrollbar flex flex-col gap-2" id="access-checkbox-container">
-                <!-- Checkbox akan digenerate oleh JS -->
-            </div>
+      <!-- Visibilitas Menu -->
+      <div>
+          <label class="text-slate-300 text-sm font-semibold block mb-1">Visibilitas Menu</label>
+          <select id="f-visibility" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition">
+              <option value="public">Tampil Semua (Unhide)</option>
+              <option value="restricted">Sembunyikan & Khususkan (Hide)</option>
+          </select>
+      </div>
+
+      <!-- Hak Akses Multi-pilihan (Checkbox) -->
+      <div id="access-section" class="hidden">
+        <label class="text-slate-300 text-sm font-semibold block mb-1 flex items-center justify-between mt-4">
+            <span>Pilih Posisi (Bisa Akses)</span>
+            <button type="button" id="btn-check-all" class="text-[10px] text-cyan-400 hover:text-cyan-300 px-2 py-0.5 border border-cyan-500/30 rounded transition">Pilih / Hapus Semua</button>
+        </label> 
+        <div class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl p-3 max-h-40 overflow-y-auto custom-scrollbar flex flex-col gap-2" id="access-checkbox-container">
+            <!-- Checkbox akan digenerate oleh JS -->
         </div>
       </div>
 
@@ -406,7 +402,7 @@
          <i data-lucide="log-out" class="w-10 h-10 text-yellow-400"></i>
      </div>
      <h2 class="text-white font-bold text-xl mb-2">Keluar Aplikasi?</h2>
-     <p class="text-slate-400 text-sm mb-6">Anda menekan tombol kembali. Apakah Anda ingin keluar dari akun Ecrew Anda?</p>
+     <p class="text-slate-400 text-sm mb-6">Anda menekan tombol kembali. Apakah Anda ingin keluar dari akun Crew Room Anda?</p>
      <div class="flex gap-3">
          <button id="btn-cancel-exit" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Batal</button>
          <button id="btn-confirm-exit" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya, Logout</button>
@@ -414,9 +410,46 @@
     </div>
    </div>
 
+   <!-- Modal Konfirmasi Umum -->
+   <div id="custom-confirm-modal" class="hidden fixed inset-0 z-[70] modal-overlay flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-sm glow-border border border-slate-500/30 slide-up text-center p-6 sm:p-8">
+        <h2 class="text-white font-bold text-xl mb-2">Konfirmasi</h2>
+        <p class="text-slate-400 text-sm mb-6" id="confirm-msg">Apakah Anda yakin?</p>
+        <div class="flex gap-3">
+            <button id="btn-cancel-confirm" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Batal</button>
+            <button id="btn-ok-confirm" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya</button>
+        </div>
+    </div>
+   </div>
+
   </div>
 
-  <script>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, doc, collection, onSnapshot, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+
+  // Konfigurasi Lingkungan Firebase Project Anda
+  const firebaseConfig = {
+    apiKey: "AIzaSyBzcfPBaHdmTRLCSrvuT1F-qDsJWUZZQT8",
+    authDomain: "twa-ecrew.firebaseapp.com",
+    projectId: "twa-ecrew",
+    storageBucket: "twa-ecrew.firebasestorage.app",
+    messagingSenderId: "559962441630",
+    appId: "1:559962441630:web:a8974f71442034fd6c788f",
+    measurementId: "G-EVCVP5HW7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  // Referensi Collection di Firestore
+  const menusRef = collection(db, "menus");
+  const usersRef = collection(db, "appUsers");
+
   // ==========================================
   // PWA (Progressive Web App) Setup
   // ==========================================
@@ -424,7 +457,7 @@
   const manifestData = {
     name: "Ecrew - Crew Room",
     short_name: "Crew Room",
-    description: "Portal operasi penerbangan Ecrew",
+    description: "Portal operasi penerbangan Crew Room",
     start_url: window.location.href,
     display: "standalone",
     background_color: "#0a0e27",
@@ -447,8 +480,7 @@
       });
     `;
     const swBlob = new Blob([swCode], { type: 'application/javascript' });
-    navigator.serviceWorker.register(URL.createObjectURL(swBlob))
-      .catch(err => console.log('PWA Service Worker tidak dapat diinisiasi:', err));
+    navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(err => console.log('SW Error:', err));
   }
 
   // ==========================================
@@ -461,7 +493,6 @@
       "Captain", "First Officer", "Engineer", "POI", "Visitor"
   ];
 
-  // Injeksi Daftar Posisi ke HTML (Untuk Select Form User & Checkbox Form Menu)
   function populatePositionDropdowns() {
       const optionsHTML = POSITIONS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
       if(document.getElementById('r-pos')) document.getElementById('r-pos').innerHTML = optionsHTML;
@@ -470,83 +501,48 @@
       
       const cbContainer = document.getElementById('access-checkbox-container');
       if(cbContainer) {
-          // Buat Checkbox secara dinamis
-          cbContainer.innerHTML = POSITIONS_LIST.map(p => `
-            <label class="flex items-center gap-2 cursor-pointer group pl-1">
-                <input type="checkbox" value="${p}" class="access-cb-item w-4 h-4 rounded border-slate-600 text-cyan-500 focus:ring-cyan-500/50 bg-slate-700">
+          let cbHTML = POSITIONS_LIST.map(p => `
+            <label class="flex items-center gap-2 cursor-pointer group pl-2">
+                <input type="checkbox" value="${p}" class="access-cb access-cb-item w-4 h-4 rounded border-slate-600 text-cyan-500 focus:ring-cyan-500/50 bg-slate-700">
                 <span class="text-slate-300 text-sm group-hover:text-white transition">${p}</span>
             </label>
           `).join('');
-          
+          cbContainer.innerHTML = cbHTML;
+
           document.getElementById('btn-check-all').onclick = () => {
-              const cbs = document.querySelectorAll('.access-cb-item');
-              const allChecked = Array.from(cbs).every(cb => cb.checked);
-              cbs.forEach(cb => cb.checked = !allChecked);
-              document.getElementById('btn-check-all').textContent = allChecked ? "Pilih Semua" : "Batal Pilih";
+              const itemCbs = document.querySelectorAll('.access-cb-item');
+              const allChecked = Array.from(itemCbs).every(cb => cb.checked);
+              itemCbs.forEach(cb => {
+                  cb.checked = !allChecked;
+              });
           };
-          
-          // Listener Radio Button Hide/Unhide
-          const visAll = document.getElementById('vis_all');
-          const visRestricted = document.getElementById('vis_restricted');
-          const wrapper = document.getElementById('restricted-pos-wrapper');
-          
-          if(visAll && visRestricted && wrapper) {
-              visAll.addEventListener('change', () => wrapper.classList.add('hidden'));
-              visRestricted.addEventListener('change', () => wrapper.classList.remove('hidden'));
-          }
       }
   }
 
-  // Mengambil daftar posisi yang dicentang saat menyimpan menu
   function getSelectedAccessPositions() {
-      const visAll = document.getElementById('vis_all');
-      if(visAll && visAll.checked) return 'All'; 
-      
       const itemCbs = document.querySelectorAll('.access-cb-item:checked');
       const selected = Array.from(itemCbs).map(cb => cb.value);
-      
-      return selected.length > 0 ? JSON.stringify(selected) : 'All'; 
+      return JSON.stringify(selected); 
   }
 
-  // Mengatur ulang tampilan centang saat membuka modal Edit Menu
   function setAccessPositions(accessVal) {
-      const visAll = document.getElementById('vis_all');
-      const visRestricted = document.getElementById('vis_restricted');
-      const wrapper = document.getElementById('restricted-pos-wrapper');
       const itemCbs = document.querySelectorAll('.access-cb-item');
-      
-      // Reset tombol "Pilih Semua"
-      const btnCheckAll = document.getElementById('btn-check-all');
-      if(btnCheckAll) btnCheckAll.textContent = "Pilih Semua";
-      
-      if(!accessVal || accessVal === 'All' || accessVal === '[]') {
-          if(visAll) visAll.checked = true;
-          if(wrapper) wrapper.classList.add('hidden');
-          itemCbs.forEach(cb => cb.checked = false);
-          return;
-      }
-
-      if(visRestricted) visRestricted.checked = true;
-      if(wrapper) wrapper.classList.remove('hidden');
-      
       let parsedArr = [];
-      try {
-          parsedArr = JSON.parse(accessVal); 
-      } catch(e) { parsedArr = [accessVal]; }
+      if(accessVal && accessVal !== 'All') {
+          try { parsedArr = JSON.parse(accessVal); } catch(e) { parsedArr = [accessVal]; }
+      }
 
       itemCbs.forEach(cb => {
           cb.checked = parsedArr.includes(cb.value);
       });
   }
 
-  // Panggil penyusunan kolom saat load
   populatePositionDropdowns();
 
   function convertGoogleDriveUrl(url) {
     if (!url) return '';
     const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
     if (match && match[1]) {
-      // Menggunakan object-cover dan ditambahkan efek animasi perbesar (scale-110)
       return `<img src="https://lh3.googleusercontent.com/d/${match[1]}" alt="Logo" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />`;
     }
     return url;
@@ -560,6 +556,25 @@
     }
     return str;
   }
+  
+  // Custom Confirm Dialog untuk menggantikan native confirm()
+  let currentConfirmCallback = null;
+  function showCustomConfirm(msg, callback) {
+      document.getElementById('confirm-msg').textContent = msg;
+      document.getElementById('custom-confirm-modal').classList.remove('hidden');
+      currentConfirmCallback = callback;
+  }
+  
+  document.getElementById('btn-cancel-confirm').onclick = () => {
+      document.getElementById('custom-confirm-modal').classList.add('hidden');
+      currentConfirmCallback = null;
+  };
+  
+  document.getElementById('btn-ok-confirm').onclick = () => {
+      document.getElementById('custom-confirm-modal').classList.add('hidden');
+      if (currentConfirmCallback) currentConfirmCallback();
+      currentConfirmCallback = null;
+  };
 
   let currentUser = null;
   let isAdmin = false;
@@ -572,24 +587,26 @@
   let imageUrl = '';
   let currentView = 'login';
   let userBeingEdited = null;
+  let isDataInitialized = false;
 
-  // ==========================================
-  // MANAJEMEN SESI (LOCAL STORAGE) & HISTORY API (TOMBOL BACK)
-  // ==========================================
   function checkSession() {
       const savedUser = localStorage.getItem('ecrew_session');
       if (savedUser) {
           try {
               const userObj = JSON.parse(savedUser);
-              currentUser = userObj;
-              isAdmin = userObj.role === 'admin';
-              showAppDashboard();
-              return true;
-          } catch(e) {
-              localStorage.removeItem('ecrew_session');
-          }
+              // Validasi dengan data terbaru dari database
+              const dbUserValid = allUsers.find(u => u.email === userObj.email && u.password === userObj.password);
+              
+              if (dbUserValid || (userObj.role === 'admin' && userObj.name === 'Master Admin')) {
+                  currentUser = dbUserValid || userObj;
+                  isAdmin = currentUser.role === 'admin';
+                  showAppDashboard();
+                  return true;
+              }
+          } catch(e) {}
       }
-      // Jika tidak ada sesi
+      
+      clearSession();
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('login-screen').classList.remove('hidden');
       history.replaceState({ view: 'login' }, '');
@@ -611,16 +628,14 @@
   window.addEventListener('popstate', (e) => {
     const state = e.state || { view: 'login' };
     
-    // Selalu pastikan semua modal tertutup
     document.getElementById('modal').classList.add('hidden');
     document.getElementById('users-modal').classList.add('hidden');
     document.getElementById('edit-user-modal').classList.add('hidden');
     document.getElementById('restricted-modal').classList.add('hidden');
+    document.getElementById('custom-confirm-modal').classList.add('hidden');
     
-    // EXIT TRAP (Jebakan Keluar) jika back dari Dashboard
     if (state.view === 'start' && currentUser) {
         document.getElementById('exit-modal').classList.remove('hidden');
-        // Push state dashboard kembali agar tidak benar-benar keluar browser
         history.pushState({ view: 'dashboard' }, '');
         return;
     } else {
@@ -655,75 +670,20 @@
     } else if (state.view === 'submenu') {
        document.getElementById('login-screen').classList.add('hidden');
        document.getElementById('app').classList.remove('hidden');
-       
        if (state.parentId) {
            const parentNode = allMenus.find(m => m.id === state.parentId);
-           if (parentNode) {
-               openSubmenu(parentNode, true);
-           } else {
-               showDashboard(true);
-           }
+           if (parentNode) { openSubmenu(parentNode, true); } 
+           else { showDashboard(true); }
        }
     } else if (state.view === 'modal_users') {
         document.getElementById('users-modal').classList.remove('hidden');
     }
   });
 
-
-  const defaultConfig = {
-    dashboard_title: 'Ecrew - Crew Room',
-    welcome_text: 'Welcome back, Captain!',
-    bg_color: '#0f172a',
-    card_color: '#1e293b',
-    text_color: '#f1f5f9',
-    accent_color: '#06b6d4',
-    secondary_color: '#334155',
-    font_family: 'Plus Jakarta Sans',
-    font_size: 14
-  };
-
-  if (window.elementSdk) {
-    window.elementSdk.init({
-      defaultConfig,
-      onConfigChange: async (config) => {
-        const c = { ...defaultConfig, ...config };
-        if (document.getElementById('dash-title')) {
-          document.getElementById('dash-title').textContent = c.dashboard_title;
-          document.getElementById('dash-welcome').textContent = c.welcome_text;
-          document.getElementById('app').style.background = c.bg_color;
-          document.querySelectorAll('.menu-card').forEach(el => el.style.background = c.card_color);
-          document.body.style.fontFamily = `${c.font_family}, sans-serif`;
-          document.body.style.fontSize = c.font_size + 'px';
-        }
-      },
-      mapToCapabilities: (config) => {
-        const c = { ...defaultConfig, ...config };
-        const make = (key) => ({
-          get: () => c[key] || defaultConfig[key],
-          set: (v) => { c[key] = v; window.elementSdk.setConfig({ [key]: v }); }
-        });
-        return {
-          recolorables: [make('bg_color'), make('card_color'), make('text_color'), make('accent_color'), make('secondary_color')],
-          borderables: [],
-          fontEditable: make('font_family'),
-          fontSizeable: make('font_size')
-        };
-      },
-      mapToEditPanelValues: (config) => {
-        const c = { ...defaultConfig, ...config };
-        return new Map([
-          ['dashboard_title', c.dashboard_title],
-          ['welcome_text', c.welcome_text]
-        ]);
-      }
-    });
-  }
-
   const dataHandler = {
     onDataChanged(data) {
       allRawData = data || [];
       
-      // MAPPING: Memisahkan Data User
       allUsers = allRawData
         .filter(d => d.parent_id === 'SYSTEM_USER_RECORD')
         .map(d => {
@@ -755,156 +715,124 @@
           };
         });
         
-      // MAPPING: Memisahkan Data Menu & Mengekstrak URL yang dipacking
-      allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD').map(m => {
-          let actualUrl = m.url || '';
-          let accessPos = 'All';
-          
-          // Mengurai JSON yang kita sembunyikan di dalam kolom URL
-          if (actualUrl.startsWith('{')) {
-              try {
-                  const parsedUrlObj = JSON.parse(actualUrl);
-                  if (parsedUrlObj.link !== undefined) {
-                      actualUrl = parsedUrlObj.link;
-                      accessPos = parsedUrlObj.access;
-                  }
-              } catch(e) {
-                  // Apabila bukan JSON format kita (misal ada { di URL biasa), diamkan saja.
-              }
-          }
-          
-          return {
-              ...m,
-              url: actualUrl,
-              access_positions: accessPos
-          };
-      });
+      allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD');
       
       if (document.getElementById('users-modal') && !document.getElementById('users-modal').classList.contains('hidden')) {
         renderUsersList();
       }
-      renderMenus();
+      if(currentUser) {
+          renderMenus();
+      }
+      
+      // Pengecekan sesi pertama kali setelah data load
+      if(!isDataInitialized) {
+          isDataInitialized = true;
+          checkSession();
+      }
     }
   };
-
-  // URL WEB APP GOOGLE APPS SCRIPT ANDA
-  const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx5tHULYdvZGdUrDPnhSFfR-gSbB0WlB2cDpTmXt7_5mNVYMlSPGsnOwO3xhKsDD4OP/exec"; 
 
   window.dataSdk = {
     _data: [],
     init: async (handler) => {
       window.dataSdk._handler = handler;
-      await window.dataSdk.sync();
-      setInterval(() => window.dataSdk.sync(true), 300000);
-      
-      // Cek Sesi setelah data pertama masuk
-      checkSession();
-    },
+      document.getElementById('loading-text').textContent = 'Menghubungkan ke Database Aman...';
 
-    sync: async (isAuto = false) => {
-      const icon = document.getElementById('sync-icon');
-      if (icon) icon.classList.add('animate-spin');
-
+      // Wajib Auth sebelum Query Firestore
       try {
-        if (!GAS_WEB_APP_URL) throw new Error("URL GAS kosong");
-        
-        const res = await fetch(GAS_WEB_APP_URL);
-        const text = await res.text(); 
-        
-        // Cek jika respons berupa tag HTML (Biasanya halaman error/login dari Google)
-        if (text.trim().startsWith('<')) {
-            throw new Error("URL mengembalikan HTML. Pastikan deploy Google Apps Script menggunakan akses 'Anyone'.");
-        }
-        
-        const data = JSON.parse(text);
-        window.dataSdk._data = Array.isArray(data) ? data : [];
-        
-        // Simpan cadangan ke local storage untuk offline mode
-        localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
-        
-      } catch (e) {
-        console.warn('Sinkronisasi server gagal, menggunakan data lokal:', e.message);
-        // Fallback: Ambil dari penyimpanan lokal agar aplikasi tidak crash
-        const localData = localStorage.getItem('ecrew_db');
-        if (localData) {
-            try { window.dataSdk._data = JSON.parse(localData); } catch(err){}
-        }
+          await signInAnonymously(auth);
+      } catch (error) {
+          console.error("Auth Error:", error);
+          document.getElementById('loading-text').textContent = 'Gagal Autentikasi. Pastikan Anonymous Sign-In diaktifkan di Firebase Console.';
+          return;
       }
 
-      if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
-      if (icon) icon.classList.remove('animate-spin');
+      let menusData = [];
+      let usersData = [];
+
+      const triggerDataUpdate = () => {
+          // Gabungkan data agar kompatibel dengan logika lama aplikasi
+          const formattedUsers = usersData.map(u => ({...u, parent_id: 'SYSTEM_USER_RECORD'}));
+          window.dataSdk._data = [...menusData, ...formattedUsers];
+          if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
+      };
+
+      // Listeners Real-time Firestore
+      onSnapshot(menusRef, (snapshot) => {
+          menusData = snapshot.docs.map(doc => ({ ...doc.data(), __backendId: doc.id }));
+          triggerDataUpdate();
+      }, (error) => console.error("Menus Sync Error:", error));
+
+      onSnapshot(usersRef, (snapshot) => {
+          usersData = snapshot.docs.map(doc => ({ ...doc.data(), __backendId: doc.id }));
+          triggerDataUpdate();
+      }, (error) => console.error("Users Sync Error:", error));
+      
+      // Fallback jika database benar-benar kosong
+      setTimeout(() => {
+          if(!isDataInitialized) {
+              isDataInitialized = true;
+              checkSession();
+          }
+      }, 3000);
     },
 
     create: async (record) => {
-      const newRec = { ...record, __backendId: Date.now().toString(36) + Math.random().toString(36).substr(2) };
-      
-      // Optimistic update: Selalu simpan lokal agar UI langsung merespons
-      window.dataSdk._data.push(newRec);
-      localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
-      if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
-
-      if (!GAS_WEB_APP_URL) return { isOk: true };
-
+      if (!auth.currentUser) return { isOk: false };
       try {
-        const res = await fetch(GAS_WEB_APP_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'create', record: newRec })
-        });
-        const text = await res.text();
-        if (text.trim().startsWith('<')) throw new Error("Gagal kirim: Endpoint HTML");
-        return { isOk: true };
-      } catch(e) { 
-        return { isOk: true }; // Tetap return true agar aplikasi lanjut secara lokal
+          if (record.parent_id === 'SYSTEM_USER_RECORD') {
+              const { parent_id, ...userData } = record;
+              await addDoc(usersRef, userData);
+          } else {
+              await addDoc(menusRef, record);
+          }
+          return { isOk: true };
+      } catch (e) {
+          console.error(e);
+          return { isOk: false };
       }
     },
 
     update: async (record) => {
-      // Optimistic update
-      const idx = window.dataSdk._data.findIndex(r => r.__backendId === record.__backendId);
-      if (idx !== -1) window.dataSdk._data[idx] = record;
-      localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
-      if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
-
-      if (!GAS_WEB_APP_URL) return { isOk: true };
-
+      if (!auth.currentUser) return { isOk: false };
       try {
-        const res = await fetch(GAS_WEB_APP_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'update', record: record })
-        });
-        const text = await res.text();
-        if (text.trim().startsWith('<')) throw new Error("Gagal kirim: Endpoint HTML");
-        return { isOk: true };
-      } catch(e) { return { isOk: true }; }
+          if (record.parent_id === 'SYSTEM_USER_RECORD') {
+              const docRef = doc(db, "appUsers", record.__backendId);
+              const { parent_id, __backendId, ...updateData } = record;
+              await updateDoc(docRef, updateData);
+          } else {
+              const docRef = doc(db, "menus", record.__backendId);
+              const { __backendId, ...updateData } = record;
+              await updateDoc(docRef, updateData);
+          }
+          return { isOk: true };
+      } catch (e) {
+          console.error(e);
+          return { isOk: false };
+      }
     },
 
     delete: async (record) => {
-      // Optimistic update
-      window.dataSdk._data = window.dataSdk._data.filter(r => r.__backendId !== record.__backendId);
-      localStorage.setItem('ecrew_db', JSON.stringify(window.dataSdk._data));
-      if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
-
-      if (!GAS_WEB_APP_URL) return { isOk: true };
-
+      if (!auth.currentUser) return { isOk: false };
       try {
-        const res = await fetch(GAS_WEB_APP_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'delete', record: record })
-        });
-        const text = await res.text();
-        if (text.trim().startsWith('<')) throw new Error("Gagal kirim: Endpoint HTML");
-        return { isOk: true };
-      } catch(e) { return { isOk: true }; }
+          if (record.parent_id === 'SYSTEM_USER_RECORD') {
+              const docRef = doc(db, "appUsers", record.__backendId);
+              await deleteDoc(docRef);
+          } else {
+              const docRef = doc(db, "menus", record.__backendId);
+              await deleteDoc(docRef);
+          }
+          return { isOk: true };
+      } catch (e) {
+          console.error(e);
+          return { isOk: false };
+      }
     }
   };
 
   (async () => {
     await window.dataSdk.init(dataHandler);
   })();
-
-  if(document.getElementById('btn-sync')){
-      document.getElementById('btn-sync').onclick = () => window.dataSdk.sync();
-  }
 
   document.getElementById('btn-go-register').onclick = () => {
     history.pushState({ view: 'register' }, '');
@@ -1032,7 +960,6 @@
       lucide.createIcons();
   }
 
-  // Tombol Cancel & Confirm pada modal Exit Trap
   document.getElementById('btn-cancel-exit').onclick = () => {
       document.getElementById('exit-modal').classList.add('hidden');
   };
@@ -1054,9 +981,6 @@
       lucide.createIcons();
   }
 
-  // ==========================================
-  // USERS MANAGEMENT LOGIC
-  // ==========================================
   document.getElementById('btn-users').onclick = () => {
     history.pushState({ view: 'modal_users' }, '');
     document.getElementById('users-modal').classList.remove('hidden');
@@ -1064,11 +988,7 @@
   };
 
   document.getElementById('users-modal-close').onclick = () => history.back();
-
-  document.getElementById('users-modal').onclick = (e) => {
-    if (e.target === e.currentTarget) history.back();
-  };
-
+  document.getElementById('users-modal').onclick = (e) => { if (e.target === e.currentTarget) history.back(); };
   document.getElementById('edit-user-modal-close').onclick = () => history.back();
 
   function renderUsersList() {
@@ -1087,14 +1007,15 @@
           <p class="text-slate-500 text-[10px] mt-0.5 truncate">${u.position || '-'} &bull; ${u.rule || '-'}</p>
         </div>
         <div class="flex flex-col sm:flex-row items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition shrink-0">
-          <button type="button" onclick="openEditUser('${u.__backendId}')" class="text-slate-400 hover:text-blue-400 p-2 rounded-lg hover:bg-blue-500/10 transition" title="Edit User"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
-          <button type="button" onclick="deleteUserRecord('${u.__backendId}')" class="text-slate-400 hover:text-red-400 p-2 rounded-lg hover:bg-red-500/10 transition" title="Delete User"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          <button type="button" onclick="window.openEditUser('${u.__backendId}')" class="text-slate-400 hover:text-blue-400 p-2 rounded-lg hover:bg-blue-500/10 transition" title="Edit User"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+          <button type="button" onclick="window.deleteUserRecord('${u.__backendId}')" class="text-slate-400 hover:text-red-400 p-2 rounded-lg hover:bg-red-500/10 transition" title="Delete User"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         </div>
       </div>
     `).join('');
     lucide.createIcons();
   }
 
+  // Attach to window to allow inline onclick calls
   window.openEditUser = (backendId) => {
     const user = allUsers.find(u => u.__backendId === backendId);
     if (!user) return;
@@ -1116,12 +1037,13 @@
     document.getElementById('edit-user-modal').classList.remove('hidden');
   };
 
-  window.deleteUserRecord = async (backendId) => {
-    if (!confirm('Apakah Anda yakin ingin menghapus user ini?')) return;
-    const rawUserToDelete = allRawData.find(d => d.__backendId === backendId);
-    if (rawUserToDelete) {
-      await window.dataSdk.delete(rawUserToDelete);
-    }
+  window.deleteUserRecord = (backendId) => {
+    showCustomConfirm('Apakah Anda yakin ingin menghapus user ini?', async () => {
+        const rawUserToDelete = allRawData.find(d => d.__backendId === backendId);
+        if (rawUserToDelete) {
+          await window.dataSdk.delete(rawUserToDelete);
+        }
+    });
   };
 
   document.getElementById('user-form').onsubmit = async (e) => {
@@ -1223,7 +1145,7 @@
       const result = await window.dataSdk.update(updatedRecord);
       
       if (result.isOk) {
-        history.back(); // Trigger popstate untuk kembali / tutup modal
+        history.back(); 
       } else {
         msgEl.textContent = '❌ Gagal memperbarui data user.';
         msgEl.className = 'text-center text-xs py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
@@ -1235,27 +1157,22 @@
     btn.textContent = 'Update';
   };
 
-  // ==========================================
-  // DASHBOARD & MENU LOGIC
-  // ==========================================
-  
-  // Validasi Akses: Cek apakah menu diizinkan untuk posisi currentUser
-  function checkAccess(menu) {
-      if (isAdmin) return true; // Admin selalu bisa lihat semuanya
+  function checkAccess(menu, silent = false) {
+      if (isAdmin) return true;
 
       if (!menu.access_positions || menu.access_positions === 'All' || menu.access_positions.length === 0) {
-          return true; // Tampil untuk semuanya
+          return true;
       }
 
       let allowedPositions = [];
       try {
           allowedPositions = Array.isArray(menu.access_positions) ? menu.access_positions : JSON.parse(menu.access_positions);
       } catch (e) {
-          allowedPositions = [];
+          allowedPositions = []; 
       }
 
-      // Jika posisi user tidak terdaftar dalam daftar yang dicentang admin
       if (currentUser && !allowedPositions.includes(currentUser.position)) {
+           if(!silent) showRestrictedModal(`Menu ini hanya diperbolehkan untuk posisi tertentu. Akses untuk posisi Anda (${currentUser.position || 'Unknown'}) ditolak.`);
            return false;
       }
 
@@ -1284,9 +1201,11 @@
   function renderMenus() {
     const grid = document.getElementById('menu-grid');
     const empty = document.getElementById('empty-state');
-    
-    // FILTER: Hanya menampilkan menu utama yang diizinkan untuk posisi pengguna
-    const mainMenus = allMenus.filter(m => !m.parent_id && checkAccess(m));
+    // Menampilkan menu utama, disortir, lalu di-filter HANYA untuk posisi yang memiliki akses
+    const mainMenus = allMenus
+        .filter(m => !m.parent_id)
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .filter(m => checkAccess(m, true));
 
     if (mainMenus.length === 0) {
       grid.innerHTML = '';
@@ -1307,13 +1226,12 @@
       if (!card) {
         card = document.createElement('div');
         card.dataset.id = menu.__backendId;
-        // PENGATURAN KOTAK AGAR SAMA (ASPECT-SQUARE)
         card.className = 'menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 cursor-pointer relative group fade-in aspect-square flex flex-col';
         card.style.animationDelay = `${i * 0.05}s`;
         grid.appendChild(card);
       }
-      
       const subCount = allMenus.filter(s => s.parent_id === menu.id).length;
+      
       const isImgTag = menu.image_url && menu.image_url.includes('<img');
       
       let imgHtml;
@@ -1328,10 +1246,16 @@
           imgHtml = `<i data-lucide="folder" class="w-12 h-12 text-slate-400 group-hover:text-cyan-400 group-hover:scale-110 transition-all duration-300"></i>`;
       }
       
+      // Indikator khusus Admin jika menu disembunyikan/dikhususkan
+      const restrictedIcon = (isAdmin && menu.access_positions !== 'All' && menu.access_positions !== undefined) 
+        ? `<div class="absolute top-2 left-2 bg-slate-900/90 border border-slate-700 rounded-md p-1.5 z-10 shadow-lg shadow-black/50" title="Menu Tersembunyi (Khusus)"><i data-lucide="eye-off" class="w-3.5 h-3.5 text-red-400"></i></div>` 
+        : '';
+      
       let cardHtml = `
           <div class="flex-1 bg-slate-700/50 flex items-center justify-center overflow-hidden relative">
+            ${restrictedIcon}
             ${imgHtml}
-            ${isAdmin ? `<button class="edit-btn absolute top-1.5 right-1.5 bg-slate-900/80 hover:bg-cyan-600/80 rounded-md p-1.5 opacity-0 group-hover:opacity-100 transition-all z-10"><i data-lucide="edit" class="w-3.5 h-3.5 text-slate-200"></i></button>` : ''}
+            ${isAdmin ? `<button class="edit-btn absolute top-2 right-2 bg-slate-900/90 hover:bg-cyan-600/90 rounded-md p-1.5 opacity-0 group-hover:opacity-100 transition-all z-10 shadow-lg"><i data-lucide="edit" class="w-3.5 h-3.5 text-slate-200"></i></button>` : ''}
           </div>
           <div class="p-1.5 sm:p-2 text-center h-10 sm:h-11 flex items-center justify-center">
             <p class="text-slate-200 group-hover:text-cyan-300 font-medium text-[10px] sm:text-xs line-clamp-2 leading-[1.2] transition-colors">${menu.name}</p>
@@ -1340,12 +1264,7 @@
       card.innerHTML = cardHtml;
       card.onclick = (e) => {
         if (e.target.closest('.edit-btn')) { openEdit(menu); return; }
-        
-        // Pengaman berlapis jika di-klik secara paksa
-        if(!checkAccess(menu)) {
-            showRestrictedModal(`Akses untuk posisi Anda (${currentUser.position || 'Unknown'}) ditolak.`);
-            return;
-        }
+        if(!checkAccess(menu)) return;
 
         if (subCount > 0) { openSubmenu(menu); } 
         else if (menu.url) { window.open(menu.url, '_blank', 'noopener,noreferrer'); }
@@ -1371,8 +1290,11 @@
     document.getElementById('submenu-title').textContent = parent.name;
     const grid = document.getElementById('submenu-grid');
     
-    // FILTER: Tarik semua sub-menu yang diizinkan untuk posisi pengguna
-    const subs = allMenus.filter(s => s.parent_id === parent.id && checkAccess(s));
+    // Filter submenu sesuai hak akses (agar yang tidak berhak tidak bisa melihatnya)
+    const subs = allMenus
+        .filter(s => s.parent_id === parent.id)
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .filter(s => checkAccess(s, true));
     
     grid.innerHTML = subs.map(s => {
       const hasImg = s.image_url && s.image_url.length > 0;
@@ -1390,10 +1312,16 @@
           renderImg = `<i data-lucide="file" class="w-12 h-12 text-slate-400 group-hover:text-cyan-400 group-hover:scale-110 transition-all duration-300"></i>`;
       }
       
+      // Indikator khusus Admin jika menu disembunyikan/dikhususkan
+      const restrictedIcon = (isAdmin && s.access_positions !== 'All' && s.access_positions !== undefined) 
+        ? `<div class="absolute top-2 left-2 bg-slate-900/90 border border-slate-700 rounded-md p-1.5 z-10 shadow-lg shadow-black/50" title="Menu Tersembunyi (Khusus)"><i data-lucide="eye-off" class="w-3.5 h-3.5 text-red-400"></i></div>` 
+        : '';
+      
       return `<div class="menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 cursor-pointer group relative aspect-square flex flex-col" data-bid="${s.__backendId}">
         <div class="flex-1 bg-slate-700/50 flex items-center justify-center overflow-hidden relative">
+          ${restrictedIcon}
           ${renderImg}
-          ${isAdmin ? `<button class="edit-sub absolute top-1.5 right-1.5 bg-slate-900/80 hover:bg-cyan-600/80 rounded-md p-1.5 opacity-0 group-hover:opacity-100 transition-all z-10"><i data-lucide="edit" class="w-3.5 h-3.5 text-slate-200"></i></button>` : ''}
+          ${isAdmin ? `<button class="edit-sub absolute top-2 right-2 bg-slate-900/90 hover:bg-cyan-600/90 rounded-md p-1.5 opacity-0 group-hover:opacity-100 transition-all z-10 shadow-lg"><i data-lucide="edit" class="w-3.5 h-3.5 text-slate-200"></i></button>` : ''}
         </div>
         <div class="p-1.5 sm:p-2 text-center h-10 sm:h-11 flex items-center justify-center">
           <p class="text-slate-200 group-hover:text-cyan-300 font-medium text-[10px] sm:text-xs line-clamp-2 leading-[1.2] transition-colors">${s.name}</p>
@@ -1411,11 +1339,7 @@
         
         const item = allMenus.find(m => m.__backendId === el.dataset.bid);
         if (item) {
-            // Pengaman ekstra jika ada klik paksa
-            if(!checkAccess(item)) {
-                showRestrictedModal(`Akses untuk posisi Anda (${currentUser.position || 'Unknown'}) ditolak.`);
-                return;
-            }
+            if(!checkAccess(item)) return;
 
             const hasChildren = allMenus.some(m => m.parent_id === item.id);
             if (hasChildren) {
@@ -1430,122 +1354,143 @@
     lucide.createIcons();
   }
 
-document.getElementById('submenu-close').onclick = () => { showDashboard(); };
-document.getElementById('submenu-back-btn').onclick = () => history.back();
-document.getElementById('submenu-dash-btn').onclick = () => { showDashboard(); };
+  document.getElementById('submenu-close').onclick = () => { showDashboard(); };
+  document.getElementById('submenu-back-btn').onclick = () => history.back();
+  document.getElementById('submenu-dash-btn').onclick = () => { showDashboard(); };
 
-function openModal(edit = null) {
-  history.pushState({ view: 'modal_menu' }, '');
-  editingItem = edit;
-  imageUrl = edit?.image_url || '';
-  document.getElementById('modal-title').textContent = edit ? 'Edit Menu' : 'Add Menu';
-  document.getElementById('f-name').value = edit?.name || '';
-  document.getElementById('f-url').value = edit?.url || '';
-  document.getElementById('f-image').value = edit?.image_url || '';
-  
-  // Membaca status centang yang sudah dibungkus sebelumnya (JSON String)
-  setAccessPositions(edit?.access_positions);
+  // Listener untuk toggle dropdown visibilitas
+  document.getElementById('f-visibility').onchange = (e) => {
+      const isRestricted = e.target.value === 'restricted';
+      document.getElementById('access-section').classList.toggle('hidden', !isRestricted);
+  };
 
-  document.getElementById('btn-delete').classList.toggle('hidden', !edit);
-  document.getElementById('btn-duplicate').classList.toggle('hidden', !edit);
-  document.getElementById('form-msg').classList.add('hidden');
+  function openModal(edit = null) {
+    history.pushState({ view: 'modal_menu' }, '');
+    editingItem = edit;
+    imageUrl = edit?.image_url || '';
+    document.getElementById('modal-title').textContent = edit ? 'Edit Menu' : 'Add Menu';
+    document.getElementById('f-name').value = edit?.name || '';
+    document.getElementById('f-url').value = edit?.url || '';
+    document.getElementById('f-image').value = edit?.image_url || '';
+    document.getElementById('f-order').value = edit && edit.order !== undefined ? edit.order : allMenus.length + 1;
+    
+    const accessPos = edit?.access_positions;
+    if (!accessPos || accessPos === 'All' || accessPos === '[]') {
+        document.getElementById('f-visibility').value = 'public';
+        document.getElementById('access-section').classList.add('hidden');
+    } else {
+        document.getElementById('f-visibility').value = 'restricted';
+        document.getElementById('access-section').classList.remove('hidden');
+    }
+    setAccessPositions(accessPos);
 
-  if (imageUrl) {
+    document.getElementById('btn-delete').classList.toggle('hidden', !edit);
+    document.getElementById('btn-duplicate').classList.toggle('hidden', !edit);
+    document.getElementById('form-msg').classList.add('hidden');
+
+    if (imageUrl) {
+      document.getElementById('img-preview').src = getSrcFromImgTag(imageUrl);
+      document.getElementById('img-preview-wrap').classList.remove('hidden');
+    } else {
+      document.getElementById('img-preview-wrap').classList.add('hidden');
+    }
+
+    const sel = document.getElementById('f-parent');
+    let optionsHtml = '<option value="">— None (Main Menu) —</option>';
+    
+    function buildMenuTree(parentId, prefix) {
+        const children = allMenus.filter(m => (m.parent_id || '') === parentId);
+        children.forEach(m => {
+            if (edit && m.__backendId === edit.__backendId) return; 
+            
+            const isSelected = edit && edit.parent_id === m.id ? 'selected' : '';
+            optionsHtml += `<option value="${m.id}" ${isSelected}>${prefix}${m.name}</option>`;
+            
+            buildMenuTree(m.id, prefix + '— '); 
+        });
+    }
+
+    buildMenuTree('', '');
+    sel.innerHTML = optionsHtml;
+    
+    document.getElementById('modal').classList.remove('hidden');
+  }
+
+  function openEdit(item) { openModal(item); }
+
+  document.getElementById('btn-add').onclick = () => openModal();
+  document.getElementById('modal-close').onclick = () => history.back();
+  document.getElementById('modal').onclick = (e) => { if (e.target === e.currentTarget) history.back(); };
+
+  document.getElementById('f-image').onchange = (e) => {
+    const url = e.target.value.trim();
+    if (!url) {
+      document.getElementById('img-preview-wrap').classList.add('hidden');
+      imageUrl = '';
+      return;
+    }
+    imageUrl = convertGoogleDriveUrl(url);
+    document.getElementById('f-image').value = imageUrl;
+    
     document.getElementById('img-preview').src = getSrcFromImgTag(imageUrl);
     document.getElementById('img-preview-wrap').classList.remove('hidden');
-  } else {
-    document.getElementById('img-preview-wrap').classList.add('hidden');
-  }
+  };
 
-  // == LOGIC HIERARKI PARENT ==
-  const sel = document.getElementById('f-parent');
-  let optionsHtml = '<option value="">— None (Main Menu) —</option>';
-  
-  function buildMenuTree(parentId, prefix) {
-      const children = allMenus.filter(m => (m.parent_id || '') === parentId);
-      children.forEach(m => {
-          if (edit && m.__backendId === edit.__backendId) return; 
-          
-          const isSelected = edit && edit.parent_id === m.id ? 'selected' : '';
-          optionsHtml += `<option value="${m.id}" ${isSelected}>${prefix}${m.name}</option>`;
-          buildMenuTree(m.id, prefix + '— '); 
-      });
-  }
+  document.getElementById('menu-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="animate-pulse">Saving...</span>';
 
-  buildMenuTree('', '');
-  sel.innerHTML = optionsHtml;
-  document.getElementById('modal').classList.remove('hidden');
-}
-
-function openEdit(item) { openModal(item); }
-
-document.getElementById('btn-add').onclick = () => openModal();
-document.getElementById('modal-close').onclick = () => history.back();
-document.getElementById('modal').onclick = (e) => { if (e.target === e.currentTarget) history.back(); };
-
-document.getElementById('f-image').onchange = (e) => {
-  const url = e.target.value.trim();
-  if (!url) {
-    document.getElementById('img-preview-wrap').classList.add('hidden');
-    imageUrl = '';
-    return;
-  }
-  imageUrl = convertGoogleDriveUrl(url);
-  document.getElementById('f-image').value = imageUrl;
-  
-  document.getElementById('img-preview').src = getSrcFromImgTag(imageUrl);
-  document.getElementById('img-preview-wrap').classList.remove('hidden');
-};
-
-document.getElementById('menu-form').onsubmit = async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('btn-submit');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="animate-pulse">Saving...</span>';
-
-    const name = document.getElementById('f-name').value.trim();
-    const inputUrl = document.getElementById('f-url').value.trim();
-    const imgUrl = document.getElementById('f-image').value.trim();
-    const parentId = document.getElementById('f-parent').value;
-    const accessPos = getSelectedAccessPositions(); // String format JSON
-
-    const finalImageUrl = convertGoogleDriveUrl(imgUrl);
-    
-    // PERBAIKAN: Menyembunyikan accessPos ke dalam kolom url (JSON Packing)
-    const finalPackedUrl = JSON.stringify({ link: inputUrl, access: accessPos });
-
-    const record = {
-      id: editingItem?.id || Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-      name,
-      image_url: finalImageUrl,
-      url: finalPackedUrl, // Data Access diselamatkan ke sini
-      is_submenu: !!parentId, 
-      parent_id: parentId || '', 
-      order: editingItem?.order || allMenus.length
-    };
-
-    let result;
-    if (editingItem) {
-      result = await window.dataSdk.update({ ...editingItem, ...record });
-    } else {
-      if (allMenus.length >= 999) {
-        showFormMsg('Maximum 999 menus reached.', true);
-        btn.disabled = false;
-        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Save';
-        lucide.createIcons();
-        return;
+      const name = document.getElementById('f-name').value.trim();
+      const url = document.getElementById('f-url').value.trim();
+      const imgUrl = document.getElementById('f-image').value.trim();
+      const parentId = document.getElementById('f-parent').value;
+      const orderVal = parseInt(document.getElementById('f-order').value) || 0;
+      
+      let accessPos = 'All';
+      const isHidden = document.getElementById('f-visibility').value === 'restricted';
+      
+      if (isHidden) {
+          accessPos = getSelectedAccessPositions();
       }
-      result = await window.dataSdk.create(record);
-    }
 
-    if (result.isOk) {
-      history.back(); 
-    } else {
-      showFormMsg('Failed to save. Try again.', true);
-    }
-    btn.disabled = false;
-    btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Save';
-    lucide.createIcons();
+      const finalImageUrl = convertGoogleDriveUrl(imgUrl);
+
+      const record = {
+        id: editingItem?.id || Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+        name,
+        image_url: finalImageUrl,
+        url,
+        is_submenu: !!parentId, 
+        parent_id: parentId || '', 
+        access_positions: accessPos, 
+        order: orderVal,
+        is_hidden: isHidden
+      };
+
+      let result;
+      if (editingItem) {
+        result = await window.dataSdk.update({ ...editingItem, ...record });
+      } else {
+        if (allMenus.length >= 999) {
+          showFormMsg('Maximum 999 menus reached.', true);
+          btn.disabled = false;
+          btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Save';
+          lucide.createIcons();
+          return;
+        }
+        result = await window.dataSdk.create(record);
+      }
+
+      if (result.isOk) {
+        history.back(); 
+      } else {
+        showFormMsg('Failed to save. Try again.', true);
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Save';
+      lucide.createIcons();
   };
 
   document.getElementById('btn-duplicate').onclick = async () => {
@@ -1554,17 +1499,16 @@ document.getElementById('menu-form').onsubmit = async (e) => {
     btn.disabled = true;
     btn.innerHTML = '<span class="animate-pulse">...</span>';
 
-    // PERBAIKAN: Bungkus ulang sebelum disalin
-    const finalPackedUrl = JSON.stringify({ link: editingItem.url, access: editingItem.access_positions });
-
     const newRecord = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
       name: editingItem.name + ' (Copy)',
       image_url: editingItem.image_url,
-      url: finalPackedUrl,
+      url: editingItem.url,
       is_submenu: editingItem.is_submenu,
       parent_id: editingItem.parent_id,
-      order: allMenus.length
+      access_positions: editingItem.access_positions,
+      order: allMenus.length + 1,
+      is_hidden: editingItem.is_hidden || false
     };
 
     const result = await window.dataSdk.create(newRecord);
@@ -1580,20 +1524,26 @@ document.getElementById('menu-form').onsubmit = async (e) => {
 
   document.getElementById('btn-delete').onclick = async () => {
     if (!editingItem) return;
-    const btn = document.getElementById('btn-delete');
-    btn.disabled = true;
-    btn.textContent = '...';
-    const children = allMenus.filter(m => m.parent_id === editingItem.id);
-    for (const child of children) await window.dataSdk.delete(child);
-    const result = await window.dataSdk.delete(editingItem);
-    if (result.isOk) {
-      history.back(); // Tutup modal edit
-    } else {
-      showFormMsg('Failed to delete.', true);
-    }
-    btn.disabled = false;
-    btn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
-    lucide.createIcons();
+    
+    showCustomConfirm('Hapus menu ini? Semua sub-menu didalamnya juga akan terhapus.', async () => {
+        const btn = document.getElementById('btn-delete');
+        btn.disabled = true;
+        btn.textContent = '...';
+        
+        // Hapus child (opsional, tergantung logic yang mau dipertahankan)
+        const children = allMenus.filter(m => m.parent_id === editingItem.id);
+        for (const child of children) await window.dataSdk.delete(child);
+        
+        const result = await window.dataSdk.delete(editingItem);
+        if (result.isOk) {
+          history.back();
+        } else {
+          showFormMsg('Failed to delete.', true);
+        }
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
+        lucide.createIcons();
+    });
   };
 
   function showFormMsg(text, isError) {
@@ -1604,6 +1554,6 @@ document.getElementById('menu-form').onsubmit = async (e) => {
   }
 
   lucide.createIcons();
-</script>
+  </script>
 </body>
 </html>
