@@ -1,31 +1,28 @@
 <!doctype html>
 <html class="h-full">
- <head>
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0a0e27">
   <title>Ecrew - Crew Room</title>
-  
   <link rel="icon" href="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" type="image/png">
   <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ">
   <link id="pwa-manifest" rel="manifest">
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  
   <script src="/_sdk/element_sdk.js"></script>
-  
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Lora:wght@400;600&display=swap" rel="stylesheet">
-  
+
   <style>
     * { font-family: 'Poppins', sans-serif; }
     body { background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1629 100%); box-sizing: border-box; }
     
-    .menu-card { 
+    .menu-card {
       transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       border: 1px solid rgba(255,255,255,0.05);
     }
-    .menu-card:hover { 
+    .menu-card:hover {
       transform: translateY(-5px) scale(1.02);
       box-shadow: 0 15px 35px rgba(6, 182, 212, 0.15), 0 0 25px rgba(6, 182, 212, 0.1);
       border: 1px solid rgba(6, 182, 212, 0.3);
@@ -41,15 +38,12 @@
     .submenu-panel { animation: expandDown 0.3s ease forwards; }
     @keyframes expandDown { from { opacity:0; max-height:0; } to { opacity:1; max-height:800px; } }
     
-    .glow-border { 
+    .glow-border {
       background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2));
       border: 1px solid rgba(6, 182, 212, 0.3);
     }
     
-    .premium-gradient {
-      background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-    }
-    
+    .premium-gradient { background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); }
     .text-gradient {
       background: linear-gradient(135deg, #06b6d4, #3b82f6);
       -webkit-background-clip: text;
@@ -57,40 +51,22 @@
       background-clip: text;
     }
     
-    .smooth-button {
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      position: relative;
-      overflow: hidden;
-    }
+    .smooth-button { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; overflow: hidden; }
+    .smooth-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3); }
+    .smooth-button:active { transform: translateY(0); }
     
-    .smooth-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
-    }
-    
-    .smooth-button:active {
-      transform: translateY(0);
-    }
-    
-    /* Scrollbar minimalis untuk area yg bisa di-scroll */
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: rgba(6, 182, 212, 0.5);
-        border-radius: 10px;
-    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.5); border-radius: 10px; }
   </style>
- </head>
- <body class="h-full">
+</head>
+<body class="h-full">
 
-  <!-- Loading Awal (Cek Sesi Login) -->
+  <!-- Loading Awal -->
   <div id="loading-screen" class="h-full w-full flex flex-col items-center justify-center p-4">
-    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/20 mb-4 animate-pulse"><img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl"></div>
+    <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/20 mb-4 animate-pulse">
+        <img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl">
+    </div>
     <p class="text-cyan-400 font-semibold animate-pulse" id="loading-text">Memuat Sistem...</p>
   </div>
 
@@ -100,7 +76,8 @@
     <div class="glow-border rounded-3xl p-8 relative">
      <div class="absolute inset-0 bg-gradient-to-br from-slate-900/80 to-slate-900/60 rounded-3xl -z-10"></div>
      <div class="flex items-center justify-center gap-4 mb-8">
-      <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/20"><img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl">
+      <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/20">
+          <img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-2xl">
       </div>
       <h1 class="text-white font-bold text-3xl text-gradient">Ecrew</h1>
      </div>
@@ -110,14 +87,19 @@
        <h2 class="text-white text-center font-semibold text-xl mb-2">Crew Room</h2>
        <p class="text-slate-400 text-center text-sm mb-8">Access your flight operations portal</p>
        <form id="login-form" class="space-y-4">
-        <div><label class="text-slate-300 text-sm font-semibold block mb-2">Email / Username</label> <input id="login-user" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="email@ecrew.com atau admin">
+        <div>
+            <label class="text-slate-300 text-sm font-semibold block mb-2">Email / Username</label> 
+            <input id="login-user" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="email@ecrew.com atau admin">
         </div>
-        <div><label class="text-slate-300 text-sm font-semibold block mb-2">Password</label> <input id="login-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="Enter password">
+        <div>
+            <label class="text-slate-300 text-sm font-semibold block mb-2">Password</label> 
+            <input id="login-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="Enter password">
         </div>
-        <div id="login-error" class="hidden bg-red-500/10 border border-red-500/30 text-red-300 text-sm p-3 rounded-lg"></div><button type="submit" class="w-full premium-gradient text-white font-bold py-3 rounded-xl transition smooth-button shadow-xl shadow-cyan-500/20">Login</button>
+        <div id="login-error" class="hidden bg-red-500/10 border border-red-500/30 text-red-300 text-sm p-3 rounded-lg"></div>
+        <button type="submit" class="w-full premium-gradient text-white font-bold py-3 rounded-xl transition smooth-button shadow-xl shadow-cyan-500/20">Login</button>
        </form>
        <div class="mt-6 text-center">
-          <p class="text-slate-400 text-sm">Don't have an account? <button id="btn-go-register" class="text-cyan-400 font-semibold hover:text-cyan-300 transition">Register Here</button></p>
+          <p class="text-slate-400 text-sm">Don't have an account? <button id="btn-go-register" type="button" class="text-cyan-400 font-semibold hover:text-cyan-300 transition">Register Here</button></p>
        </div>
      </div>
 
@@ -131,7 +113,8 @@
             <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="r-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Create password"></div>
             
             <div class="flex gap-2">
-                <div class="w-1/2"><label class="text-slate-300 text-[11px] font-semibold block mb-1">Rank</label>
+                <div class="w-1/2">
+                    <label class="text-slate-300 text-[11px] font-semibold block mb-1">Rank</label>
                     <select id="r-rank" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
                         <option value="Captain">Captain</option>
                         <option value="First Officer">First Officer</option>
@@ -142,7 +125,8 @@
                         <option value="-">None</option>
                     </select>
                 </div>
-                <div class="w-1/2"><label class="text-slate-300 text-[11px] font-semibold block mb-1">Rule</label>
+                <div class="w-1/2">
+                    <label class="text-slate-300 text-[11px] font-semibold block mb-1">Rule</label>
                     <select id="r-rule" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
                         <option value="Key Person">Key Person</option>
                         <option value="Member">Member</option>
@@ -150,17 +134,16 @@
                 </div>
             </div>
             
-            <div><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
-                <select id="r-pos" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
-                    <!-- Options populated by JS -->
-                </select>
+            <div>
+                <label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
+                <select id="r-pos" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm"></select>
             </div>
 
             <div id="r-form-msg" class="hidden text-center text-sm py-2 px-3 rounded-lg"></div>
             <button type="submit" id="btn-register-submit" class="w-full premium-gradient text-white font-bold py-3 rounded-xl transition smooth-button shadow-xl shadow-cyan-500/20 mt-2">Register</button>
         </form>
         <div class="mt-4 text-center">
-            <p class="text-slate-400 text-sm">Already have an account? <button id="btn-go-login" class="text-cyan-400 font-semibold hover:text-cyan-300 transition">Login Here</button></p>
+            <p class="text-slate-400 text-sm">Already have an account? <button type="button" id="btn-go-login" class="text-cyan-400 font-semibold hover:text-cyan-300 transition">Login Here</button></p>
         </div>
      </div>
 
@@ -176,11 +159,12 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between w-full">
      <div class="flex items-center gap-3 sm:gap-4 flex-1">
       <button id="btn-back" class="hidden text-slate-300 hover:text-white transition hover:scale-110 p-1"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
-      <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0"><img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-xl sm:rounded-2xl">
+      <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0">
+          <img src="https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ" alt="Ecrew Logo" class="w-full h-full object-contain rounded-xl sm:rounded-2xl">
       </div>
       <div class="truncate pr-2">
        <h1 id="dash-title" class="text-white font-bold text-base sm:text-lg tracking-tight truncate">Ecrew - Crew Room</h1>
-       <p id="dash-welcome" class="text-slate-400 text-[10px] sm:text-xs font-medium truncate">Welcome back, Captain!</p>
+       <p id="dash-welcome" class="text-slate-400 text-[10px] sm:text-xs font-medium truncate">Welcome back!</p>
       </div>
      </div>
      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -194,12 +178,9 @@
    </header>
    
    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-    <!-- TAMPILAN MOBILE: 3 GRID (grid-cols-3) -->
-    <div id="menu-grid" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-    </div>
+    <div id="menu-grid" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3"></div>
     <div id="empty-state" class="hidden text-center py-20 fade-in">
-     <div class="w-24 h-24 mx-auto rounded-3xl glow-border flex items-center justify-center mb-6"><i data-lucide="layout-grid" class="w-12 h-12 text-slate-600"></i>
-     </div>
+     <div class="w-24 h-24 mx-auto rounded-3xl glow-border flex items-center justify-center mb-6"><i data-lucide="layout-grid" class="w-12 h-12 text-slate-600"></i></div>
      <p class="text-slate-400 text-lg font-semibold">No menus yet</p>
      <p class="text-slate-500 text-sm mt-2">Click "Add Menu" to get started</p>
     </div>
@@ -216,7 +197,6 @@
      <button id="submenu-close" class="text-slate-400 hover:text-white self-end sm:self-auto shrink-0"><i data-lucide="x" class="w-6 h-6"></i></button>
     </div>
     <main class="flex-1 overflow-auto px-4 sm:px-6 py-6 sm:py-8">
-     <!-- TAMPILAN MOBILE: 3 GRID (grid-cols-3) -->
      <div id="submenu-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3"></div>
     </main>
    </div>
@@ -228,21 +208,16 @@
       <h2 id="modal-title" class="text-white font-bold text-xl">Add Menu</h2><button id="modal-close" class="text-slate-400 hover:text-white transition hover:scale-110"><i data-lucide="x" class="w-5 h-5"></i></button>
      </div>
      <form id="menu-form" class="p-5 sm:p-6 space-y-4 overflow-y-auto custom-scrollbar">
-      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Menu Name</label> <input id="f-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="e.g. Flight Schedule">
-      </div>
+      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Menu Name</label> <input id="f-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="e.g. Flight Schedule"></div>
       <div><label class="text-slate-300 text-sm font-semibold block mb-1">Image URL</label>
        <div id="img-preview-wrap" class="hidden mb-2">
         <img id="img-preview" class="w-full h-24 sm:h-32 object-contain rounded-xl">
        </div><input id="f-image" type="text" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="https://drive.google.com/file/d/.../view">
       </div>
-      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Link URL</label> <input id="f-url" type="url" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="https://example.com">
-      </div>
-      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Parent Menu (optional)</label> <select id="f-parent" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition"> <option value="">— None (Main Menu) —</option> </select>
-      </div>
-      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Urutan Tampil (Angka)</label> <input id="f-order" type="number" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="Contoh: 1, 2, 3...">
-      </div>
+      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Link URL</label> <input id="f-url" type="url" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="https://example.com"></div>
+      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Parent Menu (optional)</label> <select id="f-parent" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition"> <option value="">— None (Main Menu) —</option> </select></div>
+      <div><label class="text-slate-300 text-sm font-semibold block mb-1">Urutan Tampil (Angka)</label> <input id="f-order" type="number" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="Contoh: 1, 2, 3..."></div>
       
-      <!-- Visibilitas Menu -->
       <div>
           <label class="text-slate-300 text-sm font-semibold block mb-1">Visibilitas Menu</label>
           <select id="f-visibility" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition">
@@ -251,19 +226,15 @@
           </select>
       </div>
 
-      <!-- Hak Akses Multi-pilihan (Checkbox) -->
       <div id="access-section" class="hidden">
         <label class="text-slate-300 text-sm font-semibold block mb-1 flex items-center justify-between mt-4">
             <span>Pilih Posisi (Bisa Akses)</span>
             <button type="button" id="btn-check-all" class="text-[10px] text-cyan-400 hover:text-cyan-300 px-2 py-0.5 border border-cyan-500/30 rounded transition">Pilih / Hapus Semua</button>
-        </label> 
-        <div class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl p-3 max-h-40 overflow-y-auto custom-scrollbar flex flex-col gap-2" id="access-checkbox-container">
-            <!-- Checkbox akan digenerate oleh JS -->
-        </div>
+        </label>
+         <div class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl p-3 max-h-40 overflow-y-auto custom-scrollbar flex flex-col gap-2" id="access-checkbox-container"></div>
       </div>
 
-      <div class="flex gap-2 pt-2 shrink-0"><button type="submit" id="btn-submit" class="flex-1 premium-gradient text-white font-semibold py-3 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 text-sm sm:text-base"> <i data-lucide="check" class="w-4 h-4"></i> Save </button> <button type="button" id="btn-duplicate" class="hidden bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 font-semibold py-3 px-4 rounded-xl transition border border-blue-500/30 smooth-button" title="Duplicate this menu"> <i data-lucide="copy" class="w-4 h-4"></i> </button> <button type="button" id="btn-delete" class="hidden bg-red-500/20 text-red-300 hover:bg-red-500/30 font-semibold py-3 px-4 rounded-xl transition border border-red-500/30 smooth-button" title="Delete menu"> <i data-lucide="trash-2" class="w-4 h-4"></i> </button>
-      </div>
+      <div class="flex gap-2 pt-2 shrink-0"><button type="submit" id="btn-submit" class="flex-1 premium-gradient text-white font-semibold py-3 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 text-sm sm:text-base"> <i data-lucide="check" class="w-4 h-4"></i> Save </button> <button type="button" id="btn-duplicate" class="hidden bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 font-semibold py-3 px-4 rounded-xl transition border border-blue-500/30 smooth-button" title="Duplicate this menu"> <i data-lucide="copy" class="w-4 h-4"></i> </button> <button type="button" id="btn-delete" class="hidden bg-red-500/20 text-red-300 hover:bg-red-500/30 font-semibold py-3 px-4 rounded-xl transition border border-red-500/30 smooth-button" title="Delete menu"> <i data-lucide="trash-2" class="w-4 h-4"></i> </button></div>
       <div id="form-msg" class="hidden text-center text-sm py-2 px-3 rounded-lg shrink-0"></div>
      </form>
     </div>
@@ -277,57 +248,42 @@
      </div>
      <div class="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-6 flex flex-col md:flex-row gap-6 md:gap-8">
       
-      <!-- Formulir Tambah User Baru -->
       <div class="w-full md:w-[45%] shrink-0">
        <h3 class="text-white font-semibold mb-4 text-lg">Add New User</h3>
        <form id="user-form" class="space-y-3">
         <div><label class="text-slate-300 text-xs font-semibold block mb-1">Full Name</label><input id="u-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="Budi Santoso"></div>
         <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="u-email" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="budi@ecrew.com"></div>
         <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="u-pass" type="text" required class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition" placeholder="P@ssw0rd123"></div>
-        
         <div class="flex gap-3">
-          <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
-           <select id="u-rank" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition text-sm">
-            <option value="Captain">Captain</option>
-            <option value="First Officer">First Officer</option>
-            <option value="CS">CS</option>
-            <option value="FOO">FOO</option>
-            <option value="HLO">HLO</option>
-            <option value="Flight Support">Flight Support</option>
-            <option value="-">None</option>
-           </select>
-          </div>
-          <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Role (Admin/User)</label>
-           <select id="u-role" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition text-sm">
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-           </select>
-          </div>
+         <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
+          <select id="u-rank" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition text-sm">
+           <option value="Captain">Captain</option> <option value="First Officer">First Officer</option> <option value="CS">CS</option> <option value="FOO">FOO</option> <option value="HLO">HLO</option> <option value="Flight Support">Flight Support</option> <option value="-">None</option>
+          </select>
+         </div>
+         <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Role (Admin/User)</label>
+          <select id="u-role" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 focus:bg-slate-800/70 transition text-sm">
+           <option value="user">User</option> <option value="admin">Admin</option>
+          </select>
+         </div>
         </div>
-
         <div class="flex gap-3">
             <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rule</label>
                 <select id="u-rule" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
-                    <option value="Key Person">Key Person</option>
-                    <option value="Member">Member</option>
+                    <option value="Key Person">Key Person</option> <option value="Member">Member</option>
                 </select>
             </div>
             <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
-                <select id="u-pos" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
-                </select>
+                <select id="u-pos" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm"></select>
             </div>
         </div>
-
         <div class="pt-2"><button type="submit" id="btn-user-submit" class="w-full premium-gradient text-white font-semibold py-2.5 rounded-xl transition smooth-button shadow-lg shadow-cyan-500/20 flex justify-center items-center gap-2"><i data-lucide="user-plus" class="w-4 h-4"></i> Add User</button></div>
         <div id="u-form-msg" class="hidden text-center text-xs py-2 px-3 rounded-lg mt-1"></div>
        </form>
       </div>
 
-      <!-- User Directory -->
       <div class="w-full md:w-[55%] border-t md:border-t-0 md:border-l border-slate-700/50 pt-6 md:pt-0 md:pl-8 flex flex-col">
        <h3 class="text-white font-semibold mb-4 text-lg flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5 text-cyan-400"></i> User Directory</h3>
-       <div id="users-list" class="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2 min-h-[250px] max-h-[380px]">
-        </div>
+       <div id="users-list" class="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2 min-h-[250px] max-h-[380px]"></div>
       </div>
 
      </div>
@@ -347,32 +303,23 @@
       <div class="flex gap-3">
         <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
          <select id="eu-rank" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
-          <option value="Captain">Captain</option>
-          <option value="First Officer">First Officer</option>
-          <option value="CS">CS</option>
-          <option value="FOO">FOO</option>
-          <option value="HLO">HLO</option>
-          <option value="Flight Support">Flight Support</option>
-          <option value="-">None</option>
+          <option value="Captain">Captain</option> <option value="First Officer">First Officer</option> <option value="CS">CS</option> <option value="FOO">FOO</option> <option value="HLO">HLO</option> <option value="Flight Support">Flight Support</option> <option value="-">None</option>
          </select>
         </div>
         <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Role (Admin/User)</label>
          <select id="eu-role" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
+          <option value="user">User</option> <option value="admin">Admin</option>
          </select>
         </div>
       </div>
       <div class="flex gap-3">
         <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Rule</label>
             <select id="eu-rule" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
-                <option value="Key Person">Key Person</option>
-                <option value="Member">Member</option>
+                <option value="Key Person">Key Person</option> <option value="Member">Member</option>
             </select>
         </div>
         <div class="w-1/2"><label class="text-slate-300 text-xs font-semibold block mb-1">Position</label>
-            <select id="eu-pos" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
-            </select>
+            <select id="eu-pos" class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm"></select>
         </div>
       </div>
       <div class="pt-2 shrink-0">
@@ -391,7 +338,7 @@
      </div>
      <h2 class="text-white font-bold text-xl mb-2">Akses Ditolak</h2>
      <p id="restricted-msg" class="text-slate-400 text-sm mb-6">Maaf, Anda tidak memiliki izin untuk membuka menu ini sesuai dengan aturan otorisasi posisi Anda.</p>
-     <button id="btn-close-restricted" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Mengerti</button>
+     <button type="button" id="btn-close-restricted" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Mengerti</button>
     </div>
    </div>
 
@@ -404,8 +351,8 @@
      <h2 class="text-white font-bold text-xl mb-2">Keluar Aplikasi?</h2>
      <p class="text-slate-400 text-sm mb-6">Anda menekan tombol kembali. Yakin ingin menutup halaman Ecrew? Sesi login Anda akan tetap aman.</p>
      <div class="flex gap-3">
-         <button id="btn-cancel-exit" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Batal</button>
-         <button id="btn-confirm-exit" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya, Keluar</button>
+         <button type="button" id="btn-cancel-exit" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Batal</button>
+         <button type="button" id="btn-confirm-exit" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya, Keluar</button>
      </div>
     </div>
    </div>
@@ -419,8 +366,8 @@
      <h2 class="text-white font-bold text-xl mb-2">Konfirmasi</h2>
      <p class="text-slate-400 text-sm mb-6" id="confirm-msg">Apakah Anda yakin?</p>
      <div class="flex gap-3">
-         <button id="btn-cancel-confirm" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Batal</button>
-         <button id="btn-ok-confirm" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya</button>
+         <button type="button" id="btn-cancel-confirm" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-xl transition border border-slate-700/50">Batal</button>
+         <button type="button" id="btn-ok-confirm" class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-semibold py-3 rounded-xl transition border border-red-500/30">Ya</button>
      </div>
     </div>
    </div>
@@ -433,7 +380,6 @@
   import { getFirestore, doc, collection, onSnapshot, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 
-  // Konfigurasi Lingkungan Firebase Project Anda
   const firebaseConfig = {
     apiKey: "AIzaSyBzcfPBaHdmTRLCSrvuT1F-qDsJWUZZQT8",
     authDomain: "twa-ecrew.firebaseapp.com",
@@ -449,7 +395,6 @@
   const db = getFirestore(app);
   const auth = getAuth(app);
 
-  // Referensi Collection di Firestore
   const menusRef = collection(db, "menus");
   const usersRef = collection(db, "appUsers");
 
@@ -458,19 +403,12 @@
   // ==========================================
   const appLogoUrl = 'https://lh3.googleusercontent.com/d/1SkNI5sjsai3TR7fflErIS9wM0k0CdnFQ';
   const manifestData = {
-    name: "Ecrew - Crew Room",
-    short_name: "Crew Room",
-    description: "Portal operasi penerbangan Crew Room",
-    start_url: window.location.href,
-    display: "standalone",
-    background_color: "#0a0e27",
-    theme_color: "#0a0e27",
+    name: "Ecrew - Crew Room", short_name: "Crew Room", description: "Portal operasi penerbangan Crew Room", start_url: window.location.href, display: "standalone", background_color: "#0a0e27", theme_color: "#0a0e27",
     icons: [
       { src: appLogoUrl, sizes: "192x192", type: "image/png", purpose: "any maskable" },
       { src: appLogoUrl, sizes: "512x512", type: "image/png", purpose: "any maskable" }
     ]
   };
-  
   const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
   document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
 
@@ -487,15 +425,135 @@
   }
 
   // ==========================================
-  // DAFTAR POSISI (Global)
+  // STATE & VARIABLES
   // ==========================================
   const POSITIONS_LIST = [
-      "General Manager", "Operation Manager", "Chief Pilot Rotary Wing", 
-      "Chief Pilot Fixed Wing", "Chief Flight Support", "Cabin Service", 
-      "FOO/HLO", "Maintenance Manager", "Chief Engineer", "Chief Inspector", 
-      "Captain", "First Officer", "Engineer", "POI", "Visitor"
+      "General Manager", "Operation Manager", "Chief Pilot Rotary Wing",
+       "Chief Pilot Fixed Wing", "Chief Flight Support", "Cabin Service",
+       "FOO/HLO", "Maintenance Manager", "Chief Engineer", "Chief Inspector",
+       "Captain", "First Officer", "Engineer", "POI", "Visitor"
   ];
 
+  let currentUser = null;
+  let isAdmin = false;
+  let isDataInitialized = false;
+  let allRawData = [];
+  let allMenus = [];
+  let allUsers = [];
+  let editingItem = null;
+  let imageUrl = '';
+  let currentView = 'login';
+  let userBeingEdited = null;
+  let allowAppExit = false; 
+
+  // ==========================================
+  // MANAJEMEN HISTORY (EXIT TRAP & NAVIGATION)
+  // ==========================================
+  
+  // 1. Inisialisasi Stack History Dasar (Membuat jebakan di history)
+  if (!history.state || !history.state.view) {
+      history.replaceState({ view: 'app_base' }, '');
+      history.pushState({ view: 'init' }, '');
+  }
+
+  function checkSession() {
+      const savedUser = localStorage.getItem('ecrew_session');
+      if (savedUser) {
+          try {
+              const userObj = JSON.parse(savedUser);
+              currentUser = userObj;
+              isAdmin = currentUser.role === 'admin';
+              
+              // Ganti state 'init' menjadi 'dashboard'
+              history.replaceState({ view: 'dashboard' }, '');
+              showAppDashboard();
+              return true;
+          } catch(e) {}
+      }
+      
+      clearSession();
+      // Ganti state 'init' menjadi 'login'
+      history.replaceState({ view: 'login' }, '');
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+      currentView = 'login';
+      return false;
+  }
+
+  function saveSession(userObj) {
+      localStorage.setItem('ecrew_session', JSON.stringify(userObj));
+  }
+
+  function clearSession() {
+      localStorage.removeItem('ecrew_session');
+      currentUser = null;
+      isAdmin = false;
+  }
+
+  window.addEventListener('popstate', (e) => {
+    const state = e.state || { view: 'app_base' };
+    
+    // Pastikan semua modal tertutup saat menekan back
+    document.getElementById('modal').classList.add('hidden');
+    document.getElementById('users-modal').classList.add('hidden');
+    document.getElementById('edit-user-modal').classList.add('hidden');
+    document.getElementById('restricted-modal').classList.add('hidden');
+    document.getElementById('custom-confirm-modal').classList.add('hidden');
+    userBeingEdited = null;
+
+    // EXIT TRAP LOGIC (Cegah Keluar Langsung)
+    if (state.view === 'app_base') {
+        if (currentUser) {
+            // Jika user login dan mencapai batas history, tahan dan tampilkan konfirmasi
+            if (allowAppExit) return; // Biarkan browser keluar jika sudah diizinkan
+            
+            document.getElementById('exit-modal').classList.remove('hidden');
+            history.pushState({ view: 'dashboard' }, ''); // Jebak kembali dengan state dashboard
+            currentView = 'dashboard';
+            return;
+        } else {
+            // Jika tidak login, biarkan browser bertindak normal (keluar aplikasi)
+            return; 
+        }
+    } else {
+        // Jika menavigasi maju/mundur di dalam aplikasi, sembunyikan modal keluar
+        document.getElementById('exit-modal').classList.add('hidden');
+        allowAppExit = false; 
+    }
+
+    // View Routing (Perpindahan Antarmuka)
+    if (state.view === 'login') {
+       currentView = 'login';
+       document.getElementById('login-screen').classList.remove('hidden');
+       document.getElementById('app').classList.add('hidden');
+       document.getElementById('view-register').classList.add('hidden');
+       document.getElementById('view-login').classList.remove('hidden');
+    } else if (state.view === 'register') {
+       currentView = 'register';
+       document.getElementById('login-screen').classList.remove('hidden');
+       document.getElementById('app').classList.add('hidden');
+       document.getElementById('view-login').classList.add('hidden');
+       document.getElementById('view-register').classList.remove('hidden');
+    } else if (state.view === 'dashboard') {
+       document.getElementById('login-screen').classList.add('hidden');
+       document.getElementById('app').classList.remove('hidden');
+       showDashboard(true);
+    } else if (state.view === 'submenu') {
+       document.getElementById('login-screen').classList.add('hidden');
+       document.getElementById('app').classList.remove('hidden');
+       if (state.parentId) {
+           const parentNode = allMenus.find(m => m.id === state.parentId);
+           if (parentNode) { openSubmenu(parentNode, true); }
+           else { showDashboard(true); }
+       }
+    } else if (state.view === 'modal_users') {
+        document.getElementById('users-modal').classList.remove('hidden');
+    }
+  });
+
+  // ==========================================
+  // UTILITIES & POPULATE
+  // ==========================================
   function populatePositionDropdowns() {
       const optionsHTML = POSITIONS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
       if(document.getElementById('r-pos')) document.getElementById('r-pos').innerHTML = optionsHTML;
@@ -515,18 +573,15 @@
           document.getElementById('btn-check-all').onclick = () => {
               const itemCbs = document.querySelectorAll('.access-cb-item');
               const allChecked = Array.from(itemCbs).every(cb => cb.checked);
-              itemCbs.forEach(cb => {
-                  cb.checked = !allChecked;
-              });
+              itemCbs.forEach(cb => cb.checked = !allChecked);
           };
       }
   }
 
   function getSelectedAccessPositions() {
       const itemCbs = document.querySelectorAll('.access-cb-item:checked');
-      const selected = Array.from(itemCbs).map(cb => cb.value);
-      return JSON.stringify(selected); 
-  }
+      return JSON.stringify(Array.from(itemCbs).map(cb => cb.value));
+   }
 
   function setAccessPositions(accessVal) {
       const itemCbs = document.querySelectorAll('.access-cb-item');
@@ -534,10 +589,7 @@
       if(accessVal && accessVal !== 'All') {
           try { parsedArr = JSON.parse(accessVal); } catch(e) { parsedArr = [accessVal]; }
       }
-
-      itemCbs.forEach(cb => {
-          cb.checked = parsedArr.includes(cb.value);
-      });
+      itemCbs.forEach(cb => cb.checked = parsedArr.includes(cb.value));
   }
 
   populatePositionDropdowns();
@@ -559,135 +611,26 @@
     }
     return str;
   }
-  
-  // Custom Confirm Dialog untuk menggantikan native confirm()
+
   let currentConfirmCallback = null;
   function showCustomConfirm(msg, callback) {
       document.getElementById('confirm-msg').textContent = msg;
       document.getElementById('custom-confirm-modal').classList.remove('hidden');
       currentConfirmCallback = callback;
   }
-  
   document.getElementById('btn-cancel-confirm').onclick = () => {
       document.getElementById('custom-confirm-modal').classList.add('hidden');
       currentConfirmCallback = null;
   };
-  
   document.getElementById('btn-ok-confirm').onclick = () => {
       document.getElementById('custom-confirm-modal').classList.add('hidden');
       if (currentConfirmCallback) currentConfirmCallback();
       currentConfirmCallback = null;
   };
 
-  let currentUser = null;
-  let isAdmin = false;
-  let isDataInitialized = false;
-  
-  let allRawData = []; 
-  let allMenus = [];
-  let allUsers = [];
-  
-  let editingItem = null;
-  let imageUrl = '';
-  let currentView = 'login';
-  let userBeingEdited = null;
-  let allowAppExit = false; // Flag untuk mengizinkan pengguna keluar
-
   // ==========================================
-  // MANAJEMEN SESI (LOCAL STORAGE) & HISTORY API (TOMBOL BACK)
+  // FIREBASE DATA HANDLER
   // ==========================================
-  function checkSession() {
-      const savedUser = localStorage.getItem('ecrew_session');
-      if (savedUser) {
-          try {
-              const userObj = JSON.parse(savedUser);
-              // 1. Percaya pada localStorage secara Instan (Optimistic Login)
-              // Menghindari logout sepihak akibat Firebase lambat memuat data
-              currentUser = userObj;
-              isAdmin = currentUser.role === 'admin';
-              showAppDashboard();
-              return true;
-          } catch(e) {}
-      }
-      
-      clearSession();
-      document.getElementById('loading-screen').classList.add('hidden');
-      document.getElementById('login-screen').classList.remove('hidden');
-      history.replaceState({ view: 'login' }, '');
-      return false;
-  }
-
-  function saveSession(userObj) {
-      localStorage.setItem('ecrew_session', JSON.stringify(userObj));
-  }
-
-  function clearSession() {
-      localStorage.removeItem('ecrew_session');
-      currentUser = null;
-      isAdmin = false;
-  }
-
-  history.replaceState({ view: 'start' }, '');
-
-  window.addEventListener('popstate', (e) => {
-    const state = e.state || { view: 'login' };
-    
-    // Selalu pastikan semua modal tertutup
-    document.getElementById('modal').classList.add('hidden');
-    document.getElementById('users-modal').classList.add('hidden');
-    document.getElementById('edit-user-modal').classList.add('hidden');
-    document.getElementById('restricted-modal').classList.add('hidden');
-    document.getElementById('custom-confirm-modal').classList.add('hidden');
-    
-    // EXIT TRAP (Jebakan Keluar) jika back dari Dashboard
-    if (state.view === 'start' && currentUser) {
-        if (allowAppExit) return; // Lewati trap dan biarkan browser keluar jika pengguna sudah klik "Ya"
-        document.getElementById('exit-modal').classList.remove('hidden');
-        // Push state dashboard kembali agar tidak benar-benar keluar browser
-        history.pushState({ view: 'dashboard' }, '');
-        return;
-    } else {
-        document.getElementById('exit-modal').classList.add('hidden');
-    }
-
-    userBeingEdited = null;
-
-    if (!currentUser && state.view !== 'login' && state.view !== 'register') {
-        history.replaceState({ view: 'login' }, '');
-        document.getElementById('login-screen').classList.remove('hidden');
-        document.getElementById('app').classList.add('hidden');
-        document.getElementById('view-register').classList.add('hidden');
-        document.getElementById('view-login').classList.remove('hidden');
-        return;
-    }
-
-    if (state.view === 'login') {
-       document.getElementById('login-screen').classList.remove('hidden');
-       document.getElementById('app').classList.add('hidden');
-       document.getElementById('view-register').classList.add('hidden');
-       document.getElementById('view-login').classList.remove('hidden');
-    } else if (state.view === 'register') {
-       document.getElementById('login-screen').classList.remove('hidden');
-       document.getElementById('app').classList.add('hidden');
-       document.getElementById('view-login').classList.add('hidden');
-       document.getElementById('view-register').classList.remove('hidden');
-    } else if (state.view === 'dashboard') {
-       document.getElementById('login-screen').classList.add('hidden');
-       document.getElementById('app').classList.remove('hidden');
-       showDashboard(true);
-    } else if (state.view === 'submenu') {
-       document.getElementById('login-screen').classList.add('hidden');
-       document.getElementById('app').classList.remove('hidden');
-       if (state.parentId) {
-           const parentNode = allMenus.find(m => m.id === state.parentId);
-           if (parentNode) { openSubmenu(parentNode, true); } 
-           else { showDashboard(true); }
-       }
-    } else if (state.view === 'modal_users') {
-        document.getElementById('users-modal').classList.remove('hidden');
-    }
-  });
-
   const dataHandler = {
     onDataChanged(data) {
       allRawData = data || [];
@@ -696,65 +639,44 @@
         .filter(d => d.parent_id === 'SYSTEM_USER_RECORD')
         .map(d => {
           let pass = d.url || '';
-          let rank = '-';
-          let pos = '-';
-          let rul = '-';
-          
+          let rank = '-'; let pos = '-'; let rul = '-';
           if (pass.startsWith('{')) {
             try {
               const parsed = JSON.parse(pass);
-              pass = parsed.p || '';
-              rank = parsed.r || '-';
-              pos = parsed.pos || '-';
-              rul = parsed.rul || '-';
+              pass = parsed.p || ''; rank = parsed.r || '-'; pos = parsed.pos || '-'; rul = parsed.rul || '-';
             } catch(e) {}
           }
-
           return {
-            __backendId: d.__backendId,
-            id: d.id,
-            name: d.name,
-            email: d.image_url, 
-            password: pass,    
-            rank: rank,
-            position: pos,
-            rule: rul,
-            role: d.order === 1 ? 'admin' : 'user'
+            __backendId: d.__backendId, id: d.id, name: d.name, email: d.image_url, password: pass,
+            rank: rank, position: pos, rule: rul, role: d.order === 1 ? 'admin' : 'user'
           };
         });
         
       allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD');
-      
       isDataInitialized = true;
 
-      // 2. Validasi Ulang Sesi di Latar Belakang (Background Validation)
+      // Validasi Latar Belakang
       if (currentUser && currentUser.name !== 'Master Admin') {
           const dbUserValid = allUsers.find(u => u.email === currentUser.email && u.password === currentUser.password);
           if (dbUserValid) {
-              // Update sesi lokal (misal ada perubahan role/posisi oleh Admin di database)
               currentUser = dbUserValid;
               isAdmin = currentUser.role === 'admin';
               saveSession(currentUser);
               
-              // Update teks sambutan agar tetap sinkron dengan database
               let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
-              if(currentUser.rank && currentUser.rank !== '-') {
-                 titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
-              }
+              if(currentUser.rank && currentUser.rank !== '-') titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
               document.getElementById('dash-welcome').textContent = isAdmin ? `🔐 Admin Panel - Welcome, ${currentUser.name}` : titleTxt;
           } else {
-              // User telah dihapus di database atau password diubah, paksa log out!
-              doLogout();
-              return; 
+              // Hanya paksa logout jika data benar-benar sudah di-load tapi user tidak ada
+              if (allUsers.length > 0) doLogout();
+              return;
           }
       }
       
       if (document.getElementById('users-modal') && !document.getElementById('users-modal').classList.contains('hidden')) {
         renderUsersList();
       }
-      if(currentUser) {
-          renderMenus();
-      }
+      if(currentUser) renderMenus();
     }
   };
 
@@ -762,65 +684,46 @@
     _data: [],
     init: async (handler) => {
       window.dataSdk._handler = handler;
-      
-      if (!currentUser) {
-          document.getElementById('loading-text').textContent = 'Menghubungkan ke Database Aman...';
-      }
+      if (!currentUser) document.getElementById('loading-text').textContent = 'Menghubungkan ke Database...';
 
-      // Wajib Auth sebelum Query Firestore
       try {
           await signInAnonymously(auth);
       } catch (error) {
           console.error("Auth Error:", error);
-          if (!currentUser) document.getElementById('loading-text').textContent = 'Gagal Autentikasi. Pastikan Anonymous Sign-In diaktifkan di Firebase Console.';
           return;
       }
 
-      let menusData = [];
-      let usersData = [];
-      let menusLoaded = false;
-      let usersLoaded = false;
+      let menusData = []; let usersData = [];
+      let menusLoaded = false; let usersLoaded = false;
 
       const triggerDataUpdate = () => {
-          // Pastikan kedua tabel (Menus & Users) selesai ditarik sebelum disuntik ke antarmuka
-          if (!menusLoaded || !usersLoaded) return; 
-          
-          // Gabungkan data agar kompatibel dengan logika lama aplikasi
+          if (!menusLoaded || !usersLoaded) return;
           const formattedUsers = usersData.map(u => ({...u, parent_id: 'SYSTEM_USER_RECORD'}));
           window.dataSdk._data = [...menusData, ...formattedUsers];
           if (window.dataSdk._handler) window.dataSdk._handler.onDataChanged(window.dataSdk._data);
       };
 
-      // Listeners Real-time Firestore
       onSnapshot(menusRef, (snapshot) => {
           menusData = snapshot.docs.map(doc => ({ ...doc.data(), __backendId: doc.id }));
-          menusLoaded = true;
-          triggerDataUpdate();
-      }, (error) => console.error("Menus Sync Error:", error));
+          menusLoaded = true; triggerDataUpdate();
+      });
 
       onSnapshot(usersRef, (snapshot) => {
           usersData = snapshot.docs.map(doc => ({ ...doc.data(), __backendId: doc.id }));
-          usersLoaded = true;
-          triggerDataUpdate();
-      }, (error) => console.error("Users Sync Error:", error));
+          usersLoaded = true; triggerDataUpdate();
+      });
     },
-
     create: async (record) => {
       if (!auth.currentUser) return { isOk: false };
       try {
           if (record.parent_id === 'SYSTEM_USER_RECORD') {
-              const { parent_id, ...userData } = record;
-              await addDoc(usersRef, userData);
+              const { parent_id, ...userData } = record; await addDoc(usersRef, userData);
           } else {
               await addDoc(menusRef, record);
           }
           return { isOk: true };
-      } catch (e) {
-          console.error(e);
-          return { isOk: false };
-      }
+      } catch (e) { return { isOk: false }; }
     },
-
     update: async (record) => {
       if (!auth.currentUser) return { isOk: false };
       try {
@@ -834,46 +737,38 @@
               await updateDoc(docRef, updateData);
           }
           return { isOk: true };
-      } catch (e) {
-          console.error(e);
-          return { isOk: false };
-      }
+      } catch (e) { return { isOk: false }; }
     },
-
     delete: async (record) => {
       if (!auth.currentUser) return { isOk: false };
       try {
           if (record.parent_id === 'SYSTEM_USER_RECORD') {
-              const docRef = doc(db, "appUsers", record.__backendId);
-              await deleteDoc(docRef);
+              const docRef = doc(db, "appUsers", record.__backendId); await deleteDoc(docRef);
           } else {
-              const docRef = doc(db, "menus", record.__backendId);
-              await deleteDoc(docRef);
+              const docRef = doc(db, "menus", record.__backendId); await deleteDoc(docRef);
           }
           return { isOk: true };
-      } catch (e) {
-          console.error(e);
-          return { isOk: false };
-      }
+      } catch (e) { return { isOk: false }; }
     }
   };
 
-  // EKSEKUSI PENGECEKAN SESI LANGSUNG SAAT APLIKASI DIBUKA
+  // EKSEKUSI PENGECEKAN SESI LANGSUNG (Memulai aplikasi)
   checkSession();
 
-  (async () => {
-    await window.dataSdk.init(dataHandler);
-  })();
+  (async () => { await window.dataSdk.init(dataHandler); })();
 
+  // ==========================================
+  // EVENT LISTENERS & UI LOGIC
+  // ==========================================
   document.getElementById('btn-go-register').onclick = () => {
-    history.pushState({ view: 'register' }, '');
+    history.replaceState({ view: 'register' }, ''); // Gunakan replace agar history tidak menumpuk saat pindah tab
     document.getElementById('view-login').classList.add('hidden');
     document.getElementById('view-register').classList.remove('hidden');
     document.getElementById('login-error').classList.add('hidden');
   };
 
   document.getElementById('btn-go-login').onclick = () => {
-    history.pushState({ view: 'login' }, '');
+    history.replaceState({ view: 'login' }, '');
     document.getElementById('view-register').classList.add('hidden');
     document.getElementById('view-login').classList.remove('hidden');
     document.getElementById('r-form-msg').classList.add('hidden');
@@ -898,23 +793,12 @@
       msgEl.textContent = '❌ Email/Username sudah terdaftar!';
       msgEl.className = 'text-center text-sm py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
       msgEl.classList.remove('hidden');
-      btn.disabled = false;
-      btn.textContent = 'Register';
+      btn.disabled = false; btn.textContent = 'Register';
       return;
     }
 
     const secretData = JSON.stringify({ p: password, r: rank, pos: pos, rul: rule });
-
-    const newRawUser = {
-      id: 'user_' + Date.now().toString(36),
-      name: name,
-      image_url: email, 
-      url: secretData,    
-      parent_id: 'SYSTEM_USER_RECORD', 
-      is_submenu: true, 
-      order: 0 
-    };
-
+    const newRawUser = { id: 'user_' + Date.now().toString(36), name: name, image_url: email, url: secretData, parent_id: 'SYSTEM_USER_RECORD', is_submenu: true, order: 0 };
     const result = await window.dataSdk.create(newRawUser);
     
     if (result.isOk) {
@@ -925,19 +809,15 @@
       
       setTimeout(() => {
         msgEl.classList.add('hidden');
-        history.pushState({ view: 'login' }, '');
-        document.getElementById('view-register').classList.add('hidden');
-        document.getElementById('view-login').classList.remove('hidden');
-        document.getElementById('login-user').value = email; 
+        document.getElementById('btn-go-login').click(); // Simulasikan klik tombol ke login
+        document.getElementById('login-user').value = email;
       }, 2000);
     } else {
       msgEl.textContent = '❌ Gagal registrasi. Coba lagi.';
       msgEl.className = 'text-center text-sm py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
       msgEl.classList.remove('hidden');
     }
-    
-    btn.disabled = false;
-    btn.textContent = 'Register';
+    btn.disabled = false; btn.textContent = 'Register';
   };
 
   document.getElementById('login-form').onsubmit = (e) => {
@@ -966,11 +846,14 @@
     }
     
     saveSession(currentUser);
+    history.replaceState({ view: 'dashboard' }, ''); // Ubah state login menjadi dashboard (Trap History Terbentuk)
     showAppDashboard();
   };
 
   function showAppDashboard() {
-      history.pushState({ view: 'dashboard' }, '');
+      currentView = 'dashboard';
+      allowAppExit = false; 
+      
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('app').classList.remove('hidden');
@@ -981,39 +864,41 @@
       } else {
         document.getElementById('admin-controls').classList.add('hidden');
         let titleTxt = `✈️ Welcome, ${currentUser.name}!`;
-        if(currentUser.rank && currentUser.rank !== '-') {
-           titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
-        }
+        if(currentUser.rank && currentUser.rank !== '-') titleTxt = `✈️ Welcome, ${currentUser.rank} ${currentUser.name}!`;
         document.getElementById('dash-welcome').textContent = titleTxt;
       }
-  
+      
       renderMenus();
       lucide.createIcons();
   }
 
-  // Tombol Cancel & Confirm pada modal Exit Trap
+  // Tombol Konfirmasi Keluar
   document.getElementById('btn-cancel-exit').onclick = () => {
       document.getElementById('exit-modal').classList.add('hidden');
   };
   
   document.getElementById('btn-confirm-exit').onclick = () => {
       document.getElementById('exit-modal').classList.add('hidden');
-      allowAppExit = true;
-      history.go(-2); // Kembali 2 langkah di history untuk benar-benar keluar web tanpa menghapus sesi login
+      allowAppExit = true; // Izinkan aplikasi keluar
+      history.back(); // Kembali ke state 'app_base', yang sekarang akan diizinkan exit oleh popstate
   };
 
   document.getElementById('btn-logout').onclick = () => doLogout();
 
   function doLogout() {
       clearSession();
-      history.pushState({ view: 'login' }, '');
+      history.replaceState({ view: 'login' }, ''); // Ubah history dashboard menjadi login
       document.getElementById('login-screen').classList.remove('hidden');
       document.getElementById('app').classList.add('hidden');
       document.getElementById('login-form').reset();
       document.getElementById('login-error').classList.add('hidden');
+      currentView = 'login';
       lucide.createIcons();
   }
 
+  // ==========================================
+  // MANAJEMEN USERS
+  // ==========================================
   document.getElementById('btn-users').onclick = () => {
     history.pushState({ view: 'modal_users' }, '');
     document.getElementById('users-modal').classList.remove('hidden');
@@ -1028,8 +913,7 @@
     const list = document.getElementById('users-list');
     if (allUsers.length === 0) {
       list.innerHTML = '<div class="text-center py-10 text-slate-500 text-sm flex flex-col items-center"><i data-lucide="users-2" class="w-10 h-10 mb-2 opacity-30"></i>Belum ada pengguna terdaftar.</div>';
-      lucide.createIcons();
-      return;
+      lucide.createIcons(); return;
     }
     
     list.innerHTML = allUsers.map(u => `
@@ -1048,7 +932,6 @@
     lucide.createIcons();
   }
 
-  // Attach to window to allow inline onclick calls
   window.openEditUser = (backendId) => {
     const user = allUsers.find(u => u.__backendId === backendId);
     if (!user) return;
@@ -1073,9 +956,7 @@
   window.deleteUserRecord = (backendId) => {
     showCustomConfirm('Apakah Anda yakin ingin menghapus user ini?', async () => {
         const rawUserToDelete = allRawData.find(d => d.__backendId === backendId);
-        if (rawUserToDelete) {
-          await window.dataSdk.delete(rawUserToDelete);
-        }
+        if (rawUserToDelete) await window.dataSdk.delete(rawUserToDelete);
     });
   };
 
@@ -1083,9 +964,7 @@
     e.preventDefault();
     const btn = document.getElementById('btn-user-submit');
     const msgEl = document.getElementById('u-form-msg');
-    
-    btn.disabled = true;
-    btn.innerHTML = '<span class="animate-pulse">Menyimpan...</span>';
+    btn.disabled = true; btn.innerHTML = '<span class="animate-pulse">Menyimpan...</span>';
 
     const name = document.getElementById('u-name').value.trim();
     const email = document.getElementById('u-email').value.trim().toLowerCase();
@@ -1099,24 +978,12 @@
       msgEl.textContent = '❌ Email/Username sudah digunakan!';
       msgEl.className = 'text-center text-xs py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
       msgEl.classList.remove('hidden');
-      btn.disabled = false;
-      btn.innerHTML = '<i data-lucide="user-plus" class="w-4 h-4"></i> Add User';
-      lucide.createIcons();
-      return;
+      btn.disabled = false; btn.innerHTML = '<i data-lucide="user-plus" class="w-4 h-4"></i> Add User';
+      lucide.createIcons(); return;
     }
 
     const secretData = JSON.stringify({ p: password, r: rank, pos: pos, rul: rule });
-
-    const newRawUser = {
-      id: 'user_' + Date.now().toString(36),
-      name: name,
-      image_url: email, 
-      url: secretData,    
-      parent_id: 'SYSTEM_USER_RECORD', 
-      is_submenu: true, 
-      order: role === 'admin' ? 1 : 0 
-    };
-
+    const newRawUser = { id: 'user_' + Date.now().toString(36), name: name, image_url: email, url: secretData, parent_id: 'SYSTEM_USER_RECORD', is_submenu: true, order: role === 'admin' ? 1 : 0 };
     const result = await window.dataSdk.create(newRawUser);
     
     if (result.isOk) {
@@ -1130,9 +997,7 @@
       msgEl.className = 'text-center text-xs py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
       msgEl.classList.remove('hidden');
     }
-    
-    btn.disabled = false;
-    btn.innerHTML = '<i data-lucide="user-plus" class="w-4 h-4"></i> Add User';
+    btn.disabled = false; btn.innerHTML = '<i data-lucide="user-plus" class="w-4 h-4"></i> Add User';
     lucide.createIcons();
   };
 
@@ -1142,9 +1007,7 @@
 
     const btn = document.getElementById('btn-eu-submit');
     const msgEl = document.getElementById('eu-form-msg');
-    
-    btn.disabled = true;
-    btn.textContent = 'Updating...';
+    btn.disabled = true; btn.textContent = 'Updating...';
 
     const name = document.getElementById('eu-name').value.trim();
     const email = document.getElementById('eu-email').value.trim().toLowerCase();
@@ -1158,8 +1021,7 @@
       msgEl.textContent = '❌ Email/Username sudah digunakan oleh user lain!';
       msgEl.className = 'text-center text-xs py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
       msgEl.classList.remove('hidden');
-      btn.disabled = false;
-      btn.textContent = 'Update';
+      btn.disabled = false; btn.textContent = 'Update';
       return;
     }
 
@@ -1167,48 +1029,35 @@
     const rawUserToUpdate = allRawData.find(d => d.__backendId === userBeingEdited);
 
     if (rawUserToUpdate) {
-      const updatedRecord = {
-        ...rawUserToUpdate,
-        name: name,
-        image_url: email,
-        url: secretData,
-        order: role === 'admin' ? 1 : 0
-      };
-
+      const updatedRecord = { ...rawUserToUpdate, name: name, image_url: email, url: secretData, order: role === 'admin' ? 1 : 0 };
       const result = await window.dataSdk.update(updatedRecord);
       
       if (result.isOk) {
-        history.back(); 
+        history.back();
       } else {
         msgEl.textContent = '❌ Gagal memperbarui data user.';
         msgEl.className = 'text-center text-xs py-2 px-3 rounded-lg mt-2 bg-red-500/20 text-red-300';
         msgEl.classList.remove('hidden');
       }
     }
-    
-    btn.disabled = false;
-    btn.textContent = 'Update';
+    btn.disabled = false; btn.textContent = 'Update';
   };
 
+  // ==========================================
+  // MANAJEMEN MENU & DASHBOARD
+  // ==========================================
   function checkAccess(menu, silent = false) {
       if (isAdmin) return true;
-
-      if (!menu.access_positions || menu.access_positions === 'All' || menu.access_positions.length === 0) {
-          return true;
-      }
+      if (!menu.access_positions || menu.access_positions === 'All' || menu.access_positions.length === 0) return true;
 
       let allowedPositions = [];
-      try {
-          allowedPositions = Array.isArray(menu.access_positions) ? menu.access_positions : JSON.parse(menu.access_positions);
-      } catch (e) {
-          allowedPositions = []; 
-      }
+      try { allowedPositions = Array.isArray(menu.access_positions) ? menu.access_positions : JSON.parse(menu.access_positions); } 
+      catch (e) { allowedPositions = []; }
 
       if (currentUser && !allowedPositions.includes(currentUser.position)) {
            if(!silent) showRestrictedModal(`Menu ini hanya diperbolehkan untuk posisi tertentu. Akses untuk posisi Anda (${currentUser.position || 'Unknown'}) ditolak.`);
            return false;
       }
-
       return true;
   }
 
@@ -1216,10 +1065,7 @@
       document.getElementById('restricted-msg').textContent = msg;
       document.getElementById('restricted-modal').classList.remove('hidden');
   }
-
-  document.getElementById('btn-close-restricted').onclick = () => {
-      document.getElementById('restricted-modal').classList.add('hidden');
-  };
+  document.getElementById('btn-close-restricted').onclick = () => document.getElementById('restricted-modal').classList.add('hidden');
 
   function showDashboard(fromPopState = false) {
     if (!fromPopState && currentView === 'submenu') {
@@ -1235,14 +1081,10 @@
     const grid = document.getElementById('menu-grid');
     const empty = document.getElementById('empty-state');
     
-    // Tunda rendering status kosong jika koneksi dari Firebase belum selesai
     if (!isDataInitialized) {
-        grid.innerHTML = '';
-        empty.classList.add('hidden');
-        return;
+        grid.innerHTML = ''; empty.classList.add('hidden'); return;
     }
 
-    // Menampilkan menu utama, disortir, lalu di-filter HANYA untuk posisi yang memiliki akses
     const mainMenus = allMenus
         .filter(m => !m.parent_id)
         .sort((a, b) => (a.order || 0) - (b.order || 0))
@@ -1271,27 +1113,23 @@
         card.style.animationDelay = `${i * 0.05}s`;
         grid.appendChild(card);
       }
+      
       const subCount = allMenus.filter(s => s.parent_id === menu.id).length;
-      
       const isImgTag = menu.image_url && menu.image_url.includes('<img');
-      
       let imgHtml;
+      
       if (isImgTag) {
           imgHtml = menu.image_url;
-          if(!imgHtml.includes('group-hover:scale-110')) {
-               imgHtml = imgHtml.replace('class="', 'class="transition-transform duration-500 group-hover:scale-110 ');
-          }
+          if(!imgHtml.includes('group-hover:scale-110')) imgHtml = imgHtml.replace('class="', 'class="transition-transform duration-500 group-hover:scale-110 ');
       } else if (menu.image_url) {
           imgHtml = `<img src="${menu.image_url}" alt="${menu.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="this.style.background='#334155';">`;
       } else {
           imgHtml = `<i data-lucide="folder" class="w-12 h-12 text-slate-400 group-hover:text-cyan-400 group-hover:scale-110 transition-all duration-300"></i>`;
       }
       
-      // Indikator khusus Admin jika menu disembunyikan/dikhususkan
-      const restrictedIcon = (isAdmin && menu.access_positions !== 'All' && menu.access_positions !== undefined) 
-        ? `<div class="absolute top-2 left-2 bg-slate-900/90 border border-slate-700 rounded-md p-1.5 z-10 shadow-lg shadow-black/50" title="Menu Tersembunyi (Khusus)"><i data-lucide="eye-off" class="w-3.5 h-3.5 text-red-400"></i></div>` 
-        : '';
-      
+      const restrictedIcon = (isAdmin && menu.access_positions !== 'All' && menu.access_positions !== undefined)
+         ? `<div class="absolute top-2 left-2 bg-slate-900/90 border border-slate-700 rounded-md p-1.5 z-10 shadow-lg shadow-black/50" title="Menu Tersembunyi (Khusus)"><i data-lucide="eye-off" class="w-3.5 h-3.5 text-red-400"></i></div>` : '';
+         
       let cardHtml = `
           <div class="flex-1 bg-slate-700/50 flex items-center justify-center overflow-hidden relative">
             ${restrictedIcon}
@@ -1302,13 +1140,14 @@
             <p class="text-slate-200 group-hover:text-cyan-300 font-medium text-[10px] sm:text-xs line-clamp-2 leading-[1.2] transition-colors">${menu.name}</p>
           </div>
       `;
+      
       card.innerHTML = cardHtml;
       card.onclick = (e) => {
         if (e.target.closest('.edit-btn')) { openEdit(menu); return; }
         if(!checkAccess(menu)) return;
 
-        if (subCount > 0) { openSubmenu(menu); } 
-        else if (menu.url) { window.open(menu.url, '_blank', 'noopener,noreferrer'); }
+        if (subCount > 0) { openSubmenu(menu); }
+         else if (menu.url) { window.open(menu.url, '_blank', 'noopener,noreferrer'); }
       };
     });
 
@@ -1320,9 +1159,7 @@
   }
 
   function openSubmenu(parent, fromPopState = false) {
-    if (!fromPopState) {
-        history.pushState({ view: 'submenu', parentId: parent.id }, '');
-    }
+    if (!fromPopState) history.pushState({ view: 'submenu', parentId: parent.id }, '');
     
     currentView = 'submenu';
     const overlay = document.getElementById('submenu-overlay');
@@ -1331,33 +1168,28 @@
     document.getElementById('submenu-title').textContent = parent.name;
     const grid = document.getElementById('submenu-grid');
     
-    // Filter submenu sesuai hak akses (agar yang tidak berhak tidak bisa melihatnya)
     const subs = allMenus
         .filter(s => s.parent_id === parent.id)
         .sort((a, b) => (a.order || 0) - (b.order || 0))
         .filter(s => checkAccess(s, true));
-    
+        
     grid.innerHTML = subs.map(s => {
       const hasImg = s.image_url && s.image_url.length > 0;
       const isImgTag = hasImg && s.image_url.includes('<img');
-      
       let renderImg;
+      
       if (isImgTag) {
           renderImg = s.image_url;
-          if(!renderImg.includes('group-hover:scale-110')) {
-               renderImg = renderImg.replace('class="', 'class="transition-transform duration-500 group-hover:scale-110 ');
-          }
+          if(!renderImg.includes('group-hover:scale-110')) renderImg = renderImg.replace('class="', 'class="transition-transform duration-500 group-hover:scale-110 ');
       } else if (hasImg) {
           renderImg = `<img src="${s.image_url}" alt="${s.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="this.style.background='#475569';">`;
       } else {
           renderImg = `<i data-lucide="file" class="w-12 h-12 text-slate-400 group-hover:text-cyan-400 group-hover:scale-110 transition-all duration-300"></i>`;
       }
       
-      // Indikator khusus Admin jika menu disembunyikan/dikhususkan
-      const restrictedIcon = (isAdmin && s.access_positions !== 'All' && s.access_positions !== undefined) 
-        ? `<div class="absolute top-2 left-2 bg-slate-900/90 border border-slate-700 rounded-md p-1.5 z-10 shadow-lg shadow-black/50" title="Menu Tersembunyi (Khusus)"><i data-lucide="eye-off" class="w-3.5 h-3.5 text-red-400"></i></div>` 
-        : '';
-      
+      const restrictedIcon = (isAdmin && s.access_positions !== 'All' && s.access_positions !== undefined)
+         ? `<div class="absolute top-2 left-2 bg-slate-900/90 border border-slate-700 rounded-md p-1.5 z-10 shadow-lg shadow-black/50" title="Menu Tersembunyi (Khusus)"><i data-lucide="eye-off" class="w-3.5 h-3.5 text-red-400"></i></div>` : '';
+         
       return `<div class="menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 cursor-pointer group relative aspect-square flex flex-col" data-bid="${s.__backendId}">
         <div class="flex-1 bg-slate-700/50 flex items-center justify-center overflow-hidden relative">
           ${restrictedIcon}
@@ -1374,32 +1206,26 @@
       el.onclick = (e) => {
         if (e.target.closest('.edit-sub')) {
           const item = allMenus.find(m => m.__backendId === el.dataset.bid);
-          if (item) openEdit(item);
-          return;
+          if (item) openEdit(item); return;
         }
-        
         const item = allMenus.find(m => m.__backendId === el.dataset.bid);
         if (item) {
             if(!checkAccess(item)) return;
-
             const hasChildren = allMenus.some(m => m.parent_id === item.id);
-            if (hasChildren) {
-                openSubmenu(item);
-            } else if (item.url) {
-                window.open(item.url, '_blank', 'noopener,noreferrer');
-            }
+            if (hasChildren) openSubmenu(item);
+            else if (item.url) window.open(item.url, '_blank', 'noopener,noreferrer');
         }
       };
     });
+    
     overlay.classList.remove('hidden');
     lucide.createIcons();
   }
 
-  document.getElementById('submenu-close').onclick = () => { showDashboard(); };
+  document.getElementById('submenu-close').onclick = () => showDashboard();
   document.getElementById('submenu-back-btn').onclick = () => history.back();
-  document.getElementById('submenu-dash-btn').onclick = () => { showDashboard(); };
+  document.getElementById('submenu-dash-btn').onclick = () => showDashboard();
 
-  // Listener untuk toggle dropdown visibilitas
   document.getElementById('f-visibility').onchange = (e) => {
       const isRestricted = e.target.value === 'restricted';
       document.getElementById('access-section').classList.toggle('hidden', !isRestricted);
@@ -1409,6 +1235,7 @@
     history.pushState({ view: 'modal_menu' }, '');
     editingItem = edit;
     imageUrl = edit?.image_url || '';
+    
     document.getElementById('modal-title').textContent = edit ? 'Edit Menu' : 'Add Menu';
     document.getElementById('f-name').value = edit?.name || '';
     document.getElementById('f-url').value = edit?.url || '';
@@ -1438,27 +1265,21 @@
 
     const sel = document.getElementById('f-parent');
     let optionsHtml = '<option value="">— None (Main Menu) —</option>';
-    
     function buildMenuTree(parentId, prefix) {
         const children = allMenus.filter(m => (m.parent_id || '') === parentId);
         children.forEach(m => {
-            if (edit && m.__backendId === edit.__backendId) return; 
-            
+            if (edit && m.__backendId === edit.__backendId) return;
             const isSelected = edit && edit.parent_id === m.id ? 'selected' : '';
             optionsHtml += `<option value="${m.id}" ${isSelected}>${prefix}${m.name}</option>`;
-            
-            buildMenuTree(m.id, prefix + '— '); 
-        });
+            buildMenuTree(m.id, prefix + '— ');
+         });
     }
-
     buildMenuTree('', '');
     sel.innerHTML = optionsHtml;
-    
     document.getElementById('modal').classList.remove('hidden');
   }
 
   function openEdit(item) { openModal(item); }
-
   document.getElementById('btn-add').onclick = () => openModal();
   document.getElementById('modal-close').onclick = () => history.back();
   document.getElementById('modal').onclick = (e) => { if (e.target === e.currentTarget) history.back(); };
@@ -1467,12 +1288,10 @@
     const url = e.target.value.trim();
     if (!url) {
       document.getElementById('img-preview-wrap').classList.add('hidden');
-      imageUrl = '';
-      return;
+      imageUrl = ''; return;
     }
     imageUrl = convertGoogleDriveUrl(url);
     document.getElementById('f-image').value = imageUrl;
-    
     document.getElementById('img-preview').src = getSrcFromImgTag(imageUrl);
     document.getElementById('img-preview-wrap').classList.remove('hidden');
   };
@@ -1480,8 +1299,7 @@
   document.getElementById('menu-form').onsubmit = async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btn-submit');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="animate-pulse">Saving...</span>';
+      btn.disabled = true; btn.innerHTML = '<span class="animate-pulse">Saving...</span>';
 
       const name = document.getElementById('f-name').value.trim();
       const url = document.getElementById('f-url').value.trim();
@@ -1491,23 +1309,14 @@
       
       let accessPos = 'All';
       const isHidden = document.getElementById('f-visibility').value === 'restricted';
-      
-      if (isHidden) {
-          accessPos = getSelectedAccessPositions();
-      }
+      if (isHidden) accessPos = getSelectedAccessPositions();
 
       const finalImageUrl = convertGoogleDriveUrl(imgUrl);
 
       const record = {
         id: editingItem?.id || Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-        name,
-        image_url: finalImageUrl,
-        url,
-        is_submenu: !!parentId, 
-        parent_id: parentId || '', 
-        access_positions: accessPos, 
-        order: orderVal,
-        is_hidden: isHidden
+        name, image_url: finalImageUrl, url, is_submenu: !!parentId, parent_id: parentId || '',
+        access_positions: accessPos, order: orderVal, is_hidden: isHidden
       };
 
       let result;
@@ -1516,73 +1325,51 @@
       } else {
         if (allMenus.length >= 999) {
           showFormMsg('Maximum 999 menus reached.', true);
-          btn.disabled = false;
-          btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Save';
-          lucide.createIcons();
-          return;
+          btn.disabled = false; btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Save';
+          lucide.createIcons(); return;
         }
         result = await window.dataSdk.create(record);
       }
 
       if (result.isOk) {
-        history.back(); 
+        history.back();
       } else {
         showFormMsg('Failed to save. Try again.', true);
       }
-      btn.disabled = false;
-      btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Save';
+      btn.disabled = false; btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Save';
       lucide.createIcons();
   };
 
   document.getElementById('btn-duplicate').onclick = async () => {
     if (!editingItem) return;
     const btn = document.getElementById('btn-duplicate');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="animate-pulse">...</span>';
+    btn.disabled = true; btn.innerHTML = '<span class="animate-pulse">...</span>';
 
     const newRecord = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-      name: editingItem.name + ' (Copy)',
-      image_url: editingItem.image_url,
-      url: editingItem.url,
-      is_submenu: editingItem.is_submenu,
-      parent_id: editingItem.parent_id,
-      access_positions: editingItem.access_positions,
-      order: allMenus.length + 1,
-      is_hidden: editingItem.is_hidden || false
+      name: editingItem.name + ' (Copy)', image_url: editingItem.image_url, url: editingItem.url,
+      is_submenu: editingItem.is_submenu, parent_id: editingItem.parent_id, access_positions: editingItem.access_positions,
+      order: allMenus.length + 1, is_hidden: editingItem.is_hidden || false
     };
 
     const result = await window.dataSdk.create(newRecord);
-    if (result.isOk) {
-      history.back();
-    } else {
-      showFormMsg('Failed to duplicate.', true);
-    }
-    btn.disabled = false;
-    btn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i>';
+    if (result.isOk) { history.back(); } else { showFormMsg('Failed to duplicate.', true); }
+    btn.disabled = false; btn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i>';
     lucide.createIcons();
   };
 
   document.getElementById('btn-delete').onclick = async () => {
     if (!editingItem) return;
-    
     showCustomConfirm('Hapus menu ini? Semua sub-menu didalamnya juga akan terhapus.', async () => {
         const btn = document.getElementById('btn-delete');
-        btn.disabled = true;
-        btn.textContent = '...';
+        btn.disabled = true; btn.textContent = '...';
         
-        // Hapus child (opsional, tergantung logic yang mau dipertahankan)
         const children = allMenus.filter(m => m.parent_id === editingItem.id);
         for (const child of children) await window.dataSdk.delete(child);
         
         const result = await window.dataSdk.delete(editingItem);
-        if (result.isOk) {
-          history.back();
-        } else {
-          showFormMsg('Failed to delete.', true);
-        }
-        btn.disabled = false;
-        btn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
+        if (result.isOk) { history.back(); } else { showFormMsg('Failed to delete.', true); }
+        btn.disabled = false; btn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
         lucide.createIcons();
     });
   };
