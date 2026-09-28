@@ -93,7 +93,12 @@
         </div>
         <div>
             <label class="text-slate-300 text-sm font-semibold block mb-2">Password</label> 
-            <input id="login-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="Enter password">
+            <div class="relative">
+                <input id="login-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-3 pr-12 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:bg-slate-800/60 transition" placeholder="Enter password">
+                <button type="button" id="toggle-login-pass" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-cyan-400 transition" tabindex="-1">
+                    <i data-lucide="eye" id="eye-icon-login" class="w-5 h-5"></i>
+                </button>
+            </div>
         </div>
         <div id="login-error" class="hidden bg-red-500/10 border border-red-500/30 text-red-300 text-sm p-3 rounded-lg"></div>
         <button type="submit" class="w-full premium-gradient text-white font-bold py-3 rounded-xl transition smooth-button shadow-xl shadow-cyan-500/20">Login</button>
@@ -112,26 +117,17 @@
             <div><label class="text-slate-300 text-xs font-semibold block mb-1">Email / Username</label><input id="r-email" type="text" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="budi@ecrew.com"></div>
             <div><label class="text-slate-300 text-xs font-semibold block mb-1">Password</label><input id="r-pass" type="password" required class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-cyan-500 transition" placeholder="Create password"></div>
             
-            <div class="flex gap-2">
-                <div class="w-1/2">
-                    <label class="text-slate-300 text-[11px] font-semibold block mb-1">Rank</label>
-                    <select id="r-rank" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
-                        <option value="Captain">Captain</option>
-                        <option value="First Officer">First Officer</option>
-                        <option value="CS">CS</option>
-                        <option value="FOO">FOO</option>
-                        <option value="HLO">HLO</option>
-                        <option value="Flight Support">Flight Support</option>
-                        <option value="-">None</option>
-                    </select>
-                </div>
-                <div class="w-1/2">
-                    <label class="text-slate-300 text-[11px] font-semibold block mb-1">Rule</label>
-                    <select id="r-rule" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
-                        <option value="Key Person">Key Person</option>
-                        <option value="Member">Member</option>
-                    </select>
-                </div>
+            <div>
+                <label class="text-slate-300 text-xs font-semibold block mb-1">Rank</label>
+                <select id="r-rank" class="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 transition text-sm">
+                    <option value="Captain">Captain</option>
+                    <option value="First Officer">First Officer</option>
+                    <option value="CS">CS</option>
+                    <option value="FOO">FOO</option>
+                    <option value="HLO">HLO</option>
+                    <option value="Flight Support">Flight Support</option>
+                    <option value="-">None</option>
+                </select>
             </div>
             
             <div>
@@ -774,6 +770,19 @@
     document.getElementById('r-form-msg').classList.add('hidden');
   };
 
+  document.getElementById('toggle-login-pass').onclick = () => {
+      const passInput = document.getElementById('login-pass');
+      const eyeIcon = document.getElementById('eye-icon-login');
+      if (passInput.type === 'password') {
+          passInput.type = 'text';
+          eyeIcon.setAttribute('data-lucide', 'eye-off');
+      } else {
+          passInput.type = 'password';
+          eyeIcon.setAttribute('data-lucide', 'eye');
+      }
+      lucide.createIcons();
+  };
+
   document.getElementById('register-form').onsubmit = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-register-submit');
@@ -786,7 +795,7 @@
     const email = document.getElementById('r-email').value.trim().toLowerCase();
     const password = document.getElementById('r-pass').value.trim();
     const rank = document.getElementById('r-rank').value;
-    const rule = document.getElementById('r-rule').value;
+    const rule = 'Member';
     const pos = document.getElementById('r-pos').value;
 
     if (allUsers.some(u => u.email === email)) {
