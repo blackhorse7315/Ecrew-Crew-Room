@@ -630,6 +630,7 @@
   const dataHandler = {
     onDataChanged(data) {
       allRawData = data || [];
+      localStorage.setItem('ecrew_data_cache', JSON.stringify(allRawData));
       
       allUsers = allRawData
         .filter(d => d.parent_id === 'SYSTEM_USER_RECORD')
@@ -748,7 +749,39 @@
     }
   };
 
+  // ==========================================
+  // OFFLINE CACHE (Mencegah tampilan kosong)
+  // ==========================================
+  function loadLocalCache() {
+      try {
+          const cached = localStorage.getItem('ecrew_data_cache');
+          if (cached) {
+              const parsed = JSON.parse(cached);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                  allRawData = parsed;
+                  allUsers = allRawData.filter(d => d.parent_id === 'SYSTEM_USER_RECORD').map(d => {
+                      let pass = d.url || '';
+                      let rank = '-'; let pos = '-'; let rul = '-';
+                      if (pass.startsWith('{')) {
+                          try {
+                              const p = JSON.parse(pass);
+                              pass = p.p || ''; rank = p.r || '-'; pos = p.pos || '-'; rul = p.rul || '-';
+                          } catch(e) {}
+                      }
+                      return {
+                          __backendId: d.__backendId, id: d.id, name: d.name, email: d.image_url, password: pass,
+                          rank: rank, position: pos, rule: rul, role: d.order === 1 ? 'admin' : 'user'
+                      };
+                  });
+                  allMenus = allRawData.filter(d => d.parent_id !== 'SYSTEM_USER_RECORD');
+                  isDataInitialized = true;
+              }
+          }
+      } catch(e) { console.error("Cache parsing error", e); }
+  }
+
   // EKSEKUSI PENGECEKAN SESI LANGSUNG (Memulai aplikasi)
+  loadLocalCache();
   checkSession();
 
   (async () => { await window.dataSdk.init(dataHandler); })();
@@ -1091,7 +1124,15 @@
     const empty = document.getElementById('empty-state');
     
     if (!isDataInitialized) {
-        grid.innerHTML = ''; empty.classList.add('hidden'); return;
+        // Tampilkan Skeleton (Efek tulang memuat) saat menunggu Firebase pertama kali (jika tidak ada cache)
+        grid.innerHTML = Array(12).fill().map((_, i) => `
+          <div class="menu-card bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 aspect-square flex flex-col animate-pulse" style="animation-delay: ${i * 0.05}s">
+            <div class="flex-1 bg-slate-700/30"></div>
+            <div class="h-10 sm:h-11 bg-slate-700/50 border-t border-slate-700/50"></div>
+          </div>
+        `).join('');
+        empty.classList.add('hidden');
+        return;
     }
 
     const mainMenus = allMenus
